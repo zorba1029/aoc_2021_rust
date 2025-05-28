@@ -1,0 +1,35 @@
+[package]
+name = "aoc_2021_rust"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+# [[bin]]
+# name = "day01"
+# path = "src/bin/day01.rs"
+
+# [[bin]]
+# name = "day02"
+# path = "src/bin/day02.rs"
+
+# [[bin]]
+# name = "day03"
+# path = "src/bin/day03.rs"
+
+[lib]
+name = "aoc_2021_rust"
+path = "src/lib.rs"
+
+[dependencies]
+log = "0.4.21"
+pretty_env_logger = "0.5.0"
+regex = "1.10.6"
+lazy_static = "1.5.0"
+num-format = "0.4.3"
+chrono = "0.4.37"
+# to use `phf` in `no_std` environments
+phf = { version = "0.11", default-features = false, features = ["macros"] }
+priority-queue = "2.1.1"
+tokio = { version = "1.0", features = ["full"] }
+futures = "0.3"

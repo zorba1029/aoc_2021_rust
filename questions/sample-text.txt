@@ -1,0 +1,143 @@
+As you leave the cave and reach open waters, you receive a transmission
+from the Elves back on the ship.
+
+The transmission was sent using the Buoyancy Interchange Transmission 
+System (BITS), a method of packing numeric expresions into a binary
+sequence. Your submarine's computer has saved the transmission in 
+hexadecimal (your puzzle input).
+
+The first step of decoding the message is to conver the hexadecimal
+prepresentation into binary. Each character of hexadecimal corresponds to
+four bits of binary data:
+
+0 = 0000
+1 = 0001
+2 = 0010
+3 = 0011
+4 = 0100
+5 = 0101
+6 = 0110
+7 = 0111
+8 = 1000
+9 = 1001
+A = 1010
+B = 1011
+C = 1100
+D = 1101
+E = 1110
+F = 1111
+
+The BITS transmission contains a single packet at its outermost layer which
+itself contains many other packets. The hexadecimal representation of this
+packet might encode a few extra 0 bits at the end; these are not part of
+the transmission and should be ignored.
+
+Every packet begins with a standard header: the first three bits encode the
+packet version, and the next three bits encode the packet type ID. These
+two values are numbers; all numbers encoded in any packet are represented
+as binary with the most significant bit first. For example, a version 
+encoded as the binary sequence 100 represents the number 4.
+
+Packets with type ID 4 represent a literal value. Literal value packets
+encode a single binary number. To do this, the binary number is padded with
+leading zeroes until its length is a muliple of four bits, and then it is
+broken into groups of four bits. Each group is prefixed by a 1 bit except 
+the last group, which is prefixed by a 0 bit. These groups of fice bits
+immediately follow the packet header. For example, the hexadecimal string
+D2FE28 becomes:       
+
+----------------
+
+Dijkstra's Algorithm
+
+Dijkstra's shortest path algorithm was invented in 1956 by the Dutch computer scientist
+Edsget W. Dijkstra during a twenty minutes coffee break, while out shopping with hist
+finanee in Amsterdam.
+
+The reason for inventing the algorithm was to test a new computer called ARMAC.
+
+Dijkstra's Algorithm finds the shortest path from one vertex to all other vertices.
+It does so by repeatedly selecting the nearest unvisited vertex and calculating the
+distance to all the unvisited neighboring vetices.
+
+Dijkstra's algorithm is often considered to be the most straightforward algorithm for
+solving the shortest path problem.
+Dijkstra's algorithm is used for solving single-source shortest problems for
+directed or undirected paths. Single-source means that one vertex is chosen to be
+the start, and the algorithm will find the shortest path from that vertext to all
+other vertices.
+
+Dijkstra's algorithm does not work for graphs with negative edges. For graphs with
+negative edges, the Bellman-Fort algorithm that is described on the next page, can
+be used instead.
+
+To find the shortest path, Dijkstra's algorithm needs to know vertex is the source, 
+it needs a way to mark vetices as visited, and it needs an overview of the
+current shortest distance to each vertex as it works its way throught the graph,
+updating these distances when a shorter distance is found
+
+How it works:
+
+1. Set initial distances for all vertices: 0 for the source vertex, and infinity for all
+   the other.
+2. Choose the unvisited vertex with the shortest distance from the start to be the
+   current vertex. So the algorithm will always start with the source as the current
+   vertex.
+3. For each of the current vertex's unvisited neighbor vertices, calculate the
+   distance from the source and update the distance if the new, calculated, distance
+   is lower.
+4. We are now done with the current vertex, so we mark it as visited. A visited vertex
+   is not checked again.
+5. Go back to step 2 to choose a new current vertex, and keep repeating these steps
+   until all vertices are visited.
+6. In the env we are left with the shortest path from the source vetex to every other
+   vertex in the graph.
+
+Dijkstra Algorithm in Wikipedia
+
+Let us choose a starting node, and let the distance of node N be the distance from the
+starting node to N. Dijkstra's algorithm will initially start with infinite distance and
+will try to improve them step by step.
+
+1. Mark all nodes as unvisited. Create a set of all the unvisited nodes called the
+   unvisited set.
+2. Assign to every node a distance from start value: for the starting node, it is zero,
+   and for all other nodes, it is infinity, since initially no path is known to these nodes.
+   During execution of the algorithm, the distance of a node N is the length of the
+   shortest path discovered so far between the starting node and N.
+3. From the unvisited set, select the current node to be the one with the smallest
+   finite distance; initially, this will be the starting node, which has distance zero.
+   If the unvisited set is empty, or contains only nodes with infinite distance (which
+   are unreachable), then the algorithm terminates by doing to step 6. If we are only
+   concerned about the path to a target node, we may terminate here if the current
+   node is the target node. Otherwise, we cna continue to find the shortest paths to
+   all reachable nodes.
+4. For the current node, consider all of its unvisited neighbors and update their
+   distances through the current node; compared the newly calculated distance to the
+   currently assigned to the neighbor and assign it the smaller one. For example, if
+   the current node A is marked with a distance of 6, and the edge connecting it with
+   its neighbor B has length 2, then the distance to B through A is 6 + 2= 8. If B was
+   previously marked with a distance greater than 8, then update it to 8 (the path to
+   B through A is shorter). Otherwise, keep its current distance (the path to B through
+   A is not the shortest).
+5. When we are done considering all of the unvisited neighbors of the current node,
+   mark the current node as visited and remove it from the unvisited set. This is
+   so that a visited node is never checked again, which is correct because the
+   distance recorded on the current node is minimal (as ensured in step 3), and thus
+   final. Go back to step 3.
+6. Once the loop exits (step 3-5), every visited node will contain its shortest distance
+   from the starting node.
+
+1. 모든 노드를 방문하지 않은 것으로 표시 합니다. 방문하지 않은 모든 노드의 집합을 생성하여 방문하지 않은 집합
+   이라고 합니다.
+2. 모든 노드에 시작 값으로 부터의 거리를 할당 합니다. 시작 노드의 겨우 이 값은 0이고 다른 모든 노드의 경우
+   이 값은 무한대 입니다. 처음에는 이러한 노드로 가능 경로가 알려져 있지 않기 때문입니다. 알고리즘을 실행하는
+   동안 노드 N의 거리 N은 시작노드와 N사이에서 지금까지 발견된 가장 짧은 경로의 길이 입니다.
+3. 방문하지 않은 집합에서 현재 노드를 가장 작은 유한거리를 가진 노드만 포함하는 경우 (도달 할 수 없는 노드)
+   알고리즘은 6단계로 이동하여 종료합니다. 대상 노드로 가능 결로만 고려하는 경우 현재 노드가 대상 노드인 경우
+   여기에서 졸료 할 수 있습니다. 그렇지 않은 경우 도달 가능한 모든 노드로 가는 가장 짧은 경로를 계속 찾을 수
+   있습니다.
+4. 현재 노드의 경우 방문하지 않은 모든 이웃을 고려하여 현재 노드를 통한 거리를 업데이트 합니다. 새로 계산된
+   거리를 현재 이웃에 할당된 거리와 비교하여 더 작은 거리를 할당합니다. 예를 들, 현재 노드 A가 거리 6으로
+   표시되고 이웃 B와 연결하는 에지의 길이가 2인 경우 A를 통한 B가지의 거리는 6 + 2 = 8 입니다.
+   
