@@ -740,6 +740,7 @@ fn display_occurrence_count(key_occur_count_map: &HashMap<char, u64>) {
 // step_limit = 40;
 
 //==============================================================================
+#[allow(dead_code)]
 fn apply_insertion_rules_all(
     polymer_template: &Vec<char>,
     insertion_rules: &HashMap<String, char>,
@@ -858,6 +859,7 @@ fn get_insertion_value_max_min_difference(polymer_template: &Vec<char>, step_cou
     diff
 }
 
+#[allow(dead_code)]
 fn count_insertion_key_occurrences(key_occur_count_map: &HashMap<String, u32>, step_count: i32) {
     //-- key occurrence count
     info!(

@@ -1,4 +1,5 @@
 // advent/day_14.rs
+#[allow(unused_imports)]
 use log::{info, warn};
 use std::collections::HashMap;
 use std::fs::File;
@@ -225,6 +226,7 @@ fn get_insertion_value_max_min_difference(polymer_template: &Vec<char>, step_cou
     diff
 }
 
+#[allow(dead_code)]
 fn count_insertion_key_occurrences(key_occur_count_map: &HashMap<String, u32>, step_count: i32) {
     //-- key occurrence count
     info!(

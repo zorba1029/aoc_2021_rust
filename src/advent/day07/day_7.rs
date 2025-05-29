@@ -41,6 +41,7 @@ fn handle_input(filename: &str) -> Vec<u32> {
     horizontal_positions
 }
 
+#[allow(dead_code)]
 fn get_distance_list_1(horizontal_positions: &Vec<u32>) -> Vec<i32> {
     let mut distance_list = Vec::new();
     for i in 0..horizontal_positions.len() {
@@ -53,6 +54,7 @@ fn get_distance_list_1(horizontal_positions: &Vec<u32>) -> Vec<i32> {
     distance_list
 }
 
+#[allow(dead_code)]
 fn get_distance_list_2(horizontal_positions: &Vec<u32>) -> Vec<i32> {
     let mut distance_list = Vec::new();
     for i in 0..horizontal_positions.len() {
@@ -67,6 +69,7 @@ fn get_distance_list_2(horizontal_positions: &Vec<u32>) -> Vec<i32> {
     distance_list
 }
 
+#[allow(dead_code)]
 fn get_distance_list_2_b(horizontal_positions: &Vec<u32>) -> Vec<i32> {
     let mut distance_list = Vec::new();
     for i in 0..horizontal_positions.len() {

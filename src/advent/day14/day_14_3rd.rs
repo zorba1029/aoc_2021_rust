@@ -1,5 +1,5 @@
 // advent/day_14.rs
-use log::{info, warn};
+use log::info;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::prelude::*;
@@ -161,7 +161,7 @@ fn apply_insertion_rules_once(
         );
         let mut new_template = Vec::new();
 
-        let mut i = (p_index * partition_size);
+        let mut i = p_index * partition_size;
         while i < (p_index * partition_size + partition_size) {
             if i >= current_template_len - 1 {
                 break;
@@ -194,7 +194,7 @@ fn apply_insertion_rules_once(
 
         let max_min =
             get_insertion_value_max_min_difference(&new_template, &mut counter_map, total_step);
-        diff_vec[current_step as usize] += (max_min.0 - max_min.1);
+        diff_vec[current_step as usize] += max_min.0 - max_min.1;
 
         let mut new_temp = Vec::new();
         apply_insertion_rules_once(
@@ -219,7 +219,7 @@ fn apply_insertion_rules_once(
             residual_size
         );
 
-        let mut i = (partition_count * partition_size);
+        let mut i = partition_count * partition_size;
         while i < (partition_count * partition_size + residual_size - 1) {
             if i >= current_template_len - 1 {
                 break;
@@ -252,7 +252,7 @@ fn apply_insertion_rules_once(
         // let diff: u64 = get_insertion_value_max_min_difference(&new_template, &mut counter_map, total_step);
         let max_min =
             get_insertion_value_max_min_difference(&new_template, &mut counter_map, current_step);
-        diff_vec[current_step as usize] += (max_min.0 - max_min.1);
+        diff_vec[current_step as usize] += max_min.0 - max_min.1;
         info!(
             " FINAL  RETURN [{}] |- DIFF_VEC: {:?}",
             current_step + 1,
@@ -296,7 +296,7 @@ fn get_insertion_value_max_min_difference(
     });
 
     // info!("  |{}|-> counter_map list --, polymer_template |len|-> {}", step_count, polymer_template.len());
-    let mut format_str = format!("");
+    // let mut format_str = format!("");
     let mut max_item = (' ', u64::MIN);
     let mut min_item = (' ', u64::MAX);
     let mut sorted_map: Vec<_> = counter_map.into_iter().collect();
@@ -324,6 +324,7 @@ fn get_insertion_value_max_min_difference(
     (max_item.1, min_item.1, diff)
 }
 
+#[allow(dead_code)]
 fn count_insertion_key_occurrences(key_occur_count_map: &HashMap<String, u32>, step_count: i32) {
     //-- key occurrence count
     info!(

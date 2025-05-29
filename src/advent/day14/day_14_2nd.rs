@@ -1,6 +1,7 @@
 // advent/day_14.rs
-use log::{info, warn};
-use std::collections::{HashMap, VecDeque};
+use log::info;
+use std::collections::HashMap;
+// use std::collections::VecDeque;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
@@ -398,7 +399,7 @@ fn check_occurrence_recursive(
 // }
 
 fn display_pair_insertion_rules(
-    insertion_rules: &HashMap<String, char>,
+    _insertion_rules: &HashMap<String, char>,
     expand_rules: &HashMap<String, Vec<String>>,
 ) {
     // info!("-------- Pair Insertion Rules --------------------");

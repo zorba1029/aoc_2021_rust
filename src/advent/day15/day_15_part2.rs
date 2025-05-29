@@ -37,6 +37,7 @@ fn handle_input(filename: &str) -> Vec<Vec<usize>> {
     input_lines
 }
 
+#[allow(dead_code)]
 fn display_map_data(data_map: &HashMap<(i32, i32), usize>, msg: &str, len: i32) {
     debug!("---- 🍏🍒 {} 🍏🍒----", msg);
     for row in 0..len {
@@ -253,6 +254,7 @@ fn dijkstra_search(
     *dist.get(&dest_node).unwrap()
 }
 
+#[allow(dead_code)]
 fn display_shortest_path(
     prev: &HashMap<(i32, i32), Option<(i32, i32)>>,
     dist: &HashMap<(i32, i32), usize>,

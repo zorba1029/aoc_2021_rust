@@ -127,7 +127,7 @@ fn day_8_part_two() {
     // println!("output_value (count of 1, 4, 7, 8 digits): {:?}", output_value);
     let bitmap_template = make_bitmap_template();
 
-    let mut total_sum: i32 = 0;
+    // let mut total_sum: i32 = 0;
     let mut output_number_list = Vec::new();
     // input_lines.iter().skip(7).take(3).enumerate()
     input_lines
@@ -233,7 +233,7 @@ fn day_8_part_two() {
             println!("-----------------------------------------------");
         });
 
-    total_sum = output_number_list.iter().fold(0, |acc, v| acc + v);
+    let total_sum = output_number_list.iter().fold(0, |acc, v| acc + v);
     println!(
         "[**] total_sum: {} (lines: {})",
         total_sum,
@@ -257,6 +257,7 @@ fn day_8_part_two() {
 fn make_digit_template(left: &Vec<String>) -> Vec<char> {
     // A B C D E F G
     // 0 1 2 3 4 5 6
+    #[allow(non_snake_case)]
     let (A, B, C, D, E, F, G) = (0, 1, 2, 3, 4, 5, 6);
     let mut digit_template = [' '; 7];
 
@@ -417,32 +418,32 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
 }
 
 fn make_bitmap_template() -> Vec<u8> {
-    let mut zero = 0x00;
-    let mut one = 0x00;
-    let mut two = 0x00;
-    let mut three = 0x00;
-    let mut four = 0x00;
-    let mut five = 0x00;
-    let mut six = 0x00;
-    let mut seven = 0x00;
-    let mut eight = 0x00;
-    let mut nine = 0x00;
+    // let mut zero = 0x00;
+    // let mut one = 0x00;
+    // let mut two = 0x00;
+    // let mut three = 0x00;
+    // let mut four = 0x00;
+    // let mut five = 0x00;
+    // let mut six = 0x00;
+    // let mut seven = 0x00;
+    // let mut eight = 0x00;
+    // let mut nine = 0x00;
 
-    one = 0b00010010u8;
-    four = 0b0111010u8;
-    seven = 0b01010010u8;
+    let one = 0b00010010u8;
+    let four = 0b0111010u8;
+    let seven = 0b01010010u8;
 
     //-- 5 chars: 2, 3, 5
-    two = 0b01011101u8;
-    three = 0b01011011u8;
-    five = 0b01101011u8;
+    let two = 0b01011101u8;
+    let three = 0b01011011u8;
+    let five = 0b01101011u8;
 
     //-- 6 chars: 0, 6, 9
-    zero = 0b01110111u8;
-    six = 0b01101111u8;
-    nine = 0b01111011u8;
+    let zero = 0b01110111u8;
+    let six = 0b01101111u8;
+    let nine = 0b01111011u8;
 
-    eight = 0b01111111u8;
+    let eight = 0b01111111u8;
 
     let bitmap_template: Vec<u8> = vec![zero, one, two, three, four, five, six, seven, eight, nine];
 

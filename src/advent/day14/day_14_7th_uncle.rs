@@ -107,7 +107,7 @@ fn run_loop(pair_list: &PairList, insertion_rules: &InsertionRules, loops: usize
     pair_list
 }
 
-fn get_counts_last_chars(pair_list: &PairList, first_char: char, last_char: char) -> usize {
+fn get_counts_last_chars(pair_list: &PairList, first_char: char, _last_char: char) -> usize {
     println!("--- Count (LAST chars) ---");
     let mut count: HashMap<char, usize> = HashMap::new();
     *count.entry(first_char).or_default() += 1;

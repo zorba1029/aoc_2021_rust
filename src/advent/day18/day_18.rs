@@ -1,9 +1,13 @@
 // advent/day_18.rs - part 1 and part 2
+#[allow(unused_imports)]
 use log::{debug, info};
+#[allow(unused_imports)]
 use std::cell::RefCell;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+#[allow(unused_imports)]
 use std::rc::Rc;
+#[allow(unused_imports)]
 use std::str::Chars;
 
 use crate::advent::day18::tokenizer::Token;

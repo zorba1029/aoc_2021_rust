@@ -208,7 +208,7 @@ fn day_4_part_two() {
     println!("-----------------------------------------");
     let mut bingo_board_log: Vec<usize> = Vec::new();
     let mut bingo_board_log_tuple: Vec<(usize, i32)> = Vec::new();
-    let mut find_bingo = false;
+    // let mut find_bingo = false;
     for draw_num in draw_numbers.iter() {
         for (board_index, board) in board_list.iter_mut().enumerate() {
             if bingo_board_log.contains(&board_index) {
@@ -219,7 +219,7 @@ fn day_4_part_two() {
                     board.set_mark(i, *draw_num);
                     match board.is_bingo_row_col() {
                         (true, _row_index) => {
-                            find_bingo = true;
+                            // find_bingo = true;
                             bingo_board_log.push(board_index);
                             bingo_board_log_tuple.push((board_index, *draw_num));
                         }

@@ -1,7 +1,7 @@
 // advent/day_13.rs
 // use std::collections::HashMap;
 // use std::collections::VecDeque;
-use log::{debug, info, warn};
+use log::{debug, info};
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
@@ -339,7 +339,7 @@ fn fold_page_all(
 
 // fold line: y, horizontal y=... lines
 // fn fold_up(xy_map: &mut Vec<Vec<u32>>, y: &u16, x_len: u16, y_len: u16) -> (u16, u16) {
-fn fold_up(xy_map: &mut [Vec<u32>], y: &u16, x_len: u16, y_len: u16) -> (u16, u16) {
+fn fold_up(xy_map: &mut [Vec<u32>], y: &u16, x_len: u16, _y_len: u16) -> (u16, u16) {
     for row_line in 0..(*y as usize) {
         for column in 0..(x_len as usize) {
             if xy_map[row_line + *y as usize + 1][column] == 1 {
@@ -353,7 +353,7 @@ fn fold_up(xy_map: &mut [Vec<u32>], y: &u16, x_len: u16, y_len: u16) -> (u16, u1
 
 // fold line: x, vertical x=... lines
 // fn fold_left(xy_map: &mut Vec<Vec<u32>>, x: &u16, x_len: u16, y_len: u16) -> (u16, u16)  {
-fn fold_left(xy_map: &mut [Vec<u32>], x: &u16, x_len: u16, y_len: u16) -> (u16, u16) {
+fn fold_left(xy_map: &mut [Vec<u32>], x: &u16, _x_len: u16, y_len: u16) -> (u16, u16) {
     for row_line in 0..(y_len as usize) {
         for column in 0..(*x as usize) {
             if xy_map[row_line][column + *x as usize + 1] == 1 {

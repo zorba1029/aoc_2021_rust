@@ -14,6 +14,7 @@ use std::io::BufReader;
 // shortest_value  = 714
 //-----------------------------
 
+
 pub fn day_15_part_one() {
     info!("===============================================");
     info!("--- Day 15: Chiton, Part One ---, ");
@@ -70,6 +71,7 @@ fn handle_input(filename: &str) -> Vec<Vec<usize>> {
     input_lines
 }
 
+#[allow(dead_code)]
 // fn display_input_data(input_lines: &Vec<Vec<usize>>) {
 fn display_input_data(input_lines: &[Vec<usize>]) {
     info!("---- 🍏🍒 Input Data 🍏🍒----");
@@ -83,6 +85,7 @@ fn display_input_data(input_lines: &[Vec<usize>]) {
     });
 }
 
+#[allow(dead_code)]
 fn display_map_data(data_map: &HashMap<(i32, i32), usize>, msg: &str, len: i32) {
     info!("---- 🍏🍒 {} 🍏🍒----", msg);
     for row in 0..len {
@@ -226,6 +229,7 @@ fn dijkstra_search_with_priority(
     *dist.get(&dest_node).unwrap()
 }
 
+#[allow(dead_code)]
 fn display_shortest_path(
     prev: &HashMap<(i32, i32), Option<(i32, i32)>>,
     dist: &HashMap<(i32, i32), usize>,

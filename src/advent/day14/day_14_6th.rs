@@ -1,5 +1,6 @@
 // advent/day_14_4th.rs
 use log::{debug, info};
+#[allow(unused_imports)]
 use std::collections::{hash_map, HashMap};
 use std::fs::File;
 use std::io::prelude::*;
@@ -234,7 +235,7 @@ fn run_task(
     insertion_rules: &InsertionRuleMap,
     step_limit: u32,
     first_char: char,
-    last_char: char,
+    _last_char: char,
 ) -> PolymerCounterMap {
     let mut polymer_counter = polymer_counter.clone();
 

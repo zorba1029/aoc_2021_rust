@@ -3,6 +3,7 @@ use lazy_static::lazy_static;
 use log::{info, warn};
 use regex::Regex;
 use std::collections::HashMap;
+#[allow(unused_imports)]
 use std::collections::VecDeque;
 use std::fs::File;
 use std::io::prelude::*;
@@ -309,6 +310,7 @@ impl PathMatrix {
 //     }
 // }
 
+#[allow(dead_code)]
 trait DFSAllPath {
     fn start_dfs_all(&mut self, name_to_index: &HashMap<String, i16>, path_count: &mut i16) -> i16;
     fn dfs_all(&mut self, src: usize, dest: usize, path_count: &mut i16) -> i16;
@@ -490,6 +492,7 @@ pub fn do_day_12() {
     day_12_part_two();
 }
 
+#[allow(dead_code)]
 fn day_12_part_one() {
     info!("===============================================");
     info!("---Day 12: Passage Pathing, Part One ---, 2/1/2022 (Feb, 1) ==> DONE");

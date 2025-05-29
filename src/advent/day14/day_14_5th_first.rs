@@ -1,5 +1,7 @@
 // advent/day_14_4th.rs
+#[allow(unused_imports)]
 use log::{debug, info};
+#[allow(unused_imports)]
 use std::collections::{hash_map, HashMap};
 use std::fs::File;
 use std::io::prelude::*;
@@ -201,11 +203,11 @@ fn day_14_part_one() {
 fn count_init_polymer_chars(
     polymer_template: &PolymerTemplateMap,
     key_occur_count_map: &mut HashMap<char, u64>,
-    first_char: char,
+    _first_char: char,
     last_char: char,
 ) {
     //-- init: count the occurrence of this input string (polymer_template itself)
-    for ((tuple), right) in polymer_template.iter() {
+    for (tuple, _right) in polymer_template.iter() {
         info!("[] input char: {:?}", tuple);
         *key_occur_count_map.entry(tuple.0).or_default() += 1;
     }
@@ -253,7 +255,7 @@ fn count_new_char_naive(
         info!("[STEP: {}] ========================", i);
         let mut new_polymer_template = polymer_template.clone();
 
-        for (j, (tuple, tuple_count)) in polymer_template.iter().enumerate() {
+        for (_j, (tuple, tuple_count)) in polymer_template.iter().enumerate() {
             info!(
                 "[{}] ===> input_pair: {:?}{:?} = {}",
                 i, tuple.0, tuple.1, tuple_count

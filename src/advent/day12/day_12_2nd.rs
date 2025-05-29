@@ -3,7 +3,7 @@ use lazy_static::lazy_static;
 use log::{info, warn};
 use regex::Regex;
 use std::collections::HashMap;
-use std::collections::VecDeque;
+// use std::collections::VecDeque;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
@@ -309,6 +309,7 @@ impl PathMatrix {
 //     }
 // }
 
+#[allow(dead_code)]
 trait DFSAllPath {
     fn start_dfs_all(&mut self, name_to_index: &HashMap<String, i16>, path_count: &mut u32) -> u32;
     fn dfs_all(&mut self, src: usize, dest: usize, path_count: &mut u32) -> u32;

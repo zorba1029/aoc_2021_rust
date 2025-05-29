@@ -42,6 +42,7 @@ fn handle_input(filename: &str) -> Vec<Vec<usize>> {
     input_lines
 }
 
+#[allow(dead_code)]
 fn display_map_data(data_map: &HashMap<(i32, i32), usize>, msg: &str) {
     info!("---- 🍏🍒 {} 🍏🍒----", msg);
     for (i, j) in data_map.keys() {
@@ -241,6 +242,7 @@ fn display_shortest_path(
     });
 }
 
+#[allow(dead_code)]
 fn dijkstra_search_oneshot(input_lines: &Vec<Vec<usize>>) -> usize {
     let mut dist: HashMap<(i32, i32), usize> = HashMap::new();
     let mut prev: HashMap<(i32, i32), Option<(i32, i32)>> = HashMap::new();
@@ -309,4 +311,5 @@ fn dijkstra_search_oneshot(input_lines: &Vec<Vec<usize>>) -> usize {
     *dist.get(&dest_node).unwrap()
 }
 
+#[allow(dead_code)]
 fn day_15_part_two() {}
