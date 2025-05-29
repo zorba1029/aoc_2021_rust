@@ -480,39 +480,11 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
 }
 
 fn make_bitmap_template() -> Vec<u8> {
-    //     //-- 2 chars
-    //     one = 0b00010010u8;
-    //     //-- 3 chars
-    //     four = 0b0111010u8;
-    //     //-- 4 chars
-    //     seven = 0b01010010u8;
-    //
-    //     //-- 5 chars: 2, 3, 5
-    //     two = 0b01011101u8;
-    //     three = 0b01011011u8;
-    //     five = 0b01101011u8;
-    //
-    //     //-- 6 chars: 0, 6, 9
-    //     zero = 0b01110111u8;
-    //     six = 0b01101111u8;
-    //     nine = 0b01111011u8;
-    //
-    //     //-- 0, 8
-    //     zero = 0b01110111u8;
-    //     eight = 0b01111111u8;
-    // let zero = 0b01110111u8;
-    // let one = 0b0111010u8;
-    // let two = 0b01011101u8;
-    // let three = 0b01011011u8;
-    // let four = 0b0111010u8;
-    // let five = 0b01101011u8;
-    // let six = 0b01101111u8;
-    // let seven = 0b01010010u8;
-    // let eight = 0b01111111u8;
-    // let nine = 0b01111011u8;
-
+    //-- 2 chars
     let one = 0b00010010u8;
+    //-- 3 chars
     let four = 0b0111010u8;
+    //-- 4 chars
     let seven = 0b01010010u8;
 
     //-- 5 chars: 2, 3, 5
@@ -525,6 +497,7 @@ fn make_bitmap_template() -> Vec<u8> {
     let six = 0b01101111u8;
     let nine = 0b01111011u8;
 
+    //-- 7 chars: 8
     let eight = 0b01111111u8;
 
     let bitmap_template: Vec<u8> = vec![zero, one, two, three, four, five, six, seven, eight, nine];
