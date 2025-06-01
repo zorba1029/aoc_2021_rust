@@ -227,9 +227,7 @@ fn select_corrupted_lines(chunks_table: Vec<Vec<char>>) -> (Vec<Vec<char>>, Vec<
     for (i, line) in chunks_table.iter().enumerate() {
         let mut stack: Vec<char> = vec![];
         // let mut corrupted = false;
-
         // println!(" [{}] line-len: {}, {:?}", i, line.len(), line);
-
         stack.push(*line.first().unwrap());
         for (j, in_ch) in line.iter().skip(1).enumerate() {
             // println!(" [{}][{}] B-stack: {:?}", i, j+1, stack);
@@ -467,7 +465,6 @@ fn make_completion_lines(incomplete_lines: Vec<Vec<char>>) -> Vec<Vec<char>> {
         let mut completion_stack: Vec<char> = vec![];
 
         // println!(" [{}] line-len: {}, {:?}", i, line.len(), line);
-
         stack.push(*line.first().unwrap());
         for (j, in_ch) in line.iter().skip(1).enumerate() {
             // println!(" [{}][{}] B-stack: {:?}", i, j+1, stack);

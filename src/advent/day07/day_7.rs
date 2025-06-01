@@ -140,7 +140,7 @@ fn day_7_part_one() {
         .map(|(i, &v)| (i, v))
         .unwrap();
    
-    println!( "total feul (min_distance): {}, min_position: {}", min_distance, min_position );
+    println!( "total fuel (min_distance): {}, min_position: {}", min_distance, min_position);
 
     // let min_fuel = horizontal_positions.iter()
     //     .map(|v| i32::abs(min_position as i32 - *v as i32))
@@ -222,7 +222,7 @@ fn day_7_part_two() {
         .map(|(i, &v)| (i, v))
         .unwrap();
 
-    println!( "total feul (min_distance): {}, min_position: {:?}", min_distance, min_position );
+    println!( "total fuel (min_distance): {}, min_position: {:?}", min_distance, min_position);
 
     // let min_fuel = horizontal_positions.iter()
     //     .map(|v| step_cost(i32::abs(min_position as i32 - *v as i32)))
