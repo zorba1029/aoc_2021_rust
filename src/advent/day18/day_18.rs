@@ -11,7 +11,7 @@ use std::rc::Rc;
 use std::str::Chars;
 
 use crate::advent::day18::tokenizer::Token;
-use crate::advent::day18::tree_handler::{parse_tokens, reduction, TreeNode, TreeNodePtr};
+use crate::advent::day18::tree_handler::{tree_to_list, parse_tokens, TreeNode, TreeNodePtr};
 
 use super::tokenizer::tokenize;
 
@@ -23,9 +23,13 @@ fn read_input(filename: &str) -> (Vec<String>, Vec<Vec<Token>>, Vec<Option<TreeN
         .map(|line| line.unwrap())
         .filter(|line| !line.trim_start().starts_with('#'))
         .collect::<Vec<String>>();
+    for (index, line) in input_lines.iter().enumerate() {
+        info!("[{}] input_lines : {:#?}", index, line);
+    }
+
     let tokens_matrix = input_lines
         .iter()
-        .map(|line| tokenize(&line))
+        .map(|line| tokenize(line))
         .collect::<Vec<Vec<Token>>>();
     let tree_list = tokens_matrix
         .iter()
@@ -37,49 +41,64 @@ fn read_input(filename: &str) -> (Vec<String>, Vec<Vec<Token>>, Vec<Option<TreeN
 fn handle_input(filename: &str) -> (Vec<String>, Vec<Vec<Token>>, Vec<Option<TreeNodePtr>>) {
     let (input_lines, tokens_matrix, tree_list) = read_input(filename);
 
-    for (index, tree) in tree_list.iter().enumerate() {
-        info!("[{}] input_lines : {:#?}", index, input_lines[index]);
-        info!(" [{}] tree: ---------------\n{:#?}", index, tree);
-    }
+    // for (index, tree) in tree_list.iter().enumerate() {
+    //     info!("[{}] input_lines : {:#?}", index, input_lines[index]);
+    //     debug!("[{}] tree: ---------------\n{:#?}", index, tree);
+    // }
 
     (input_lines, tokens_matrix, tree_list)
 }
+
+#[allow(dead_code)]
+fn print_tree(node: &TreeNode, depth: usize) {
+    let indent = "  ".repeat(depth);
+    
+    if let Some(value) = node.value {
+        debug!("{}Leaf: {}", indent, value);
+    } else {
+        debug!("{}Non-Leaf:", indent);
+        if let Some(ref left) = node.left_child {
+            print_tree(&left.borrow(), depth + 1);
+        }
+        if let Some(ref right) = node.right_child {
+            print_tree(&right.borrow(), depth + 1);
+        }
+    }
+}
+
 #[warn(dead_code)]
 pub fn do_day_18() {
     info!("===============================================");
     info!("--- Day 18: Snailfish, Part One ---, ");
     info!("===============================================");
-    let filename = "input/day_18-sample.txt";
+    let filename = "input/day_18-sample-1.txt";
+    // let filename = "input/day_18-sample-2.txt";
     // let filename = "input/day_18-input.txt";
     let (_, _, tree_list) = handle_input(filename);
 
-    // let new_tree = TreeNode::merge(tree_list[0].as_ref().unwrap().clone(), tree_list[1].as_ref().unwrap().clone());
-    // info!("new_tree: ---------------\n{:#?}", new_tree);
-    // let new_tree1 = TreeNode::merge_option(tree_list[0].clone(), tree_list[1].clone());
-    // info!("new_tree1: ---------------\n{:#?}", new_tree1);
+    // Add all numbers sequentially: first + second, then + third, etc.
+    if tree_list.is_empty() {
+        info!("No trees to process");
+        return;
+    }
 
-    // if let Some(root) = tree_list[0].as_ref() {
-    //     root.borrow().left_order_traversal(&mut |value| {
-    //         info!("{}, ", value);
-    //     });
-    // }
+    let mut result = tree_list[0].as_ref().unwrap().clone();
+    // debug!("tree[0] : {:#?}", result);
+    // debug!("tree[0] : ---------------");
+    // print_tree(&result.borrow(), 0);
 
-    // if let Some(root) = tree_list[0].as_ref() {
-    //     root.borrow().left_order_depth_first(&mut |value| {
-    //         info!("{}, ", value);
-    //     });
-    // }
+    for i in 1..tree_list.len() {
+        // info!("Adding tree[{}]...", i);
+        // debug!("tree[{}] : {:#?}", i, tree_list[i].as_ref().unwrap());
+        // debug!("tree[{}] : ---------------", i);
+        // print_tree(&tree_list[i].as_ref().unwrap().borrow(), 0);
+        result = TreeNode::add(result, tree_list[i].as_ref().unwrap().clone());
+    }
+    // info!("Final result: ---------------\n{:#?}", result);
 
-    let c = reduction(
-        tree_list[0].as_ref().unwrap().clone(),
-        tree_list[1].as_ref().unwrap().clone(),
-    );
-    info!("c: ---------------\n{:#?}", c);
+    // Calculate and print magnitude
+    let magnitude = result.borrow().magnitude();
+    info!("Magnitude of final result: {}", magnitude);
 
-    // let mut index = 0;
-    // if let Some(tree) = parse_tokens(&tokens, &mut index) {
-    //     println!("{:#?}", tree);
-    // } else {
-    //     println!("Failed to parse tokens into a tree.");
-    // }
+    info!("Final result as list: {}", tree_to_list(&result));
 }
