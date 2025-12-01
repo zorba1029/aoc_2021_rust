@@ -9,7 +9,7 @@ use aoc_2021_rust::advent::day18a;
 fn main() {
     pretty_env_logger::init();
 
-    day18a::day_18a::do_day_18a_part1();
+    day18a::day_18a::do_day_18a();
 }
 
 // run

@@ -1,1 +1,25 @@
+# Rust build artifacts
 /target
+
+# IDE / Editor
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Debug
+*.dSYM/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# Environment
+.env
+.env.local

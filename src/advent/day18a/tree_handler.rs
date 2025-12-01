@@ -209,3 +209,25 @@ pub(crate) fn parse_tokens(tokens: &[Token], index: &mut usize) -> Option<TreeNo
 pub(crate) fn tree_to_list(node: &TreeNodePtr) -> String {
     node.borrow().to_list_string()
 }
+
+// Deep copy of a tree (필수: add()가 원본 트리를 수정하므로)
+pub(crate) fn clone_tree(node: &TreeNodePtr) -> TreeNodePtr {
+    let borrowed = node.borrow();
+    
+    if let Some(value) = borrowed.value {
+        // 리프 노드: 새 노드 생성
+        TreeNode::new(Some(value))
+    } else {
+        // 내부 노드: 자식들을 재귀적으로 복제
+        let new_node = TreeNode::new(None);
+        
+        if let Some(ref left) = borrowed.left_child {
+            new_node.borrow_mut().left_child = Some(clone_tree(left));
+        }
+        if let Some(ref right) = borrowed.right_child {
+            new_node.borrow_mut().right_child = Some(clone_tree(right));
+        }
+        
+        new_node
+    }
+}
