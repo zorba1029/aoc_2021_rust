@@ -81,10 +81,6 @@ pub fn do_day_18a_part1() {
 }
 
 pub fn do_day_18a_part2() {
-    info!("===============================================");
-    info!("--- Day 18: Snailfish, Part Two ---, Dec 01, 2025");
-    info!("===============================================");
-    // let filename = "input/day_18-sample-1.txt";
     // let filename = "input/day_18-sample-2.txt";
     let filename = "input/day_18-input.txt";
     let (_input_lines, _tokens_matrix, tree_list) = handle_input(filename);
@@ -95,8 +91,8 @@ pub fn do_day_18a_part2() {
         return;
     }
 
-    let mut mag_list = Vec::new();
     let mut max_value = 0;
+    let mut max_index = (0, 0);
     for i in 0..tree_list.len() {
         for j in 0..tree_list.len() {
             if i == j { continue; }
@@ -107,11 +103,15 @@ pub fn do_day_18a_part2() {
             );
             let magnitude = sum.borrow().magnitude();
             debug!("Magnitude of sum[{},{}]: {}", i, j, magnitude);
-            mag_list.push(magnitude);
             max_value = max_value.max(magnitude);
+            if magnitude == max_value {
+                max_index = (i, j);
+            }
         }
     }
-    let max_magnitude = *mag_list.iter().max().unwrap();
-    info!("The largest magnitude: {} ({})", max_magnitude, max_value);
+    // let max_magnitude = *mag_list.iter().max().unwrap();
+    info!("The largest magnitude: {} (max_pair index=[{},{}])", max_value, max_index.0, max_index.1);
+    info!("The 1st of the max pair[{}] = {}", max_index.0, tree_to_list(tree_list[max_index.0].as_ref().unwrap()));
+    info!("The 2nd of the max pair[{}] = {}", max_index.1, tree_to_list(tree_list[max_index.1].as_ref().unwrap()));
     // Magnitude of sum[67,92]: 4763
 }
