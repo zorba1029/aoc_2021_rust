@@ -1,4 +1,4 @@
-// advent of code 2021 in RUST - Day 01
+// advent of code 2021 in RUST - Day 18
 use pretty_env_logger;
 
 #[allow(unused_imports)]

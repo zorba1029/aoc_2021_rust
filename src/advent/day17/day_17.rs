@@ -88,10 +88,7 @@ pub fn do_day_17() {
     // part 2: found_trajectories count = 3767
     info!("----------------------------------------");
     info!("part 1: highest y pos = {}", highest_y_pos);
-    info!(
-        "part 2: found trajectories count = {}",
-        found_trajectories_count
-    );
+    info!("part 2: found trajectories count = {}", found_trajectories_count);
     info!("----------------------------------------");
 }
 
@@ -154,13 +151,9 @@ fn compute_next_values(
         {
             debug!("FOUND [{}] -- [x_cur_init_vel, y_cur_init_vel] = ({},{}), **(x_vel, y_vel) = ({},{})", loop_count, x_cur_init_vel, y_cur_init_vel, x_vel, y_vel);
             debug!(
-                "      (x_pos, y_pos) = ({x_pos},{y_pos}) IN target_x=({:?}), target_y=({:?})",
-                target_x, target_y
-            );
+                "      (x_pos, y_pos) = ({x_pos},{y_pos}) IN target_x=({:?}), target_y=({:?})", target_x, target_y );
             debug!(
-                "      y_local_max_pos = {}, ({},{})",
-                y_local_max, x_of_y_local_max, y_local_max
-            );
+                "      y_local_max_pos = {}, ({},{})", y_local_max, x_of_y_local_max, y_local_max );
             return Some(y_local_max);
         }
 

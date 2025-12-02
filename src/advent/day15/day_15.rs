@@ -6,7 +6,9 @@ use crate::advent::day15::day_15_part2_faster_async;
 
 pub fn do_day_15() {
     do_day15_part_one();
-    do_day15_part_two();
+    // do_day15_part_two();
+    // do_day15_part_two_faster();
+    do_day15_part_two_faster_async();
 }
 
 pub fn do_day15_part_one() {

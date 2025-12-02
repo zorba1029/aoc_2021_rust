@@ -1,6 +1,6 @@
 use std::cell::RefCell;
 use std::rc::Rc;
-use log::debug;
+// use log::debug;
 use crate::advent::day18::tokenizer::Token;
 
 pub(crate) type TreeNodePtr = Rc<RefCell<TreeNode>>;
@@ -81,11 +81,11 @@ impl TreeNode {
     // -- always reference the root node and call the add() function which will 
     //call the reduce() function.
     pub(crate) fn add(left: TreeNodePtr, right: TreeNodePtr) -> TreeNodePtr {
-        debug!("add(): left = {}, right = {}", tree_to_list(&left), tree_to_list(&right));
+        // debug!("add(): left = {}, right = {}", tree_to_list(&left), tree_to_list(&right));
         let new_root = TreeNode::new(None); 
         new_root.borrow_mut().left_child = Some(left);
         new_root.borrow_mut().right_child = Some(right);
-        debug!("add(): new_root = {}", tree_to_list(&new_root));
+        // debug!("add(): new_root = {}", tree_to_list(&new_root));
         new_root.borrow_mut().reduce();
         new_root
     }
@@ -107,8 +107,8 @@ impl TreeNode {
     // DFS & left-first traversal
     // DFS 탐색: 항상 왼쪽 자식을 먼저 재귀적으로 방문한 뒤 오른쪽 자식을 탐색 (문제 요구사항)
     fn explode(&mut self, depth: usize) -> (bool, Option<i32>, Option<i32>) {
-        let indent = "  ".repeat(depth);
-        debug!("{}explode: depth = {}", indent, depth);
+        // let indent = "  ".repeat(depth);
+        // debug!("{}explode: depth = {}", indent, depth);
         // 리프 노드인 경우 처리
         if let Some(_value) = self.value {
             return (false, None, None);

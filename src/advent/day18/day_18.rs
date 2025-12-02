@@ -23,9 +23,6 @@ fn read_input(filename: &str) -> (Vec<String>, Vec<Vec<Token>>, Vec<Option<TreeN
         .map(|line| line.unwrap())
         .filter(|line| !line.trim_start().starts_with('#'))
         .collect::<Vec<String>>();
-    for (index, line) in input_lines.iter().enumerate() {
-        debug!("[{}] input_lines : {:#?}", index, line);
-    }
 
     let tokens_matrix = input_lines
         .iter()
@@ -41,7 +38,11 @@ fn read_input(filename: &str) -> (Vec<String>, Vec<Vec<Token>>, Vec<Option<TreeN
 
 fn handle_input(filename: &str) -> (Vec<String>, Vec<Vec<Token>>, Vec<Option<TreeNodePtr>>) {
     let (input_lines, tokens_matrix, tree_list) = read_input(filename);
-
+    
+    for (index, line) in input_lines.iter().enumerate() {
+        debug!("[{}] input_lines : {:#?}", index, line);
+    }
+    
     (input_lines, tokens_matrix, tree_list)
 }
 
@@ -110,7 +111,7 @@ pub fn do_day_18_part2() {
     // let filename = "input/day_18-sample-1.txt";
     // let filename = "input/day_18-sample-2.txt";
     let filename = "input/day_18-input.txt";
-    let (_input_lines, _tokens_matrix, tree_list) = handle_input(filename);
+    let (_input_lines, _, tree_list) = handle_input(filename);
 
     // Add all numbers sequentially: first + second, then + third, etc.
     if tree_list.is_empty() {

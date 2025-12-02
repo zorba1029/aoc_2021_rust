@@ -10,12 +10,12 @@ fn main() {
     pretty_env_logger::init();
 
     //-- Day 15: Chiton --
-    // day15::day_15::do_day_15();
+    day15::day_15::do_day_15();
     // day15::day_15::do_day15_part_one();
     // day15::day_15::do_day15_part_one_faster();
     // day15::day_15::do_day15_part_two();
     // day15::day_15::do_day15_part_two_faster();
-    day15::day_15::do_day15_part_two_faster_async();
+    // day15::day_15::do_day15_part_two_faster_async();
     // day15::day_15_uncle::do_day_15();
 }
 

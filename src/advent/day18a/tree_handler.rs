@@ -70,27 +70,28 @@ impl TreeNode {
                 return (true, Some(l), Some(r))
             }
         }
-
         // 2-2. node depth < 4 case
-        // 2-2-1. left child case
-        if let (true, l, r) = left_child.borrow_mut().explode(depth + 1) {
-            if let Some(r) = r {
-                // add the value of the right child to the leftmost leaf node of the right subtree
-                right_child.borrow_mut().add_leftmost(r);
+        else {
+            // 2-2-1. left child case
+            if let (true, l, r) = left_child.borrow_mut().explode(depth + 1) {
+                if let Some(r) = r {
+                    // add the value of the right child to the leftmost leaf node of the right subtree
+                    right_child.borrow_mut().add_leftmost(r);
+                }
+                return (true, l, None);
             }
-            return (true, l, None);
-        }
-
-        // 2-2-2. right child case
-        if let (true, l, r) = right_child.borrow_mut().explode(depth + 1) {
-            if let Some(l) = l {
-                // add the value of the left child to the rightmost leaf node of the left subtree
-                left_child.borrow_mut().add_rightmost(l);
+            
+            // 2-2-2. right child case
+            if let (true, l, r) = right_child.borrow_mut().explode(depth + 1) {
+                if let Some(l) = l {
+                    // add the value of the left child to the rightmost leaf node of the left subtree
+                    left_child.borrow_mut().add_rightmost(l);
+                }
+                return (true, None, r);
             }
-            return (true, None, r);
         }
-
-        // 3. no explode operation case
+            
+        // 2-3. no explode operation case
         (false, None, None)
     }
 

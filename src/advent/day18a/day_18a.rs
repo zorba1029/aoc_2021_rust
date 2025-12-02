@@ -20,10 +20,7 @@ fn handle_input(filename: &str) -> (Vec<String>, Vec<Vec<Token>>, Vec<Option<Tre
         .lines()
         .map(|line| line.unwrap())
         .collect::<Vec<String>>();
-    for (index, line) in input_lines.iter().enumerate() {
-        debug!("[{}] input_lines : {:#?}", index, line);
-    }
-
+    
     let tokens_matrix = input_lines.iter()
         .map(|line| tokenize(line))
         .collect::<Vec<Vec<Token>>>();
@@ -32,6 +29,9 @@ fn handle_input(filename: &str) -> (Vec<String>, Vec<Vec<Token>>, Vec<Option<Tre
         .map(|tokens| parse_tokens(tokens, &mut 0))
         .collect::<Vec<Option<TreeNodePtr>>>();
 
+    for (index, line) in input_lines.iter().enumerate() {
+        debug!("[{}] input_lines : {:#?}", index, line);
+    }
     for (index, tree) in tree_list.iter().enumerate() {
         debug!("[{}] tree : {:#?}", index, tree);
     }
@@ -81,6 +81,9 @@ pub fn do_day_18a_part1() {
 }
 
 pub fn do_day_18a_part2() {
+    info!("===============================================");
+    info!("--- Day 18: Snailfish, Part Two ---, Dec 01, 2025");
+    info!("===============================================");
     // let filename = "input/day_18-sample-2.txt";
     let filename = "input/day_18-input.txt";
     let (_input_lines, _tokens_matrix, tree_list) = handle_input(filename);

@@ -88,13 +88,13 @@ fn day_1_part_two() {
 
         let count = nums
             .windows(4)
-            .filter(|item| {
-                let part1 = item[0] + item[1] + item[2];
-                let part2 = item[1] + item[2] + item[3];
-                part1 < part2
-            })
+            // .filter(|item| {
+            //     let part1 = item[0] + item[1] + item[2];
+            //     let part2 = item[1] + item[2] + item[3];
+            //     part1 < part2
+            // })
             //--> same as the above filter: item[1] + item[2] are common in the two statements
-            // .filter(|item| item[0] < item[3])
+            .filter(|item| item[0] < item[3])
             .count();
 
         println!("part 2-A: total count = {}", count);
