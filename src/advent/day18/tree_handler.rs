@@ -115,14 +115,14 @@ impl TreeNode {
         }
 
         // 내부 노드인 경우 처리
-        let left = self.left_child.as_ref().unwrap();
-        let right = self.right_child.as_ref().unwrap();
+        let left_child = self.left_child.as_ref().unwrap();
+        let right_child = self.right_child.as_ref().unwrap();
 
         // 깊이가 4 이상인 경우 처리 - 실제 explode 발생 및 처리
         if depth >= 4 {
             // 왼쪽 자식과 오른쪽 자식의 값을 가져옴
-            let left_value = left.borrow().value;
-            let right_value = right.borrow().value;
+            let left_value = left_child.borrow().value;
+            let right_value = right_child.borrow().value;
 
             // 왼쪽 자식과 오른쪽 자식의 값이 모두 있는 경우 처리
             if let (Some(l), Some(r)) = (left_value, right_value) {
@@ -136,24 +136,25 @@ impl TreeNode {
                 return (true, Some(l), Some(r));
             }
         }
-
         // depth < 4 인 경우 재귀적으로 탐색 - 즉, 현재 level에서 다음 level로 (depth + 1) 이동
-        // 1. 왼쪽 자식을 먼저 재귀 호출
-        if let (true, l, r) = left.borrow_mut().explode(depth + 1) {
-            // 오른쪽 트리의 가장 왼쪽 숫자에 r을 더함
-            if let Some(r) = r {
-                right.borrow_mut().add_leftmost(r);
+        else {
+            // 1. 왼쪽 자식을 먼저 재귀 호출
+            if let (true, l, r) = left_child.borrow_mut().explode(depth + 1) {
+                // 오른쪽 트리의 가장 왼쪽 숫자에 r을 더함
+                if let Some(r) = r {
+                    right_child.borrow_mut().add_leftmost(r);
+                }
+                return (true, l, None);
             }
-            return (true, l, None);
-        }
 
-        // 2. 왼쪽에서 폭발 없으면 오른쪽 자식을 재귀 호출
-        if let (true, l, r) = right.borrow_mut().explode(depth + 1) {
-            // 왼쪽 트리의 가장 오른쪽 숫자에 l을 더함
-            if let Some(l) = l {
-                left.borrow_mut().add_rightmost(l);
+            // 2. 왼쪽에서 폭발 없으면 오른쪽 자식을 재귀 호출
+            if let (true, l, r) = right_child.borrow_mut().explode(depth + 1) {
+                // 왼쪽 트리의 가장 오른쪽 숫자에 l을 더함
+                if let Some(l) = l {
+                    left_child.borrow_mut().add_rightmost(l);
+                }
+                return (true, None, r);
             }
-            return (true, None, r);
         }
 
         (false, None, None)
