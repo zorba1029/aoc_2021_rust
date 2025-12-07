@@ -92,14 +92,14 @@ pub fn day_16_part_one() {
     info!("===============================================");
     info!("--- Day 16: Packet Decoder, Part One ---, ");
     info!("===============================================");
-    // let filename = "input/day_16-test-01.txt";
+    let filename = "input/day_16-test-01.txt";
     // let filename = "input/day_16-test-02.txt";
     // let filename = "input/day_16-test-03.txt";
     // let filename = "input/day_16-sample-01.txt";
     // let filename = "input/day_16-sample-02.txt";
     // let filename = "input/day_16-sample-03.txt";
     // let filename = "input/day_16-sample-04.txt";
-    let filename = "input/day_16-input.txt";
+    // let filename = "input/day_16-input.txt";
     let input_line = handle_input(filename);
     let input_len = input_line.len();
     info!(

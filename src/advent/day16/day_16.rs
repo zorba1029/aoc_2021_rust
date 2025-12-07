@@ -5,7 +5,7 @@ use crate::advent::day16::day_16_part2;
 #[warn(dead_code)]
 pub fn do_day_16() {
     do_day16_part_one();
-    do_day16_part_two();
+    // do_day16_part_two();
 }
 
 pub fn do_day16_part_one() {

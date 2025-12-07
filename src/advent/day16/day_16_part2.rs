@@ -492,6 +492,66 @@ fn handle_input(filename: &str) -> String {
     binary_line
 }
 
+//------------------------------
+//-- DEBUG: status display
+fn display_status_info(
+    input_slice: &str,
+    new_pos: usize,
+    version: u32,
+    type_id: u32,
+    packet_count: &u32,
+    operator_count: &u32,
+    literal_count: &u32,
+) {
+    match type_id {
+        4 => {
+            info!("");
+            info!("🍒 [DATA] 🍒  - [{}/{}]", literal_count, packet_count);
+            info!("|=============================================================");
+            info!(
+                "| [INPUT] = [{} {} ...] (6 chars...) ",
+                &input_slice[new_pos..new_pos + 3],
+                &input_slice[new_pos + 3..new_pos + 6],
+            );
+            info!("|-------------------------------------------------------------");
+            debug!(
+                "[ ] start_pos = {}, (remained) input_len = {}",
+                new_pos,
+                input_slice[new_pos..].len()
+            );
+        }
+        _ => {
+            info!("");
+            info!("🍏 [OPERATOR] 🍏 - [{}/{}]", operator_count, packet_count);
+            info!("|------------------------------------------------------------");
+            info!(
+                "| [INPUT] = [{} {} {} ...] (7 chars) ",
+                &input_slice[new_pos..new_pos + 3],
+                &input_slice[new_pos + 3..new_pos + 6],
+                &input_slice[new_pos + 6..new_pos + 7],
+            );
+            info!("|------------------------------------------------------------");
+            debug!(
+                "[ ] start_pos = {}, (remained) input_len = {}",
+                new_pos,
+                input_slice[new_pos..].len()
+            );
+        }
+    }
+    debug!(
+        "[VVV] VERSION = {}, |{}|, start_pos = ({})",
+        version,
+        &input_slice[new_pos..new_pos + 3],
+        new_pos
+    );
+    debug!(
+        "[TTT] TYPE_ID = {}, |{}|, start_pos = ({})",
+        type_id,
+        &input_slice[new_pos + 3..new_pos + 6],
+        new_pos + 3
+    );
+}
+
 pub fn day_16_part_two() {
     info!("===============================================");
     info!("--- Day 16: Packet Decoder, Part Two ---, ");
@@ -508,19 +568,15 @@ pub fn day_16_part_two() {
     let filename = "input/day_16-input.txt";
     let input_line = handle_input(filename);
     let input_len = input_line.len();
-    info!(
-        "input_line(binary format): len = {}, data = {:?}",
-        input_len, input_line
-    );
+    info!("input_line(binary format): len = {}, data = {:?}", input_len, input_line);
 
     let (version_accumul, final_eval_value) = parse_packets(&input_line);
     info!("[**] version all items = {:?}", version_accumul);
-    info!(
-        "[**] part-1: all versions sum = {}",
-        version_accumul.iter().sum::<u32>()
-    );
+    info!("[**] part-1: all versions sum = {}", version_accumul.iter().sum::<u32>());
     info!("[**] part-2: final evaluated value = {}", final_eval_value);
 }
+
+
 
 fn parse_packets(input_line: &str) -> (Vec<u32>, u128) {
     let input_slice = input_line;
@@ -528,68 +584,6 @@ fn parse_packets(input_line: &str) -> (Vec<u32>, u128) {
     let mut new_pos: usize = 0;
     let mut eval_rec_vec: Vec<OperationEvalRecord> = Vec::new();
     let (mut packet_count, mut operator_count, mut literal_count) = (1, 1, 1);
-
-    //------------------------------
-    //-- DEBUG: status display
-    fn display_status_info(
-        input_slice: &str,
-        new_pos: usize,
-        version: u32,
-        type_id: u32,
-        packet_count: &u32,
-        operator_count: &u32,
-        literal_count: &u32,
-    ) {
-        match type_id {
-            4 => {
-                info!("");
-                info!("🍒 [DATA] 🍒  - [{}/{}]", literal_count, packet_count);
-                info!("|=============================================================");
-                info!(
-                    "| [INPUT] = [{} {} ...] (6 chars...) ",
-                    &input_slice[new_pos..new_pos + 3],
-                    &input_slice[new_pos + 3..new_pos + 6],
-                );
-                info!("|-------------------------------------------------------------");
-                debug!(
-                    "[ ] start_pos = {}, (remained) input_len = {}",
-                    new_pos,
-                    input_slice[new_pos..].len()
-                );
-            }
-            _ => {
-                info!("");
-                info!("🍏 [OPERATOR] 🍏 - [{}/{}]", operator_count, packet_count);
-                info!("|------------------------------------------------------------");
-                info!(
-                    "| [INPUT] = [{} {} {} ...] (7 chars) ",
-                    &input_slice[new_pos..new_pos + 3],
-                    &input_slice[new_pos + 3..new_pos + 6],
-                    &input_slice[new_pos + 6..new_pos + 7],
-                );
-                info!("|------------------------------------------------------------");
-                debug!(
-                    "[ ] start_pos = {}, (remained) input_len = {}",
-                    new_pos,
-                    input_slice[new_pos..].len()
-                );
-            }
-        }
-        debug!(
-            "[VVV] VERSION = {}, |{}|, start_pos = ({})",
-            version,
-            &input_slice[new_pos..new_pos + 3],
-            new_pos
-        );
-        debug!(
-            "[TTT] TYPE_ID = {}, |{}|, start_pos = ({})",
-            type_id,
-            &input_slice[new_pos + 3..new_pos + 6],
-            new_pos + 3
-        );
-    }
-
-    //------------------------------------------------------------------------
 
     loop {
         let version = get_packet_version(input_slice, new_pos);

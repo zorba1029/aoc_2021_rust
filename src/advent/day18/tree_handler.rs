@@ -29,14 +29,14 @@ pub(crate) struct TreeNode {
 //-- 샘플 입력, 이 입력을 parse하여 생성한 트리구조 예시 --
 // 입력: [[1,2],3]
 // 출력:
-//           Root
-//        value: None
-//       /           \
-//    Node           Leaf
-//  value: None     value: 3
-//   /      \
-// Leaf    Leaf
-// value:1 value:2
+//            Root
+//         value: None
+//         /         \
+//       Node        Leaf
+//   value: None    value: 3
+//    /      \
+//  Leaf     Leaf
+// value:1  value:2
 
 // parse tokens and make a tree node.
 pub(crate) fn parse_tokens(tokens: &[Token], index: &mut usize) -> Option<TreeNodePtr> {
@@ -140,8 +140,10 @@ impl TreeNode {
         else {
             // 1. 왼쪽 자식을 먼저 재귀 호출
             if let (true, l, r) = left_child.borrow_mut().explode(depth + 1) {
-                // 오른쪽 트리의 가장 왼쪽 숫자에 r을 더함
+                // 오른쪽 형제 노드의 가장 왼쪽 숫자에 r을 더함
                 if let Some(r) = r {
+                    // the right_child is a sibling of the left_child, so we can add the value (r)
+                    // to the leftmost leaf node of the right child's subtree.
                     right_child.borrow_mut().add_leftmost(r);
                 }
                 return (true, l, None);
@@ -149,8 +151,10 @@ impl TreeNode {
 
             // 2. 왼쪽에서 폭발 없으면 오른쪽 자식을 재귀 호출
             if let (true, l, r) = right_child.borrow_mut().explode(depth + 1) {
-                // 왼쪽 트리의 가장 오른쪽 숫자에 l을 더함
+                // 왼쪽 형제 노드의 가장 오른쪽 숫자에 l을 더함
                 if let Some(l) = l {
+                    // the left_child is a sibling of the right_child, so we can add the value (l)
+                    // to the rightmost leaf node of the left child's subtree.
                     left_child.borrow_mut().add_rightmost(l);
                 }
                 return (true, None, r);
@@ -160,7 +164,8 @@ impl TreeNode {
         (false, None, None)
     }
 
-    // 트리의 가장 왼쪽 숫자에 value를 더함
+    // 트리 (현재 node)의 가장 왼쪽 숫자에 value를 더함 
+    // -- left most leaf node of the node
     fn add_leftmost(&mut self, value: i32) {
         // debug!("add_leftmost: value = {}", value);
         if let Some(v) = self.value.as_mut() {
@@ -170,7 +175,8 @@ impl TreeNode {
         }
     }
 
-    // 트리의 가장 오른쪽 숫자에 value를 더함
+    // 트리 (현재 node)의 가장 오른쪽 숫자에 value를 더함 
+    // -- right most leaf node of the node
     fn add_rightmost(&mut self, value: i32) {
         // debug!("add_rightmost: value = {}", value);
         if let Some(v) = self.value.as_mut() {

@@ -149,11 +149,10 @@ fn compute_next_values(
         if (target_x.0 <= x_pos && x_pos <= target_x.1)
             && (target_y.0 <= y_pos && y_pos <= target_y.1)
         {
-            debug!("FOUND [{}] -- [x_cur_init_vel, y_cur_init_vel] = ({},{}), **(x_vel, y_vel) = ({},{})", loop_count, x_cur_init_vel, y_cur_init_vel, x_vel, y_vel);
-            debug!(
-                "      (x_pos, y_pos) = ({x_pos},{y_pos}) IN target_x=({:?}), target_y=({:?})", target_x, target_y );
-            debug!(
-                "      y_local_max_pos = {}, ({},{})", y_local_max, x_of_y_local_max, y_local_max );
+            debug!("FOUND [{}] -- [x_cur_init_vel, y_cur_init_vel] = ({},{})", loop_count, x_cur_init_vel, y_cur_init_vel);
+            debug!("                              **(x_vel, y_vel) = ({},{})", x_vel, y_vel);
+            debug!("  (x_pos, y_pos) = ({x_pos},{y_pos}) IN target_x=({:?}), target_y=({:?})", target_x, target_y );
+            debug!("  y_local_max_pos = {}, ({},{})", y_local_max, x_of_y_local_max, y_local_max );
             return Some(y_local_max);
         }
 

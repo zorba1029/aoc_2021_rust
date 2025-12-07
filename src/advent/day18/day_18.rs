@@ -71,7 +71,7 @@ pub fn do_day_18() {
 
 pub fn do_day_18_part1() {
     info!("===============================================");
-    info!("--- Day 18: Snailfish, Part One ---, Nov 30, 2025 ");
+    info!("--- Day 18: Snailfish, Part One -  Nov 30, 2025");
     info!("===============================================");
     // let filename = "input/day_18-sample-1.txt";
     // let filename = "input/day_18-sample-2.txt";
@@ -106,7 +106,7 @@ pub fn do_day_18_part1() {
 
 pub fn do_day_18_part2() {
     info!("===============================================");
-    info!("--- Day 18: Snailfish, Part Two ---, Dec 01, 2025");
+    info!("--- Day 18: Snailfish, Part Two -  Dec 01, 2025");
     info!("===============================================");
     // let filename = "input/day_18-sample-1.txt";
     // let filename = "input/day_18-sample-2.txt";
