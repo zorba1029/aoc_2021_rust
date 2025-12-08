@@ -297,7 +297,7 @@ fn handle_input(filename: &str) -> Vec<Vec<u32>> {
             let energy_levels = line
                 .chars()
                 .into_iter()
-                .map(|c| c.to_string().parse::<u32>().unwrap())
+                .map(|c| c.to_digit(10).unwrap() as u32)
                 .collect::<Vec<_>>();
             info!("{:?}", energy_levels);
             energy_levels
@@ -685,3 +685,348 @@ fn update_energy_level_until_all(
 
     (target_level_table, false)
 }
+
+// INFO  aoc_2021_rust::advent::day11::day_11 > ===============================================
+// INFO  aoc_2021_rust::advent::day11::day_11 > --- Day 11: Dumbo Octopus, Part One ---, 1/23/2022 ==> DONE
+// INFO  aoc_2021_rust::advent::day11::day_11 > ===============================================
+// INFO  aoc_2021_rust::advent::day11::day_11 > [*] Input Filename: input/day_11-input.txt
+// INFO  aoc_2021_rust::advent::day11::day_11 > [*] input lines count = 10
+// INFO  aoc_2021_rust::advent::day11::day_11 > [ ] First Line: len=10, 5723573158,
+// INFO  aoc_2021_rust::advent::day11::day_11 > [5, 7, 2, 3, 5, 7, 3, 1, 5, 8]
+// INFO  aoc_2021_rust::advent::day11::day_11 > [3, 1, 5, 4, 7, 4, 8, 5, 6, 3]
+// INFO  aoc_2021_rust::advent::day11::day_11 > [4, 7, 8, 3, 5, 1, 4, 8, 7, 8]
+// INFO  aoc_2021_rust::advent::day11::day_11 > [3, 8, 4, 8, 1, 4, 2, 3, 7, 5]
+// INFO  aoc_2021_rust::advent::day11::day_11 > [3, 6, 3, 7, 7, 2, 4, 1, 5, 1]
+// INFO  aoc_2021_rust::advent::day11::day_11 > [8, 5, 8, 3, 1, 7, 2, 4, 8, 4]
+// INFO  aoc_2021_rust::advent::day11::day_11 > [7, 7, 4, 7, 4, 4, 4, 1, 8, 4]
+// INFO  aoc_2021_rust::advent::day11::day_11 > [1, 6, 1, 3, 3, 6, 7, 8, 8, 2]
+// INFO  aoc_2021_rust::advent::day11::day_11 > [6, 2, 2, 8, 6, 1, 4, 2, 2, 7]
+// INFO  aoc_2021_rust::advent::day11::day_11 > [4, 7, 3, 2, 2, 2, 5, 3, 3, 4]
+// INFO  aoc_2021_rust::advent::day11::day_11 > input_lines: 10
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[0] 🍏🍒 DISPLAY energy_level_table: After STEP[0] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  5 7 2 3 5 7 3 1 5 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  3 1 5 4 7 4 8 5 6 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  4 7 8 3 5 1 4 8 7 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  3 8 4 8 1 4 2 3 7 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  3 6 3 7 7 2 4 1 5 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  8 5 8 3 1 7 2 4 8 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  7 7 4 7 4 4 4 1 8 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  1 6 1 3 3 6 7 8 8 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  6 2 2 8 6 1 4 2 2 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  4 7 3 2 2 2 5 3 3 4
+// INFO  aoc_2021_rust::advent::day11::day_11 > [1]: ----->> ┣┓ UPDATE energy_level_table: step[1] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[1] 🍏🍒 DISPLAY energy_level_table: After STEP[1] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  6 8 3 4 6 8 4 2 6 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  4 2 6 5 8 5 9 6 7 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  5 8 9 4 6 2 5 9 8 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  4 9 5 9 2 5 3 4 8 6
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  4 7 4 8 8 3 5 2 6 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  9 6 9 4 2 8 3 5 9 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  8 8 5 8 5 5 5 2 9 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  2 7 2 4 4 7 8 9 9 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  7 3 3 9 7 2 5 3 3 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  5 8 4 3 3 3 6 4 4 5
+// INFO  aoc_2021_rust::advent::day11::day_11 > [2]: ----->> ┣┓ UPDATE energy_level_table: step[2] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[2] 🍏🍒 DISPLAY energy_level_table: After STEP[2] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  7 9 4 6 9 _ 8 7 _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  6 5 9 8 _ 9 _ _ _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  8 _ _ 9 9 5 9 _ _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  8 _ _ _ 6 7 5 9 _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  9 _ _ _ _ 6 7 6 _ 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  _ _ _ _ 8 _ 5 9 _ 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  _ _ _ _ 9 8 9 8 _ 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  6 _ 8 8 7 9 _ _ _ 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  9 5 6 _ 9 4 8 7 7 _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  6 9 6 5 5 4 7 5 6 7
+// INFO  aoc_2021_rust::advent::day11::day_11 > [3]: ----->> ┣┓ UPDATE energy_level_table: step[3] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[3] 🍏🍒 DISPLAY energy_level_table: After STEP[3] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  9 _ 9 _ _ 4 _ 9 1 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  9 9 _ _ 8 _ 5 3 1 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  _ 4 4 _ _ _ _ 4 2 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  _ 4 2 4 _ _ _ _ 3 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  _ 3 1 3 5 _ _ _ 5 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  2 2 1 3 _ 8 _ _ 6 _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  1 2 3 6 _ _ _ _ 5 _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  9 5 _ _ _ _ 6 4 3 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  _ _ _ 7 _ 9 _ 9 8 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  _ _ _ 9 7 7 9 7 7 8
+// INFO  aoc_2021_rust::advent::day11::day_11 > [4]: ----->> ┣┓ UPDATE energy_level_table: step[4] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[4] 🍏🍒 DISPLAY energy_level_table: After STEP[4] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  _ 5 _ 2 1 5 2 _ 3 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  _ _ 3 2 9 1 7 5 3 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  3 7 6 1 1 1 1 5 3 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  1 5 3 5 1 1 1 1 5 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  1 4 2 4 6 1 1 1 7 _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  3 3 2 4 1 9 1 1 8 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  3 4 4 7 1 1 1 1 7 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  _ 7 2 2 3 2 9 7 7 _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  2 2 3 _ 6 _ 6 _ _ 6
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  1 1 3 _ _ _ _ _ _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 > [5]: ----->> ┣┓ UPDATE energy_level_table: step[5] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[5] 🍏🍒 DISPLAY energy_level_table: After STEP[5] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  1 6 1 4 3 7 3 1 4 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  1 1 4 4 _ 3 8 6 4 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  4 8 7 3 3 3 2 6 4 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  2 6 4 6 2 2 2 2 6 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  2 5 3 5 8 3 3 2 8 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  4 4 3 5 3 _ 3 2 9 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  4 5 5 8 3 4 4 3 8 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  1 8 3 3 4 4 _ 9 8 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  3 3 4 1 7 2 8 2 1 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  2 2 4 1 1 1 1 1 1 1
+// INFO  aoc_2021_rust::advent::day11::day_11 > [6]: ----->> ┣┓ UPDATE energy_level_table: step[6] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[6] 🍏🍒 DISPLAY energy_level_table: After STEP[6] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  2 7 2 5 4 8 4 2 5 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  2 2 5 5 1 4 9 7 5 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  5 9 8 4 4 4 3 7 5 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  3 7 5 7 3 3 3 4 8 6
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  3 6 4 6 9 4 4 5 _ 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  5 5 4 6 4 1 4 6 _ 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  5 6 6 9 4 5 6 8 _ 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  2 9 4 4 5 6 3 _ _ 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  4 4 5 2 8 4 _ 6 4 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  3 3 5 2 2 3 3 3 2 2
+// INFO  aoc_2021_rust::advent::day11::day_11 > [7]: ----->> ┣┓ UPDATE energy_level_table: step[7] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[7] 🍏🍒 DISPLAY energy_level_table: After STEP[7] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  3 8 3 6 6 _ 7 4 6 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  4 5 8 7 3 7 _ 9 6 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  8 _ _ 8 6 6 5 9 6 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  7 _ _ _ 7 5 4 5 9 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  7 _ _ _ _ 6 5 6 1 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  9 _ _ _ 9 3 5 7 1 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  9 _ _ _ 7 6 7 9 1 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  5 _ 9 7 7 7 4 1 2 6
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  6 6 7 3 9 5 1 7 6 _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  4 4 6 3 3 4 4 4 4 4
+// INFO  aoc_2021_rust::advent::day11::day_11 > [8]: ----->> ┣┓ UPDATE energy_level_table: step[8] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[8] 🍏🍒 DISPLAY energy_level_table: After STEP[8] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  5 _ 7 9 9 3 _ 8 9 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  6 8 _ _ 9 _ 7 _ _ 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  9 2 4 _ _ _ _ _ _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  8 1 2 4 _ _ _ _ _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  9 2 1 3 6 _ _ _ 7 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  _ 3 1 3 _ _ _ _ 5 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  _ 4 3 6 _ _ _ _ 4 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  7 4 _ _ _ _ 9 4 4 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  7 9 _ 9 _ 9 3 8 7 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  5 6 8 6 5 6 5 5 5 5
+// INFO  aoc_2021_rust::advent::day11::day_11 > [9]: ----->> ┣┓ UPDATE energy_level_table: step[9] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[9] 🍏🍒 DISPLAY energy_level_table: After STEP[9] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  7 3 _ _ _ 6 2 _ _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  9 _ 4 5 _ 3 9 3 5 _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  _ 6 6 2 2 2 1 1 2 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  _ 5 3 5 1 1 1 2 3 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  _ 5 2 4 7 1 1 3 _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  2 5 2 4 1 1 1 3 _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  1 5 4 7 1 2 2 3 8 _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  9 6 3 2 3 3 _ 7 7 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  9 _ 4 _ 3 _ 7 _ 9 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  7 9 _ 9 8 8 8 7 7 6
+// INFO  aoc_2021_rust::advent::day11::day_11 > [10]: ----->> ┣┓ UPDATE energy_level_table: step[10] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[10] 🍏🍒 DISPLAY energy_level_table: After STEP[10] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  9 5 1 1 1 8 4 2 1 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  _ 2 5 6 1 5 _ 5 6 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  2 8 7 3 3 4 3 3 3 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  1 6 4 6 2 2 2 3 4 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  1 6 3 5 8 2 2 4 1 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  3 6 3 5 2 2 2 5 2 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  3 7 5 8 2 3 4 7 _ 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  _ 9 4 3 4 5 3 _ _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  _ 5 7 3 7 5 _ 8 _ 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  _ _ 3 _ _ _ _ _ _ 9
+// INFO  aoc_2021_rust::advent::day11::day_11 > [11]: ----->> ┣┓ UPDATE energy_level_table: step[11] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [12]: ----->> ┣┓ UPDATE energy_level_table: step[12] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [13]: ----->> ┣┓ UPDATE energy_level_table: step[13] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [14]: ----->> ┣┓ UPDATE energy_level_table: step[14] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [15]: ----->> ┣┓ UPDATE energy_level_table: step[15] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [16]: ----->> ┣┓ UPDATE energy_level_table: step[16] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [17]: ----->> ┣┓ UPDATE energy_level_table: step[17] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [18]: ----->> ┣┓ UPDATE energy_level_table: step[18] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [19]: ----->> ┣┓ UPDATE energy_level_table: step[19] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [20]: ----->> ┣┓ UPDATE energy_level_table: step[20] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[20] 🍏🍒 DISPLAY energy_level_table: After STEP[20] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  4 2 9 8 9 7 _ _ 7 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  9 4 4 5 4 _ _ _ _ 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  8 3 3 6 _ _ _ _ _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  8 3 3 5 _ _ _ _ _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  9 4 3 5 8 _ _ _ _ 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  1 5 3 5 3 4 5 6 5 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  2 7 5 7 2 2 3 5 _ 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  _ 2 6 2 2 2 3 _ _ 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  6 8 9 3 2 2 3 9 _ 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  4 5 1 7 7 7 6 6 7 3
+// INFO  aoc_2021_rust::advent::day11::day_11 > [21]: ----->> ┣┓ UPDATE energy_level_table: step[21] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [22]: ----->> ┣┓ UPDATE energy_level_table: step[22] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [23]: ----->> ┣┓ UPDATE energy_level_table: step[23] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [24]: ----->> ┣┓ UPDATE energy_level_table: step[24] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [25]: ----->> ┣┓ UPDATE energy_level_table: step[25] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [26]: ----->> ┣┓ UPDATE energy_level_table: step[26] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [27]: ----->> ┣┓ UPDATE energy_level_table: step[27] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [28]: ----->> ┣┓ UPDATE energy_level_table: step[28] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [29]: ----->> ┣┓ UPDATE energy_level_table: step[29] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [30]: ----->> ┣┓ UPDATE energy_level_table: step[30] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[30] 🍏🍒 DISPLAY energy_level_table: After STEP[30] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  9 _ 4 3 3 3 5 5 _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  4 4 4 3 3 7 5 5 7 _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  3 3 3 3 8 5 4 4 5 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  3 3 3 3 8 5 4 4 5 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  3 3 3 4 5 8 7 7 8 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  9 3 3 5 2 2 2 2 6 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  8 3 4 7 2 2 3 4 4 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  9 6 7 3 2 2 4 1 2 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  1 1 1 4 2 2 4 1 2 _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  1 1 1 4 2 2 3 4 5 9
+// INFO  aoc_2021_rust::advent::day11::day_11 > [31]: ----->> ┣┓ UPDATE energy_level_table: step[31] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [32]: ----->> ┣┓ UPDATE energy_level_table: step[32] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [33]: ----->> ┣┓ UPDATE energy_level_table: step[33] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [34]: ----->> ┣┓ UPDATE energy_level_table: step[34] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [35]: ----->> ┣┓ UPDATE energy_level_table: step[35] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [36]: ----->> ┣┓ UPDATE energy_level_table: step[36] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [37]: ----->> ┣┓ UPDATE energy_level_table: step[37] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [38]: ----->> ┣┓ UPDATE energy_level_table: step[38] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [39]: ----->> ┣┓ UPDATE energy_level_table: step[39] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [40]: ----->> ┣┓ UPDATE energy_level_table: step[40] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[40] 🍏🍒 DISPLAY energy_level_table: After STEP[40] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  2 6 7 7 9 2 2 2 6 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  8 8 8 9 2 2 2 2 2 6
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  6 7 9 2 2 2 2 2 2 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  7 9 2 3 3 3 2 2 3 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  9 2 2 3 _ 3 2 3 5 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  5 2 2 9 5 5 3 3 1 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  4 5 6 8 _ _ 6 6 8 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  4 5 7 _ _ _ _ _ 5 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  7 2 5 _ _ _ _ _ _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  5 7 _ _ _ _ _ _ _ 5
+// INFO  aoc_2021_rust::advent::day11::day_11 > [41]: ----->> ┣┓ UPDATE energy_level_table: step[41] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [42]: ----->> ┣┓ UPDATE energy_level_table: step[42] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [43]: ----->> ┣┓ UPDATE energy_level_table: step[43] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [44]: ----->> ┣┓ UPDATE energy_level_table: step[44] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [45]: ----->> ┣┓ UPDATE energy_level_table: step[45] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [46]: ----->> ┣┓ UPDATE energy_level_table: step[46] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [47]: ----->> ┣┓ UPDATE energy_level_table: step[47] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [48]: ----->> ┣┓ UPDATE energy_level_table: step[48] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [49]: ----->> ┣┓ UPDATE energy_level_table: step[49] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [50]: ----->> ┣┓ UPDATE energy_level_table: step[50] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[50] 🍏🍒 DISPLAY energy_level_table: After STEP[50] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  8 2 2 3 5 _ 9 7 6 6
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  2 2 2 4 _ _ _ 9 7 6
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  2 2 2 5 _ _ _ _ 9 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  2 2 2 5 _ _ _ _ _ 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  3 3 3 6 7 _ _ _ _ 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  1 6 6 _ _ _ _ _ 5 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  1 3 _ _ _ _ 9 9 _ 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  2 4 _ _ _ 7 6 3 6 9
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  _ 5 8 _ 7 5 5 5 5 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  _ _ 8 6 5 4 4 4 4 8
+// INFO  aoc_2021_rust::advent::day11::day_11 > [51]: ----->> ┣┓ UPDATE energy_level_table: step[51] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [52]: ----->> ┣┓ UPDATE energy_level_table: step[52] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [53]: ----->> ┣┓ UPDATE energy_level_table: step[53] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [54]: ----->> ┣┓ UPDATE energy_level_table: step[54] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [55]: ----->> ┣┓ UPDATE energy_level_table: step[55] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [56]: ----->> ┣┓ UPDATE energy_level_table: step[56] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [57]: ----->> ┣┓ UPDATE energy_level_table: step[57] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [58]: ----->> ┣┓ UPDATE energy_level_table: step[58] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [59]: ----->> ┣┓ UPDATE energy_level_table: step[59] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [60]: ----->> ┣┓ UPDATE energy_level_table: step[60] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[60] 🍏🍒 DISPLAY energy_level_table: After STEP[60] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  1 6 5 6 8 5 2 2 2 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  6 6 6 8 5 5 7 2 2 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  5 6 8 3 6 4 5 7 2 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  6 8 3 3 8 5 4 5 8 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  7 3 4 5 6 7 5 4 7 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  8 4 6 _ _ _ 6 5 8 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  8 5 _ _ _ _ 9 8 4 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  9 5 _ _ _ 5 3 8 1 6
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  3 4 7 _ 5 3 2 4 6 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  3 3 5 3 3 2 2 3 1 1
+// INFO  aoc_2021_rust::advent::day11::day_11 > [61]: ----->> ┣┓ UPDATE energy_level_table: step[61] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [62]: ----->> ┣┓ UPDATE energy_level_table: step[62] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [63]: ----->> ┣┓ UPDATE energy_level_table: step[63] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [64]: ----->> ┣┓ UPDATE energy_level_table: step[64] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [65]: ----->> ┣┓ UPDATE energy_level_table: step[65] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [66]: ----->> ┣┓ UPDATE energy_level_table: step[66] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [67]: ----->> ┣┓ UPDATE energy_level_table: step[67] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [68]: ----->> ┣┓ UPDATE energy_level_table: step[68] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [69]: ----->> ┣┓ UPDATE energy_level_table: step[69] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [70]: ----->> ┣┓ UPDATE energy_level_table: step[70] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[70] 🍏🍒 DISPLAY energy_level_table: After STEP[70] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  7 1 1 1 1 3 8 6 5 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  1 1 1 1 5 3 2 8 6 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  1 1 1 5 3 2 2 2 8 6
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  1 1 5 3 2 2 2 2 3 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  1 5 4 4 5 4 3 3 5 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  6 4 5 _ _ _ 6 6 1 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  4 7 _ _ _ _ 5 2 1 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  4 7 _ _ _ _ _ 2 8 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  _ 8 _ _ _ _ 7 8 6 7
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  9 _ 6 _ _ _ _ _ 7 5
+// INFO  aoc_2021_rust::advent::day11::day_11 > [71]: ----->> ┣┓ UPDATE energy_level_table: step[71] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [72]: ----->> ┣┓ UPDATE energy_level_table: step[72] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [73]: ----->> ┣┓ UPDATE energy_level_table: step[73] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [74]: ----->> ┣┓ UPDATE energy_level_table: step[74] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [75]: ----->> ┣┓ UPDATE energy_level_table: step[75] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [76]: ----->> ┣┓ UPDATE energy_level_table: step[76] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [77]: ----->> ┣┓ UPDATE energy_level_table: step[77] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [78]: ----->> ┣┓ UPDATE energy_level_table: step[78] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [79]: ----->> ┣┓ UPDATE energy_level_table: step[79] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [80]: ----->> ┣┓ UPDATE energy_level_table: step[80] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[80] 🍏🍒 DISPLAY energy_level_table: After STEP[80] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  _ 5 4 5 7 _ 4 2 1 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  5 5 5 7 _ _ _ 4 2 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  4 5 7 _ _ _ _ _ 4 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  5 7 4 _ _ _ _ _ _ 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  7 3 3 5 _ _ _ _ _ 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  1 4 2 8 8 _ _ _ 9 6
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  1 9 6 5 5 8 4 3 9 6
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  1 6 4 4 4 6 1 5 6 8
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  6 7 5 5 4 5 7 6 7 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  2 6 2 5 4 4 5 7 1 1
+// INFO  aoc_2021_rust::advent::day11::day_11 > [81]: ----->> ┣┓ UPDATE energy_level_table: step[81] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [82]: ----->> ┣┓ UPDATE energy_level_table: step[82] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [83]: ----->> ┣┓ UPDATE energy_level_table: step[83] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [84]: ----->> ┣┓ UPDATE energy_level_table: step[84] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [85]: ----->> ┣┓ UPDATE energy_level_table: step[85] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [86]: ----->> ┣┓ UPDATE energy_level_table: step[86] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [87]: ----->> ┣┓ UPDATE energy_level_table: step[87] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [88]: ----->> ┣┓ UPDATE energy_level_table: step[88] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [89]: ----->> ┣┓ UPDATE energy_level_table: step[89] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [90]: ----->> ┣┓ UPDATE energy_level_table: step[90] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[90] 🍏🍒 DISPLAY energy_level_table: After STEP[90] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  6 _ _ _ _ 5 4 4 4 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  _ _ _ _ 7 5 4 4 4 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  _ _ _ 8 5 4 4 4 4 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  _ _ 4 8 5 4 4 4 5 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  _ 4 5 3 7 5 4 5 7 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  9 5 4 2 2 8 7 8 3 3
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  8 _ 3 2 2 2 2 6 4 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  9 3 3 2 2 2 2 7 _ 4
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  2 2 2 2 2 2 2 8 9 6
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  8 2 2 2 2 2 2 2 6 4
+// INFO  aoc_2021_rust::advent::day11::day_11 > [91]: ----->> ┣┓ UPDATE energy_level_table: step[91] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [92]: ----->> ┣┓ UPDATE energy_level_table: step[92] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [93]: ----->> ┣┓ UPDATE energy_level_table: step[93] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [94]: ----->> ┣┓ UPDATE energy_level_table: step[94] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [95]: ----->> ┣┓ UPDATE energy_level_table: step[95] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [96]: ----->> ┣┓ UPDATE energy_level_table: step[96] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [97]: ----->> ┣┓ UPDATE energy_level_table: step[97] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [98]: ----->> ┣┓ UPDATE energy_level_table: step[98] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [99]: ----->> ┣┓ UPDATE energy_level_table: step[99] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > [100]: ----->> ┣┓ UPDATE energy_level_table: step[100] ┏┥ <<-----
+// INFO  aoc_2021_rust::advent::day11::day_11 > *[100] 🍏🍒 DISPLAY energy_level_table: After STEP[100] 🍏🍒
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [0]:  9 3 3 4 6 3 _ _ _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [1]:  3 3 4 6 2 3 5 _ _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [2]:  3 4 6 2 2 2 3 5 _ _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [3]:  4 6 2 2 2 2 2 3 6 _
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [4]:  5 2 3 4 4 3 2 3 6 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [5]:  6 4 6 _ _ 5 4 5 2 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [6]:  6 4 _ _ _ _ 7 _ 3 1
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [7]:  7 _ _ _ _ _ _ _ 9 2
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [8]:  _ _ _ _ _ _ _ _ _ 5
+// INFO  aoc_2021_rust::advent::day11::day_11 >      [9]:  4 _ _ _ _ _ _ _ 6 _
+// INFO  aoc_2021_rust::advent::day11::day_11 > -----------------------------------------
+// INFO  aoc_2021_rust::advent::day11::day_11 > 🟠 --- Day 11: Dumbo Octopus, 🟠 Part One ---
+// INFO  aoc_2021_rust::advent::day11::day_11 > Input File: input/day_11-input.txt
+// INFO  aoc_2021_rust::advent::day11::day_11 > Total Step: 100
+// INFO  aoc_2021_rust::advent::day11::day_11 > 🟢 Total Flash Count: 1785
+// INFO  aoc_2021_rust::advent::day11::day_11 > -----------------------------------------
+// RUST_LOG=info cargo run --bin day11  0.06s user 0.03s system 19% cpu 0.444 total
