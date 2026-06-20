@@ -297,11 +297,20 @@ fn color(kind: Option<Hi>, depth: usize) -> (u8, u8, u8) {
     }
 }
 
-/// Begin a frame: clear the screen and write the title, header, and input line.
-fn start_frame(title: &str, header: &str, phase: &str, info: &str) -> String {
+/// Begin a frame: clear the screen and write the title, the live reduce text
+/// (only while reducing), and the input-line context.
+fn start_frame(title: &str, header: &str, phase: &str, info: &str, toks: &[Tok]) -> String {
     let mut out = String::with_capacity(256);
     out.push_str("\x1b[H\x1b[J"); // home + clear to end -- redraw in place
     out.push_str(&format!("  {title} — {header}   [{phase}]\n"));
+    // Top line: the number as plain text, updated on every explode/split so the
+    // reduction can be read step by step above the colored views.
+    if matches!(phase, "explode" | "exploded" | "split" | "split done") {
+        out.push_str(&format!(
+            "  \x1b[38;2;225;225;235mreduce :  {}\x1b[0m\n",
+            clip(&snail_to_string(toks))
+        ));
+    }
     out.push_str(&format!("  \x1b[38;2;150;150;170m{info}\x1b[0m\n\n"));
     out
 }
@@ -349,7 +358,7 @@ fn flat_body(toks: &[Tok], highlights: &[(usize, Hi)], out: &mut String) {
 
 /// Draw one frame: the flat snailfish number, painted by nesting depth.
 fn render(toks: &[Tok], header: &str, phase: &str, info: &str, highlights: &[(usize, Hi)]) {
-    let mut out = start_frame("Snailfish", header, phase, info);
+    let mut out = start_frame("Snailfish", header, phase, info, toks);
     flat_body(toks, highlights, &mut out);
     end_frame(&out);
 }
@@ -451,14 +460,14 @@ fn tree_body(toks: &[Tok], highlights: &[(usize, Hi)], out: &mut String) {
 
 /// Draw one frame as a hierarchical tree (same signature as the flat `render`).
 fn render_tree(toks: &[Tok], header: &str, phase: &str, info: &str, highlights: &[(usize, Hi)]) {
-    let mut out = start_frame("Snailfish tree", header, phase, info);
+    let mut out = start_frame("Snailfish tree", header, phase, info, toks);
     tree_body(toks, highlights, &mut out);
     end_frame(&out);
 }
 
 /// Draw one frame with BOTH views: the flat string, then the tree below it.
 fn render_both(toks: &[Tok], header: &str, phase: &str, info: &str, highlights: &[(usize, Hi)]) {
-    let mut out = start_frame("Snailfish", header, phase, info);
+    let mut out = start_frame("Snailfish", header, phase, info, toks);
     flat_body(toks, highlights, &mut out);
     out.push_str("\n  \x1b[38;2;90;90;110m── tree ──\x1b[0m\n\n");
     tree_body(toks, highlights, &mut out);
