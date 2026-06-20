@@ -26,15 +26,11 @@ use std::time::Duration;
 type Grid = Vec<Vec<u32>>;
 
 // 8-neighborhood (Moore neighborhood) offsets.
-const DIRS: [(i32, i32); 8] = [
-    (-1, -1), (-1, 0), (-1, 1),
-    (0, -1),           (0, 1),
-    (1, -1),  (1, 0),  (1, 1),
-];
+const DIRS: [(i32, i32); 8] = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)];
 
 // Frame timings (milliseconds). Tweak to taste.
 const CHARGE_MS: u64 = 90; // after the +1 "charge" pass
-const FLASH_MS: u64 = 120; //--70; // per cascade ring -- this is the wavefront
+const FLASH_MS: u64 = 10; //--120; //--70; // per cascade ring -- this is the wavefront
 const SETTLE_MS: u64 = 140; // after a step settles
 const SYNC_MS: u64 = 90; // blink cadence on the synchronized flash
 
@@ -193,11 +189,11 @@ fn render(grid: &Grid, flashed: &[Vec<bool>], step: u16, total_flash: u64, phase
 fn heat(e: u32) -> (u8, u8, u8) {
     // 5 gradient stops keyed at t = 0, .25, .5, .75, 1.
     const STOPS: [(f32, f32, f32); 5] = [
-        (12.0, 14.0, 48.0),    // 0.00  deep blue (rested)
-        (0.0, 90.0, 170.0),    // 0.25  blue
-        (0.0, 168.0, 150.0),   // 0.50  teal
-        (210.0, 170.0, 0.0),   // 0.75  amber
-        (235.0, 70.0, 35.0),   // 1.00  red-orange (about to flash)
+        (12.0, 14.0, 48.0),  // 0.00  deep blue (rested)
+        (0.0, 90.0, 170.0),  // 0.25  blue
+        (0.0, 168.0, 150.0), // 0.50  teal
+        (210.0, 170.0, 0.0), // 0.75  amber
+        (235.0, 70.0, 35.0), // 1.00  red-orange (about to flash)
     ];
     let t = (e.min(9) as f32) / 9.0;
     let seg = (t * 4.0).floor().min(3.0) as usize;
@@ -210,16 +206,11 @@ fn heat(e: u32) -> (u8, u8, u8) {
 
 /// Read a grid of single-digit energy levels from a file.
 fn read_grid(filename: &str) -> Grid {
-    let file = File::open(filename)
-        .unwrap_or_else(|e| panic!("couldn't open {filename}: {e}"));
+    let file = File::open(filename).unwrap_or_else(|e| panic!("couldn't open {filename}: {e}"));
     BufReader::new(file)
         .lines()
         .map(|line| line.unwrap())
         .filter(|line| !line.trim().is_empty())
-        .map(|line| {
-            line.chars()
-                .map(|c| c.to_digit(10).expect("non-digit in grid"))
-                .collect()
-        })
+        .map(|line| line.chars().map(|c| c.to_digit(10).expect("non-digit in grid")).collect())
         .collect()
 }

@@ -13,10 +13,7 @@ fn main() {
     let mut args = std::env::args().skip(1);
 
     let which = args.next().unwrap_or_else(|| "sample-b".to_string());
-    let steps: u16 = args
-        .next()
-        .and_then(|s| s.parse().ok())
-        .unwrap_or(200);
+    let steps: u16 = args.next().and_then(|s| s.parse().ok()).unwrap_or(200);
 
     let filename = match which.as_str() {
         "sample-a" | "a" => "input/day_11-sample-a.txt",
