@@ -101,19 +101,10 @@ use std::io::BufReader;
 //   [*] total_step_count: 5
 //   -----------------------------------------
 
-fn handle_input(
-    filename: &str,
-) -> (
-    Vec<char>,
-    HashMap<String, char>,
-    HashMap<String, Vec<String>>,
-) {
+fn handle_input(filename: &str) -> (Vec<char>, HashMap<String, char>, HashMap<String, Vec<String>>) {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     info!("[*] Input Filename: {}", filename);
@@ -172,10 +163,7 @@ fn day_14_part_two() {
     let insertion_rules = input_data.1;
     let expand_rules = input_data.2;
 
-    info!(
-        "[] input -  polymer_template len: {}",
-        polymer_template.len()
-    );
+    info!("[] input -  polymer_template len: {}", polymer_template.len());
     info!("[] input -  polymer_template : {:?}", polymer_template);
     info!("[] input -  insertion_rules len: {}", insertion_rules.len());
 
@@ -200,21 +188,15 @@ fn day_14_part_two() {
     info!("------------------------------------------");
     info!("[*] max_item: {:?}", max_item);
     info!("[*] min_item: {:?}", min_item);
-    info!(
-        "[*] difference: {} (=| {} - {})",
-        max_min_diff, max_item.1, min_item.1
-    );
+    info!("[*] difference: {} (=| {} - {})", max_min_diff, max_item.1, min_item.1);
     info!("[*] total_step_count: {}", total_step_count);
     info!("-----------------------------------------");
     info!("-----------------------------------------");
 }
 
 fn apply_insertion_rules_all(
-    polymer_template: &Vec<char>,
-    counter_map: &mut HashMap<char, u64>,
-    insertion_rules: &HashMap<String, char>,
-    expand_rules: &HashMap<String, Vec<String>>,
-    total_step_count: i32,
+    polymer_template: &Vec<char>, counter_map: &mut HashMap<char, u64>, insertion_rules: &HashMap<String, char>,
+    expand_rules: &HashMap<String, Vec<String>>, total_step_count: i32,
 ) {
     info!(
         "[*] - polymer_template: {:?}",
@@ -267,13 +249,8 @@ fn apply_insertion_rules_all(
 }
 
 fn check_occurrence(
-    pair: &String,
-    counter_map: &mut HashMap<char, u64>,
-    insertion_rules: &HashMap<String, char>,
-    expand_rules: &HashMap<String, Vec<String>>,
-    current_step: i32,
-    total_step_count: i32,
-    loop_count: &mut u64,
+    pair: &String, counter_map: &mut HashMap<char, u64>, insertion_rules: &HashMap<String, char>,
+    expand_rules: &HashMap<String, Vec<String>>, current_step: i32, total_step_count: i32, loop_count: &mut u64,
 ) {
     *loop_count += 1;
     if current_step > total_step_count {
@@ -397,10 +374,7 @@ fn check_occurrence(
 //     }
 // }
 
-fn display_pair_insertion_rules(
-    _insertion_rules: &HashMap<String, char>,
-    expand_rules: &HashMap<String, Vec<String>>,
-) {
+fn display_pair_insertion_rules(_insertion_rules: &HashMap<String, char>, expand_rules: &HashMap<String, Vec<String>>) {
     info!("-------- Pair Insertion Rules --------------------");
     // let mut format_str = format!("\n");
     // for (i, line) in insertion_rules.iter().enumerate() {
@@ -425,9 +399,5 @@ fn get_max_min_difference(counter_map: &HashMap<char, u64>) -> ((char, u64), (ch
     let min_item = counter_map.iter().min_by(|x, y| x.1.cmp(&y.1)).unwrap();
     let max_min_diff: u64 = max_item.1 - min_item.1;
 
-    (
-        (*max_item.0, *max_item.1),
-        (*min_item.0, *min_item.1),
-        max_min_diff,
-    )
+    ((*max_item.0, *max_item.1), (*min_item.0, *min_item.1), max_min_diff)
 }

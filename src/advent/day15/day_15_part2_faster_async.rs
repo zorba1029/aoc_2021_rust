@@ -10,11 +10,7 @@ fn handle_input(filename: &str) -> Vec<Vec<usize>> {
     let content = std::fs::read_to_string(filename).expect("Couldn't read input");
     content
         .lines()
-        .map(|line| {
-            line.chars()
-                .map(|c| c.to_digit(10).unwrap() as usize)
-                .collect()
-        })
+        .map(|line| line.chars().map(|c| c.to_digit(10).unwrap() as usize).collect())
         .collect()
 }
 
@@ -57,8 +53,7 @@ pub fn day_15_part_two() {
     let height = input_lines.len();
     info!("input_lines: rows = {:?}, columns = {}", width, height);
 
-    let (mut dist, mut prev, mut p_queue, input_graph) =
-        make_init_data_with_priority(&input_lines, TILE_COUNT);
+    let (mut dist, mut prev, mut p_queue, input_graph) = make_init_data_with_priority(&input_lines, TILE_COUNT);
     // display_map_data(&edges, "Input Queue Table", TILE_COUNT*width as i32);
 
     let mut visited: HashMap<(i32, i32), usize> = HashMap::new();
@@ -86,18 +81,11 @@ type InitDataType = (
 
 fn make_init_data_with_priority(input_lines: &[Vec<usize>], tile_count: i32) -> InitDataType {
     fn expand_to_right(
-        row_len: i32,
-        col_len: i32,
-        tile_i: i32,
-        tile_j: i32,
-        dist: &mut HashMap<(i32, i32), usize>,
+        row_len: i32, col_len: i32, tile_i: i32, tile_j: i32, dist: &mut HashMap<(i32, i32), usize>,
         prev: &mut HashMap<(i32, i32), Option<(i32, i32)>>,
-        priority_queue: &mut PriorityQueue<(i32, i32), Reverse<usize>>,
-        input_graph: &mut HashMap<(i32, i32), usize>,
+        priority_queue: &mut PriorityQueue<(i32, i32), Reverse<usize>>, input_graph: &mut HashMap<(i32, i32), usize>,
     ) {
-        debug!(
-            "=== A (Horizontal): COPY INPUT DATA TO RIGHT TILE -- tile = [{tile_i},{tile_j}] ==="
-        );
+        debug!("=== A (Horizontal): COPY INPUT DATA TO RIGHT TILE -- tile = [{tile_i},{tile_j}] ===");
         (0..row_len).for_each(|row| {
             (0..col_len).for_each(|col| {
                 let (new_row, new_col) = (tile_i * row_len + row, tile_j * col_len + col);
@@ -107,7 +95,7 @@ fn make_init_data_with_priority(input_lines: &[Vec<usize>], tile_count: i32) -> 
                 dist.insert((new_row, new_col), usize::MAX);
                 prev.insert((new_row, new_col), None);
                 priority_queue.push((new_row, new_col), Reverse(usize::MAX));
-                
+
                 let prev_value = *input_graph.get(&(prev_row, prev_col)).unwrap();
                 let mut new_value = 1 + prev_value;
                 if new_value > 9 {
@@ -115,21 +103,18 @@ fn make_init_data_with_priority(input_lines: &[Vec<usize>], tile_count: i32) -> 
                 }
                 input_graph.insert((new_row, new_col), new_value);
                 if new_row % 100 == 0 && new_col % 100 == 1 {
-                    debug!("--  Prev[{prev_row},{prev_col}] -> New[{new_row},{new_col}] || = {prev_value} -> {new_value}");
+                    debug!(
+                        "--  Prev[{prev_row},{prev_col}] -> New[{new_row},{new_col}] || = {prev_value} -> {new_value}"
+                    );
                 }
             });
         });
     }
 
     fn expand_to_down(
-        row_len: i32,
-        col_len: i32,
-        tile_i: i32,
-        tile_j: i32,
-        dist: &mut HashMap<(i32, i32), usize>,
+        row_len: i32, col_len: i32, tile_i: i32, tile_j: i32, dist: &mut HashMap<(i32, i32), usize>,
         prev: &mut HashMap<(i32, i32), Option<(i32, i32)>>,
-        priority_queue: &mut PriorityQueue<(i32, i32), Reverse<usize>>,
-        input_graph: &mut HashMap<(i32, i32), usize>,
+        priority_queue: &mut PriorityQueue<(i32, i32), Reverse<usize>>, input_graph: &mut HashMap<(i32, i32), usize>,
     ) {
         debug!("=== B (Vertical): COPY INPUT DATA TO DOWN TILE -- tile = [{tile_i},{tile_j}] ====");
         (0..row_len).for_each(|row| {
@@ -137,17 +122,19 @@ fn make_init_data_with_priority(input_lines: &[Vec<usize>], tile_count: i32) -> 
                 let (new_row, new_col) = (tile_i * row_len + row, tile_j * col_len + col);
                 let prev_row = new_row - row_len;
                 let prev_col = new_col;
-    
+
                 dist.insert((new_row, new_col), usize::MAX);
                 prev.insert((new_row, new_col), None);
                 priority_queue.push((new_row, new_col), Reverse(usize::MAX));
-    
+
                 let prev_value = *input_graph.get(&(prev_row, prev_col)).unwrap();
                 let mut new_value = 1 + prev_value;
                 new_value = if new_value > 9 { 1 } else { new_value };
                 input_graph.insert((new_row, new_col), new_value);
                 if new_row % 100 == 0 && new_col % 100 == 1 {
-                    debug!("--  Prev[{prev_row},{prev_col}] -> New[{new_row},{new_col}] || {prev_value} -> {new_value}");
+                    debug!(
+                        "--  Prev[{prev_row},{prev_col}] -> New[{new_row},{new_col}] || {prev_value} -> {new_value}"
+                    );
                 }
             });
         });
@@ -223,13 +210,9 @@ fn make_init_data_with_priority(input_lines: &[Vec<usize>], tile_count: i32) -> 
 const NEIGHBORS: &[(i32, i32); 4] = &[(1, 0), (0, 1), (-1, 0), (0, -1)];
 
 fn dijkstra_search_with_priority(
-    input_graph: &HashMap<(i32, i32), usize>,
-    input_lines: &[Vec<usize>],
-    dist: &mut HashMap<(i32, i32), usize>,
-    prev: &mut HashMap<(i32, i32), Option<(i32, i32)>>,
-    priority_queue: &mut PriorityQueue<(i32, i32), Reverse<usize>>,
-    visited: &mut HashMap<(i32, i32), usize>,
-    tile_count: i32,
+    input_graph: &HashMap<(i32, i32), usize>, input_lines: &[Vec<usize>], dist: &mut HashMap<(i32, i32), usize>,
+    prev: &mut HashMap<(i32, i32), Option<(i32, i32)>>, priority_queue: &mut PriorityQueue<(i32, i32), Reverse<usize>>,
+    visited: &mut HashMap<(i32, i32), usize>, tile_count: i32,
 ) -> usize {
     let width: i32 = tile_count * input_lines[0].len() as i32;
     let height: i32 = tile_count * input_lines.len() as i32;
@@ -260,11 +243,7 @@ fn dijkstra_search_with_priority(
         loop_count += 1;
     }
 
-    info!(
-        "PREV[target={:?}] = {:?}",
-        &dest_node,
-        prev.get(&dest_node).unwrap()
-    );
+    info!("PREV[target={:?}] = {:?}", &dest_node, prev.get(&dest_node).unwrap());
     info!("DIST[target={:?}] = {:?}", dest_node, dist.get(&dest_node));
     info!("Total Loop Count = [{}]", loop_count);
     info!("Shortest Path Value  = {}", *dist.get(&dest_node).unwrap());
@@ -274,10 +253,8 @@ fn dijkstra_search_with_priority(
 
 #[allow(dead_code)]
 fn display_shortest_path(
-    prev: &HashMap<(i32, i32), Option<(i32, i32)>>,
-    dist: &HashMap<(i32, i32), usize>,
-    visited: &HashMap<(i32, i32), usize>,
-    dest_node: &(i32, i32),
+    prev: &HashMap<(i32, i32), Option<(i32, i32)>>, dist: &HashMap<(i32, i32), usize>,
+    visited: &HashMap<(i32, i32), usize>, dest_node: &(i32, i32),
 ) {
     let mut s_path: Vec<(i32, i32)> = Vec::new();
     let source_node: (i32, i32) = (0, 0);

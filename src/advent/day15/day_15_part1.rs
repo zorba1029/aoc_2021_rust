@@ -35,10 +35,7 @@ pub fn day_15_part_one() {
 fn handle_input(filename: &str) -> Vec<Vec<usize>> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     info!("[*] Input Filename: {}", filename);
@@ -219,9 +216,7 @@ fn dijkstra_search(
 
 #[allow(dead_code)]
 fn display_shortest_path(
-    prev: &HashMap<(i32, i32), Option<(i32, i32)>>,
-    dist: &HashMap<(i32, i32), usize>,
-    input_lines: &Vec<Vec<usize>>,
+    prev: &HashMap<(i32, i32), Option<(i32, i32)>>, dist: &HashMap<(i32, i32), usize>, input_lines: &Vec<Vec<usize>>,
     dest_node: &(i32, i32),
 ) {
     let mut s_path: Vec<(i32, i32)> = Vec::new();

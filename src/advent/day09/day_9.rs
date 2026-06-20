@@ -92,11 +92,7 @@ fn day_9_part_two() {
     let low_points_map = find_lowpoints(&heightmap);
 
     let basin_size_list = find_all_basins(&mut heightmap, &low_points_map);
-    println!(
-        "basin_size_list(len={}): {:?}",
-        basin_size_list.len(),
-        basin_size_list
-    );
+    println!("basin_size_list(len={}): {:?}", basin_size_list.len(), basin_size_list);
 
     let mut sorted_list_desc = basin_size_list.clone();
     sorted_list_desc.sort_by(|a, b| b.cmp(a));
@@ -106,14 +102,10 @@ fn day_9_part_two() {
         &sorted_list_desc[0..3]
     );
 
-    let three_sum = sorted_list_desc
-        .iter()
-        .take(3)
-        .enumerate()
-        .fold(1, |acc, (i, v)| {
-            println!("  [{}]: {}", i, v);
-            acc * v
-        });
+    let three_sum = sorted_list_desc.iter().take(3).enumerate().fold(1, |acc, (i, v)| {
+        println!("  [{}]: {}", i, v);
+        acc * v
+    });
 
     println!("-----------------------------------------");
     println!("Three Largest Basins Multiply: {:?}", three_sum);
@@ -174,10 +166,7 @@ fn day_9_part_two() {
 fn handle_input(filename: &str) -> Vec<Vec<u8>> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     println!("[*] Input Filename: {}", filename);

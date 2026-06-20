@@ -9,11 +9,8 @@ use std::str::Chars;
 fn handle_input(filename: &str) -> Vec<String> {
     let file = File::open(filename).expect("Couldn't open input file.");
     let buf = BufReader::new(file);
-    let input_lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
-    
+    let input_lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
+
     // let tokens_matrix = input_lines.iter()
     //     .map(|line| tokenize(line))
     //     .collect::<Vec<Vec<Token>>>();

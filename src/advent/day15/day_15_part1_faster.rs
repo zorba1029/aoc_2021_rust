@@ -14,7 +14,6 @@ use std::io::BufReader;
 // shortest_value  = 714
 //-----------------------------
 
-
 pub fn day_15_part_one() {
     info!("===============================================");
     info!("--- Day 15: Chiton, Part One ---, ");
@@ -29,13 +28,7 @@ pub fn day_15_part_one() {
     // display_input_data(&input_lines);
 
     let (mut dist, mut prev, mut p_queue, input_graph) = make_init_data_with_priority(&input_lines);
-    let shortest_value = dijkstra_search_with_priority(
-        &input_graph,
-        &input_lines,
-        &mut dist,
-        &mut prev,
-        &mut p_queue,
-    );
+    let shortest_value = dijkstra_search_with_priority(&input_graph, &input_lines, &mut dist, &mut prev, &mut p_queue);
     info!("shortest_value  = {}", shortest_value);
     // display_shortest_path(&prev, &dist, &input_lines, &(width as i32 -1, height as i32 -1));
 }
@@ -43,10 +36,7 @@ pub fn day_15_part_one() {
 fn handle_input(filename: &str) -> Vec<Vec<usize>> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     // let lines_count = lines.len();
     // info!("[*] Input Filename: {}", filename);
@@ -177,11 +167,8 @@ fn make_init_data_with_priority(input_lines: &[Vec<usize>]) -> InitDataType {
 const DELTAS: &[(i32, i32); 4] = &[(1, 0), (0, 1), (-1, 0), (0, -1)];
 
 fn dijkstra_search_with_priority(
-    input_graph: &HashMap<(i32, i32), usize>,
-    input_lines: &[Vec<usize>],
-    dist: &mut HashMap<(i32, i32), usize>,
-    prev: &mut HashMap<(i32, i32), Option<(i32, i32)>>,
-    priority_queue: &mut PriorityQueue<(i32, i32), Reverse<usize>>,
+    input_graph: &HashMap<(i32, i32), usize>, input_lines: &[Vec<usize>], dist: &mut HashMap<(i32, i32), usize>,
+    prev: &mut HashMap<(i32, i32), Option<(i32, i32)>>, priority_queue: &mut PriorityQueue<(i32, i32), Reverse<usize>>,
 ) -> usize {
     let width: i32 = input_lines[0].len() as i32;
     let height: i32 = input_lines.len() as i32;
@@ -219,11 +206,7 @@ fn dijkstra_search_with_priority(
         loop_count += 1;
     }
 
-    info!(
-        "PREV[target={:?}] = {:?}",
-        &dest_node,
-        prev.get(&dest_node).unwrap()
-    );
+    info!("PREV[target={:?}] = {:?}", &dest_node, prev.get(&dest_node).unwrap());
     info!("DIST[target={:?}] = {:?}", dest_node, dist.get(&dest_node));
     info!("Total Loop Count = [{}]", loop_count);
     *dist.get(&dest_node).unwrap()
@@ -231,9 +214,7 @@ fn dijkstra_search_with_priority(
 
 #[allow(dead_code)]
 fn display_shortest_path(
-    prev: &HashMap<(i32, i32), Option<(i32, i32)>>,
-    dist: &HashMap<(i32, i32), usize>,
-    input_lines: &Vec<Vec<usize>>,
+    prev: &HashMap<(i32, i32), Option<(i32, i32)>>, dist: &HashMap<(i32, i32), usize>, input_lines: &Vec<Vec<usize>>,
     dest_node: &(i32, i32),
 ) {
     let mut s_path: Vec<(i32, i32)> = Vec::new();

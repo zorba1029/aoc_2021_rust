@@ -19,10 +19,7 @@ pub fn do_day_4() {
 fn handle_input(filename: &str) -> Vec<String> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     println!("[*] Input Filename: {}", filename);
@@ -233,10 +230,7 @@ fn day_4_part_two() {
 
     println!("=========================================");
     let (last_win_board_index, draw_num) = bingo_board_log_tuple.last().unwrap();
-    println!(
-        "[*] Last Win Board: {}, draw_num: {}",
-        last_win_board_index, draw_num
-    );
+    println!("[*] Last Win Board: {}, draw_num: {}", last_win_board_index, draw_num);
     let last_win_board = &board_list[*last_win_board_index];
     println!("----------------------");
     //-- print_board_values(last_win_board);

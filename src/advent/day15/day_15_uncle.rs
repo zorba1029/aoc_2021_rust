@@ -13,10 +13,7 @@ pub fn do_day_15() {
 fn handle_input(filename: &str) -> Vec<Vec<usize>> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     info!("[*] Input Filename: {}", filename);
@@ -67,12 +64,7 @@ fn day_15_part_one() {
     let (mut dist, mut prev, mut queue) = make_init_data(&input_lines);
     let shortest_value = dijkstra_search(&mut dist, &mut prev, &mut queue, &input_lines);
     info!("shortest_value  = {}", shortest_value);
-    display_shortest_path(
-        &prev,
-        &dist,
-        &input_lines,
-        &(width as i32 - 1, height as i32 - 1),
-    );
+    display_shortest_path(&prev, &dist, &input_lines, &(width as i32 - 1, height as i32 - 1));
 
     // display_map_data(&dist, "Distance Table");
     // display_map_data(&queue, "Queue Table");
@@ -149,10 +141,8 @@ fn make_init_data(
 const DELTAS: &[(i32, i32); 4] = &[(1, 0), (0, 1), (-1, 0), (0, -1)];
 
 fn dijkstra_search(
-    dist: &mut HashMap<(i32, i32), usize>,
-    prev: &mut HashMap<(i32, i32), Option<(i32, i32)>>,
-    queue: &mut HashMap<(i32, i32), usize>,
-    input_lines: &Vec<Vec<usize>>,
+    dist: &mut HashMap<(i32, i32), usize>, prev: &mut HashMap<(i32, i32), Option<(i32, i32)>>,
+    queue: &mut HashMap<(i32, i32), usize>, input_lines: &Vec<Vec<usize>>,
 ) -> usize {
     let width: i32 = input_lines[0].len() as i32;
     let height: i32 = input_lines.len() as i32;

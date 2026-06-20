@@ -146,8 +146,7 @@ fn day_11_part_two() {
     let mut level_table = energy_level_table;
     for step in 1..=total_step {
         used_step = step;
-        let (level_table_result, all_syncd) =
-            update_energy_level_until_all(level_table, &mut total_flash_count, step);
+        let (level_table_result, all_syncd) = update_energy_level_until_all(level_table, &mut total_flash_count, step);
         display_energy_level_table(&level_table_result, step);
         level_table = level_table_result;
         if all_syncd {
@@ -279,10 +278,7 @@ fn day_11_part_two() {
 fn handle_input(filename: &str) -> Vec<Vec<u32>> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     info!("[*] Input Filename: {}", filename);
@@ -357,11 +353,7 @@ fn display_energy_level_table(energy_level_table: &Vec<Vec<u32>>, step: u16) {
     }
 }
 
-fn display_internal_energy_level_table(
-    energy_level_table: &Vec<Vec<u32>>,
-    step: u16,
-    loop_count: &u16,
-) {
+fn display_internal_energy_level_table(energy_level_table: &Vec<Vec<u32>>, step: u16, loop_count: &u16) {
     debug!("        ({loop_count} /{step}) 🥝 internal state: After STEP[{step}]-[{loop_count}] ");
     energy_level_table.iter().enumerate().for_each(|(i, line)| {
         let mut format_str = format!("          <{i}>: ");
@@ -377,11 +369,7 @@ fn display_internal_energy_level_table(
     });
 }
 
-fn update_energy_level(
-    mut energy_level_table: Vec<Vec<u32>>,
-    total_flash_count: &mut i32,
-    step: u16,
-) -> Vec<Vec<u32>> {
+fn update_energy_level(mut energy_level_table: Vec<Vec<u32>>, total_flash_count: &mut i32, step: u16) -> Vec<Vec<u32>> {
     let lines_count = energy_level_table.len();
     let line_len = energy_level_table[0].len();
 
@@ -394,20 +382,17 @@ fn update_energy_level(
     //-- First: increase by 1 for each energy level
     let mut target_level_table = Vec::with_capacity(lines_count);
     let mut flash_status_table = Vec::with_capacity(lines_count);
-    energy_level_table
-        .iter_mut()
-        .enumerate()
-        .for_each(|(i, line)| {
-            let values: Vec<u32> = Vec::with_capacity(line_len);
-            let status: Vec<bool> = Vec::with_capacity(line_len);
-            target_level_table.push(values);
-            flash_status_table.push(status);
-            line.iter_mut().enumerate().for_each(|(_j, item)| {
-                *item += 1;
-                target_level_table[i].push(*item);
-                flash_status_table[i].push(false);
-            });
+    energy_level_table.iter_mut().enumerate().for_each(|(i, line)| {
+        let values: Vec<u32> = Vec::with_capacity(line_len);
+        let status: Vec<bool> = Vec::with_capacity(line_len);
+        target_level_table.push(values);
+        flash_status_table.push(status);
+        line.iter_mut().enumerate().for_each(|(_j, item)| {
+            *item += 1;
+            target_level_table[i].push(*item);
+            flash_status_table[i].push(false);
         });
+    });
 
     //-------------------------------------------------------------------
     //-- Second:
@@ -522,9 +507,7 @@ fn update_energy_level(
 }
 
 fn update_energy_level_until_all(
-    mut energy_level_table: Vec<Vec<u32>>,
-    total_flash_count: &mut i32,
-    step: u16,
+    mut energy_level_table: Vec<Vec<u32>>, total_flash_count: &mut i32, step: u16,
 ) -> (Vec<Vec<u32>>, bool) {
     let lines_count = energy_level_table.len();
     let line_len = energy_level_table[0].len();
@@ -538,20 +521,17 @@ fn update_energy_level_until_all(
     //-- First: increase by 1 for each energy level
     let mut target_level_table = Vec::with_capacity(lines_count);
     let mut flash_status_table = Vec::with_capacity(lines_count);
-    energy_level_table
-        .iter_mut()
-        .enumerate()
-        .for_each(|(i, line)| {
-            let values: Vec<u32> = Vec::with_capacity(line_len);
-            let status: Vec<bool> = Vec::with_capacity(line_len);
-            target_level_table.push(values.clone());
-            flash_status_table.push(status.clone());
-            line.iter_mut().enumerate().for_each(|(_j, item)| {
-                *item += 1;
-                target_level_table[i].push(*item);
-                flash_status_table[i].push(false);
-            });
+    energy_level_table.iter_mut().enumerate().for_each(|(i, line)| {
+        let values: Vec<u32> = Vec::with_capacity(line_len);
+        let status: Vec<bool> = Vec::with_capacity(line_len);
+        target_level_table.push(values.clone());
+        flash_status_table.push(status.clone());
+        line.iter_mut().enumerate().for_each(|(_j, item)| {
+            *item += 1;
+            target_level_table[i].push(*item);
+            flash_status_table[i].push(false);
         });
+    });
 
     //-------------------------------------------------------------------
     //-- Second:

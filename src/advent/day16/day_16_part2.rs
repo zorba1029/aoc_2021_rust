@@ -14,14 +14,8 @@ pub enum TypeLenID {
 
 #[derive(PartialEq, Eq, Hash, Clone, Debug)]
 pub enum TypeLenValue {
-    L11Count {
-        str_value: String,
-        sub_packets_count: u32,
-    },
-    L15Length {
-        str_value: String,
-        sub_packets_len: u32,
-    },
+    L11Count { str_value: String, sub_packets_count: u32 },
+    L15Length { str_value: String, sub_packets_len: u32 },
 }
 
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
@@ -161,12 +155,7 @@ impl OperationEvalRecord {
         self.set_start_input_pos(new_pos);
     }
 
-    pub fn set_operator_packet_handler(
-        &mut self,
-        input_slice: &str,
-        new_pos: &mut usize,
-        _version_vec: &mut Vec<u32>,
-    ) {
+    pub fn set_operator_packet_handler(&mut self, input_slice: &str, new_pos: &mut usize, _version_vec: &mut Vec<u32>) {
         //-----------------------------------------------------------------
         //-- input_slice : 15 bits (total length of sub-packets in bits)
         let get_subpackets_length_bits = |input_slice: &str| get_u32_number(input_slice);
@@ -185,10 +174,8 @@ impl OperationEvalRecord {
                 self.set_type_len_id(TypeLenID::L15);
                 let (t_start, t_end) = (new_start + 7, new_start + 7 + 15);
 
-                let type_len_value = if t_start < current_input.len() && t_end < current_input.len()
-                {
-                    let sub_packets_len =
-                        get_subpackets_length_bits(&current_input[t_start..t_end]);
+                let type_len_value = if t_start < current_input.len() && t_end < current_input.len() {
+                    let sub_packets_len = get_subpackets_length_bits(&current_input[t_start..t_end]);
                     debug!(
                         "[L-15] (I=0): sub-packets LEN in bits = {}, |{}|, start_pos = ({})",
                         sub_packets_len,
@@ -216,8 +203,7 @@ impl OperationEvalRecord {
                 self.set_type_len_id(TypeLenID::L11);
                 let (t_start, t_end) = (new_start + 7, new_start + 7 + 11);
 
-                let type_len_value = if t_start < current_input.len() && t_end < current_input.len()
-                {
+                let type_len_value = if t_start < current_input.len() && t_end < current_input.len() {
                     let sub_packets_count = get_subpackets_count(&current_input[t_start..t_end]);
                     debug!(
                         "[L-11] (I=1): sub-packets COUNT = {}, |{}|, start_pos = ({})",
@@ -248,12 +234,7 @@ impl OperationEvalRecord {
         }
     }
 
-    pub fn literal_packet_handler(
-        &mut self,
-        input_slice: &str,
-        new_pos: &mut usize,
-        _version_vec: &mut Vec<u32>,
-    ) {
+    pub fn literal_packet_handler(&mut self, input_slice: &str, new_pos: &mut usize, _version_vec: &mut Vec<u32>) {
         let new_start = *new_pos;
         let mut consumed_len = 6;
         let (mut literal_start, mut literal_end) = (new_start + 6, new_start + 6 + 5);
@@ -318,10 +299,7 @@ impl OperationEvalRecord {
     pub fn compute_literal_packets_value(&mut self) {
         //-------------------------------------------------------
         // compute_values - inner function
-        fn compute_values(
-            eval_rec: &mut OperationEvalRecord,
-            op_func: fn(&mut OperationEvalRecord),
-        ) {
+        fn compute_values(eval_rec: &mut OperationEvalRecord, op_func: fn(&mut OperationEvalRecord)) {
             // info!("[Literal Value] |- OP TYPE ID: {:?} ", eval_rec.op_type);
             match eval_rec.type_len_value {
                 TypeLenValue::L11Count {
@@ -402,9 +380,7 @@ impl OperationEvalRecord {
                                 eval_rec.set_final_value(0);
                             }
                         }
-                        (_, _) => warn!(
-                            "[Literal Value] GT - 1st value and/or 2nd value is not available"
-                        ),
+                        (_, _) => warn!("[Literal Value] GT - 1st value and/or 2nd value is not available"),
                     }
                 });
             }
@@ -418,9 +394,7 @@ impl OperationEvalRecord {
                                 eval_rec.set_final_value(0);
                             }
                         }
-                        (_, _) => warn!(
-                            "[Literal Value] LT - 1st value and/or 2nd value is not available"
-                        ),
+                        (_, _) => warn!("[Literal Value] LT - 1st value and/or 2nd value is not available"),
                     }
                 });
             }
@@ -434,17 +408,12 @@ impl OperationEvalRecord {
                                 eval_rec.set_final_value(0);
                             }
                         }
-                        (_, _) => warn!(
-                            "[Literal Value] EQ - 1st value and/or 2nd value is not available"
-                        ),
+                        (_, _) => warn!("[Literal Value] EQ - 1st value and/or 2nd value is not available"),
                     }
                 });
             }
             _ => {
-                info!(
-                    "[COMPUTE Literal Value] TYPE_ID: - Unknown ({:?}) ----",
-                    self.op_type
-                );
+                info!("[COMPUTE Literal Value] TYPE_ID: - Unknown ({:?}) ----", self.op_type);
             }
         }
     }
@@ -478,10 +447,7 @@ fn handle_input(filename: &str) -> String {
     info!("[*] Input Filename: {}", filename);
     let file = File::open(filename).expect("Couldn't open input file");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
     let binary_line = lines
         .first()
         .unwrap()
@@ -495,12 +461,7 @@ fn handle_input(filename: &str) -> String {
 //------------------------------
 //-- DEBUG: status display
 fn display_status_info(
-    input_slice: &str,
-    new_pos: usize,
-    version: u32,
-    type_id: u32,
-    packet_count: &u32,
-    operator_count: &u32,
+    input_slice: &str, new_pos: usize, version: u32, type_id: u32, packet_count: &u32, operator_count: &u32,
     literal_count: &u32,
 ) {
     match type_id {
@@ -568,15 +529,19 @@ pub fn day_16_part_two() {
     let filename = "input/day_16-input.txt";
     let input_line = handle_input(filename);
     let input_len = input_line.len();
-    info!("input_line(binary format): len = {}, data = {:?}", input_len, input_line);
+    info!(
+        "input_line(binary format): len = {}, data = {:?}",
+        input_len, input_line
+    );
 
     let (version_accumul, final_eval_value) = parse_packets(&input_line);
     info!("[**] version all items = {:?}", version_accumul);
-    info!("[**] part-1: all versions sum = {}", version_accumul.iter().sum::<u32>());
+    info!(
+        "[**] part-1: all versions sum = {}",
+        version_accumul.iter().sum::<u32>()
+    );
     info!("[**] part-2: final evaluated value = {}", final_eval_value);
 }
-
-
 
 fn parse_packets(input_line: &str) -> (Vec<u32>, u128) {
     let input_slice = input_line;
@@ -617,10 +582,7 @@ fn parse_packets(input_line: &str) -> (Vec<u32>, u128) {
                 let mut eval_rec = OperationEvalRecord::new(operator_count);
                 eval_rec.set_packet_status_op_type(input_slice, &mut new_pos, type_id);
                 eval_rec.set_operator_packet_handler(input_slice, &mut new_pos, &mut version_vec);
-                info!(
-                    "[OP]  OP_TYPE: 🍏🍏 ===== {:?} =====🍏🍏 ",
-                    eval_rec.op_type
-                );
+                info!("[OP]  OP_TYPE: 🍏🍏 ===== {:?} =====🍏🍏 ", eval_rec.op_type);
                 debug!("[Operator Packet] PUSH to Stack => {:#?}", eval_rec);
 
                 eval_rec_vec.push(eval_rec);
@@ -659,10 +621,7 @@ fn parse_packets(input_line: &str) -> (Vec<u32>, u128) {
 
     let final_data = eval_rec_vec.first().unwrap();
     info!("[1] Packets in Stack = {:#?}", eval_rec_vec);
-    info!(
-        "[2] OUTER-MOST Packet Data = 🍏🍏🍏🍏 {:#?} 🍏🍏🍏🍏",
-        final_data
-    );
+    info!("[2] OUTER-MOST Packet Data = 🍏🍏🍏🍏 {:#?} 🍏🍏🍏🍏", final_data);
     info!(
         "[3] OUTER-MOST Values in final_data = {:?} 🍏🍏🍏🍏",
         final_data.value_vec
@@ -685,9 +644,7 @@ fn compute_stack_data(eval_rec_vec: &mut Vec<OperationEvalRecord>) {
     //------------------------------------------------------------------
     // compute_values - inner function
     fn compute_values(
-        top_data: &OperationEvalRecord,
-        parent_data: &mut OperationEvalRecord,
-        top_data_length: u32,
+        top_data: &OperationEvalRecord, parent_data: &mut OperationEvalRecord, top_data_length: u32,
         op_fn: fn(&mut OperationEvalRecord),
     ) {
         // info!("[STACK] |- OP TYPE ID: {:?}", parent_data.op_type);
@@ -724,8 +681,7 @@ fn compute_stack_data(eval_rec_vec: &mut Vec<OperationEvalRecord>) {
     //------------------------------------------
     // POP the 1st data from the Stack
     fn pop_top_record(
-        eval_rec_vec: &mut Vec<OperationEvalRecord>,
-        loop_count: &mut i32,
+        eval_rec_vec: &mut Vec<OperationEvalRecord>, loop_count: &mut i32,
     ) -> Option<OperationEvalRecord> {
         match eval_rec_vec.pop() {
             Some(data_value) => {
@@ -750,8 +706,7 @@ fn compute_stack_data(eval_rec_vec: &mut Vec<OperationEvalRecord>) {
     //------------------------------------------
     // POP the 2nd data from the Stack
     fn pop_parent_record(
-        eval_rec_vec: &mut Vec<OperationEvalRecord>,
-        loop_count: &mut i32,
+        eval_rec_vec: &mut Vec<OperationEvalRecord>, loop_count: &mut i32,
     ) -> Option<OperationEvalRecord> {
         match eval_rec_vec.pop() {
             Some(data_value) => Some(data_value),
@@ -786,10 +741,7 @@ fn compute_stack_data(eval_rec_vec: &mut Vec<OperationEvalRecord>) {
         };
 
         info!("[STACK] |-----------------------------------");
-        debug!(
-            "[STACK] (count={}) [POP-1] - TOP = {:#?}",
-            loop_count, top_data
-        );
+        debug!("[STACK] (count={}) [POP-1] - TOP = {:#?}", loop_count, top_data);
         debug!(
             "[STACK] (count={}) [POP-2] - PARENT (🍒🍒 [BEFORE]) = {:#?}",
             loop_count, parent_data
@@ -923,10 +875,7 @@ fn compute_stack_data(eval_rec_vec: &mut Vec<OperationEvalRecord>) {
                 );
             }
             _ => {
-                warn!(
-                    "[STACK] TYPE_ID: - Unknown ({:?}) ----",
-                    parent_data.op_type
-                );
+                warn!("[STACK] TYPE_ID: - Unknown ({:?}) ----", parent_data.op_type);
             }
         }
         debug!(
@@ -941,9 +890,11 @@ fn compute_stack_data(eval_rec_vec: &mut Vec<OperationEvalRecord>) {
 }
 
 fn get_u32_number(substr: &str) -> u32 {
-    let num = substr.chars().rev().enumerate().fold(0, |acc, (i, c)| {
-        acc + c.to_digit(2).unwrap() * u32::pow(2, i as u32)
-    });
+    let num = substr
+        .chars()
+        .rev()
+        .enumerate()
+        .fold(0, |acc, (i, c)| acc + c.to_digit(2).unwrap() * u32::pow(2, i as u32));
     num
 }
 

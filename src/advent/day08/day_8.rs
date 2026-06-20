@@ -69,10 +69,7 @@ pub fn do_day_8() {
 fn handle_input(filename: &str) -> Vec<(Vec<String>, Vec<String>)> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     println!("[*] Input Filename: {}", filename);
@@ -85,16 +82,8 @@ fn handle_input(filename: &str) -> Vec<(Vec<String>, Vec<String>)> {
         .iter()
         .map(|line| line.split('|').collect::<Vec<_>>())
         .map(|items| {
-            let left = items[0]
-                .trim()
-                .split_whitespace()
-                .map(str::to_string)
-                .collect::<Vec<_>>();
-            let right = items[1]
-                .trim()
-                .split_whitespace()
-                .map(str::to_string)
-                .collect::<Vec<_>>();
+            let left = items[0].trim().split_whitespace().map(str::to_string).collect::<Vec<_>>();
+            let right = items[1].trim().split_whitespace().map(str::to_string).collect::<Vec<_>>();
             // println!(" {:?} | {:?}", left, right);
             (left, right)
         })
@@ -115,14 +104,10 @@ fn day_8_part_one() {
     input_lines
         .iter()
         .enumerate()
-        .for_each(|(index, line)| 
-            println!("[{}] {:?} \n    | {:?}", index, line.0, line.1));
+        .for_each(|(index, line)| println!("[{}] {:?} \n    | {:?}", index, line.0, line.1));
     println!("input_lines: {}", input_lines.len());
 
-    let right_lines = input_lines
-        .iter()
-        .map(|line| line.1.clone())
-        .collect::<Vec<_>>();
+    let right_lines = input_lines.iter().map(|line| line.1.clone()).collect::<Vec<_>>();
 
     // right_lines.iter()
     //     .for_each(|line| println!(" | {:?}", line));
@@ -147,7 +132,7 @@ fn day_8_part_one() {
     });
 
     println!("-----------------------------------------------");
-    println!( "output_value (count of 1, 4, 7, 8 digits): {:?}", output_value );
+    println!("output_value (count of 1, 4, 7, 8 digits): {:?}", output_value);
     println!("-----------------------------------------------");
 }
 
@@ -179,10 +164,7 @@ fn day_8_part_two() {
         .iter()
         .enumerate()
         .map(|(index, (left, right))| {
-            println!(
-                "[{}] -------------------------------------------------",
-                index
-            );
+            println!("[{}] -------------------------------------------------", index);
             // println!("  [input_line]: {:?} | ", left);
             println!("[*] {:?} \n  | {:?} ", left, right);
 
@@ -195,8 +177,7 @@ fn day_8_part_two() {
             });
 
             //-- one digit for one word
-            let output_digit_vec =
-                parse_each_right_line(right, &char_to_digit_map, &bitmap_template);
+            let output_digit_vec = parse_each_right_line(right, &char_to_digit_map, &bitmap_template);
             output_digit_vec
         })
         .collect::<Vec<Vec<u8>>>();
@@ -214,11 +195,7 @@ fn day_8_part_two() {
 
     println!("-----------------------------------------------");
     let total_sum: i32 = output_number_list.iter().sum(); //--fold(0, |acc, v| acc + v );
-    println!(
-        "[**] total_sum: {} (lines: {})",
-        total_sum,
-        input_lines.len()
-    );
+    println!("[**] total_sum: {} (lines: {})", total_sum, input_lines.len());
     println!("-----------------------------------------------");
 }
 
@@ -234,11 +211,7 @@ fn day_8_part_two() {
 // [**] total_sum: 1023686 (lines: 200) <-- CORRECT
 // -----------------------------------------------
 
-fn parse_each_right_line(
-    right: &Vec<String>,
-    digit_map: &HashMap<char, u8>,
-    bitmap_template: &Vec<u8>,
-) -> Vec<u8> {
+fn parse_each_right_line(right: &Vec<String>, digit_map: &HashMap<char, u8>, bitmap_template: &Vec<u8>) -> Vec<u8> {
     let output_value_vec = right
         .iter()
         .map(|word| -> u8 {
@@ -248,14 +221,12 @@ fn parse_each_right_line(
                 4 => 4,
                 5 => {
                     // 5: ->  (2, 3, 5),
-                    let output_value =
-                        parse_word_len_five_or_six(&word, &digit_map, &bitmap_template);
+                    let output_value = parse_word_len_five_or_six(&word, &digit_map, &bitmap_template);
                     output_value
                 }
                 6 => {
                     // 6: ->  (0, 6, 9),
-                    let output_value =
-                        parse_word_len_five_or_six(&word, &digit_map, &bitmap_template);
+                    let output_value = parse_word_len_five_or_six(&word, &digit_map, &bitmap_template);
                     output_value
                 }
                 7 => 8,
@@ -268,27 +239,16 @@ fn parse_each_right_line(
         .collect::<Vec<u8>>();
 
     //-->> debug print
-    let output_number = output_value_vec
-        .iter()
-        .rev()
-        .enumerate()
-        .fold(0, |acc, (i, v)| {
-            let tmp = (*v as u32) * (10_i32.pow(i as u32) as u32);
-            acc + tmp
-        });
-    println!(
-        "[*] {:?} => ({}) {:?}",
-        right, output_number, output_value_vec
-    );
+    let output_number = output_value_vec.iter().rev().enumerate().fold(0, |acc, (i, v)| {
+        let tmp = (*v as u32) * (10_i32.pow(i as u32) as u32);
+        acc + tmp
+    });
+    println!("[*] {:?} => ({}) {:?}", right, output_number, output_value_vec);
     //<<-- debug print
     output_value_vec
 }
 
-fn parse_word_len_five_or_six(
-    word: &String,
-    digit_map: &HashMap<char, u8>,
-    bitmap_template: &Vec<u8>,
-) -> u8 {
+fn parse_word_len_five_or_six(word: &String, digit_map: &HashMap<char, u8>, bitmap_template: &Vec<u8>) -> u8 {
     let chars_vec = word.chars().collect::<Vec<_>>();
     let bitmap = chars_vec.iter().enumerate().fold(0, |acc_bitmap, (_i, c)| {
         let v = digit_map.get(c).unwrap();
@@ -330,10 +290,7 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
     // println!("sorted-left input: {:?}", sorted_left);
     //-----------------------------------------------------------
     //-- len 2 -> 1 one
-    let len2 = sorted_left
-        .iter()
-        .filter(|word| word.len() == 2)
-        .collect::<Vec<_>>();
+    let len2 = sorted_left.iter().filter(|word| word.len() == 2).collect::<Vec<_>>();
     let len2 = len2.first().unwrap();
     digit_template[SegmentName::C] = len2.chars().nth(0).unwrap();
     digit_template[SegmentName::F] = len2.chars().nth(1).unwrap();
@@ -342,10 +299,7 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
 
     //-----------------------------------------------------------
     //-- len 3 -> 7 seven
-    let len3 = sorted_left
-        .iter()
-        .filter(|word| word.len() == 3)
-        .collect::<Vec<_>>();
+    let len3 = sorted_left.iter().filter(|word| word.len() == 3).collect::<Vec<_>>();
     let word_str = len3.first().unwrap();
     word_str.chars().enumerate().for_each(|(_i, v)| {
         if v != digit_template[SegmentName::C] && v != digit_template[SegmentName::F] {
@@ -357,10 +311,7 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
 
     //-----------------------------------------------------------
     //-- len 4 -> 4 four
-    let len4 = sorted_left
-        .iter()
-        .filter(|word| word.len() == 4)
-        .collect::<Vec<_>>();
+    let len4 = sorted_left.iter().filter(|word| word.len() == 4).collect::<Vec<_>>();
     let word_str = len4.first().unwrap();
     word_str.chars().enumerate().for_each(|(_i, v)| {
         if v == digit_template[SegmentName::C] || v == digit_template[SegmentName::F] {
@@ -377,10 +328,7 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
 
     //-----------------------------------------------------------
     //-- len 5 -> one of (2 two, 3 three, 5 five)
-    let len5_list = sorted_left
-        .iter()
-        .filter(|word| word.len() == 5)
-        .collect::<Vec<_>>();
+    let len5_list = sorted_left.iter().filter(|word| word.len() == 5).collect::<Vec<_>>();
 
     let three_common_chars = |list: &Vec<&String>| -> Vec<char> {
         let first_list = list[0].to_string();
@@ -409,7 +357,8 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
             // let temp = digit_template[SegmentName::D];
             // digit_template[SegmentName::D] = digit_template[SegmentName::B];
             // digit_template[SegmentName::B] = temp;
-            (digit_template[SegmentName::B], digit_template[SegmentName::D]) = (digit_template[SegmentName::D], digit_template[SegmentName::B]);
+            (digit_template[SegmentName::B], digit_template[SegmentName::D]) =
+                (digit_template[SegmentName::D], digit_template[SegmentName::B]);
         }
     };
     double_check_b_d_position(&mut digit_template, &comm_3_chars);
@@ -450,10 +399,7 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
     // println!("    -- before len = 6, {:?}", digit_template);
     //-----------------------------------------------------------
     // -- len 6 -> one of (0 zero, 6 six, 9 nine)
-    let len6_list = sorted_left
-        .iter()
-        .filter(|word| word.len() == 6)
-        .collect::<Vec<_>>();
+    let len6_list = sorted_left.iter().filter(|word| word.len() == 6).collect::<Vec<_>>();
 
     //-- adjust/swap template[C] and template[F]
     // in word.len()==6 chars(0,6,9), template[C] must be found 2 times (in 0, 9)

@@ -109,10 +109,7 @@ type InsertionRuleMap = HashMap<(char, char), char>;
 fn handle_input(filename: &str) -> (PolymerTemplateMap, InsertionRuleMap, char, char) {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     info!("[*] Input Filename: {}", filename);
@@ -174,10 +171,7 @@ fn day_14_part_one() {
     let filename = "input/day_14-sample-a.txt";
     // let filename = "input/day_14-input.txt";
     let (polymer_template, insertion_rules, first_char, last_char) = handle_input(filename);
-    info!(
-        "[] input -  polymer_template len: {}",
-        polymer_template.len()
-    );
+    info!("[] input -  polymer_template len: {}", polymer_template.len());
     info!("[] input -  polymer_template : {:?}", polymer_template);
     info!("[] input -  insertion_rules len: {}", insertion_rules.len());
 
@@ -185,13 +179,7 @@ fn day_14_part_one() {
 
     let step_limit = 10;
 
-    do_naive_way(
-        &polymer_template,
-        &insertion_rules,
-        step_limit,
-        first_char,
-        last_char,
-    );
+    do_naive_way(&polymer_template, &insertion_rules, step_limit, first_char, last_char);
 
     info!("-----------------------------------------");
     info!("--- Day 14: Extended Polymerization, Part One --- ");
@@ -201,9 +189,7 @@ fn day_14_part_one() {
 }
 
 fn count_init_polymer_chars(
-    polymer_template: &PolymerTemplateMap,
-    key_occur_count_map: &mut HashMap<char, u64>,
-    _first_char: char,
+    polymer_template: &PolymerTemplateMap, key_occur_count_map: &mut HashMap<char, u64>, _first_char: char,
     last_char: char,
 ) {
     //-- init: count the occurrence of this input string (polymer_template itself)
@@ -217,20 +203,12 @@ fn count_init_polymer_chars(
 }
 
 fn do_naive_way(
-    polymer_template: &PolymerTemplateMap,
-    insertion_rules: &InsertionRuleMap,
-    step_limit: u32,
-    first_char: char,
+    polymer_template: &PolymerTemplateMap, insertion_rules: &InsertionRuleMap, step_limit: u32, first_char: char,
     last_char: char,
 ) {
     let mut key_occur_count_map: HashMap<char, u64> = HashMap::new();
 
-    count_init_polymer_chars(
-        &polymer_template,
-        &mut key_occur_count_map,
-        first_char,
-        last_char,
-    );
+    count_init_polymer_chars(&polymer_template, &mut key_occur_count_map, first_char, last_char);
 
     count_new_char_naive(
         &polymer_template,
@@ -243,10 +221,8 @@ fn do_naive_way(
 }
 
 fn count_new_char_naive(
-    polymer_template: &PolymerTemplateMap,
-    insertion_rules: &InsertionRuleMap,
-    key_occur_count_map: &mut HashMap<char, u64>,
-    step_limit: u32,
+    polymer_template: &PolymerTemplateMap, insertion_rules: &InsertionRuleMap,
+    key_occur_count_map: &mut HashMap<char, u64>, step_limit: u32,
 ) -> PolymerTemplateMap {
     let step_limit = step_limit;
     let mut polymer_template = polymer_template.clone();
@@ -256,10 +232,7 @@ fn count_new_char_naive(
         let mut new_polymer_template = polymer_template.clone();
 
         for (_j, (tuple, tuple_count)) in polymer_template.iter().enumerate() {
-            info!(
-                "[{}] ===> input_pair: {:?}{:?} = {}",
-                i, tuple.0, tuple.1, tuple_count
-            );
+            info!("[{}] ===> input_pair: {:?}{:?} = {}", i, tuple.0, tuple.1, tuple_count);
 
             let element = insertion_rules.get(tuple).unwrap();
             *key_occur_count_map.entry(*element).or_default() += 1;
@@ -283,14 +256,8 @@ fn display_occurrence_count(key_occur_count_map: &HashMap<char, u64>) {
         .iter()
         .for_each(|(key, value)| info!("     {} ({})", key, value));
 
-    let (key_max, value_max) = key_occur_count_map
-        .iter()
-        .max_by_key(|entry| entry.1)
-        .unwrap();
-    let (key_min, value_min) = key_occur_count_map
-        .iter()
-        .min_by_key(|entry| entry.1)
-        .unwrap();
+    let (key_max, value_max) = key_occur_count_map.iter().max_by_key(|entry| entry.1).unwrap();
+    let (key_min, value_min) = key_occur_count_map.iter().min_by_key(|entry| entry.1).unwrap();
     info!("[ ] [MAX value] : {} ({}) ", key_max, value_max);
     info!("[ ] [min value] : {} ({}) ", key_min, value_min);
     info!("[ ] [MAX_value - min_value] : {} ", value_max - value_min);

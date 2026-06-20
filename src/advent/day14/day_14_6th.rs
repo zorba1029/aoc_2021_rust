@@ -104,10 +104,7 @@ type InsertionRuleMap = HashMap<(char, char), char>;
 fn handle_input(filename: &str) -> (PolymerCounterMap, InsertionRuleMap, char, char) {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
     let input_template = lines[0].chars().collect::<Vec<char>>();
     let first_char = input_template.first().unwrap();
     let last_char = input_template.last().unwrap();
@@ -165,10 +162,7 @@ fn day_14_part_one() {
     // let filename = "input/day_14-sample-a.txt";
     let filename = "input/day_14-input.txt";
     let (polymer_counter, insertion_rules, first_char, last_char) = handle_input(filename);
-    info!(
-        "[] input -  polymer_template len: {}",
-        polymer_counter.len()
-    );
+    info!("[] input -  polymer_template len: {}", polymer_counter.len());
     info!("[] input -  polymer_template : {:?}", polymer_counter);
     info!("[] input -  insertion_rules len: {}", insertion_rules.len());
     let polymer_counter_1 = polymer_counter.clone();
@@ -182,13 +176,7 @@ fn day_14_part_one() {
     display_polymer_count_status(&polymer_counter, &insertion_rules, first_char, last_char);
 
     let step_limit = 10;
-    let polymer_counter = run_task(
-        &polymer_counter,
-        &insertion_rules,
-        step_limit,
-        first_char,
-        last_char,
-    );
+    let polymer_counter = run_task(&polymer_counter, &insertion_rules, step_limit, first_char, last_char);
     let counts_with_first_char = get_counts_with_first_char(&polymer_counter, first_char);
     let counts_with_last_chart = get_counts_with_last_char(&polymer_counter, last_char);
     display_polymer_counter_map(&polymer_counter, step_limit);
@@ -205,13 +193,7 @@ fn day_14_part_one() {
     info!("-----------------------------------------");
 
     let step_limit = step_limit + 30;
-    let polymer_counter_1 = run_task(
-        &polymer_counter_1,
-        &insertion_rules,
-        step_limit,
-        first_char,
-        last_char,
-    );
+    let polymer_counter_1 = run_task(&polymer_counter_1, &insertion_rules, step_limit, first_char, last_char);
     let counts_with_first_char = get_counts_with_first_char(&polymer_counter_1, first_char);
     let counts_with_last_chart = get_counts_with_last_char(&polymer_counter_1, last_char);
     display_polymer_counter_map(&polymer_counter_1, step_limit);
@@ -223,18 +205,12 @@ fn day_14_part_one() {
     );
     info!("-----------------------------------------");
     let elapsed = now.elapsed();
-    info!(
-        "[**] Complete time: {:6.2}ms",
-        elapsed.as_micros() as f64 / 1000.
-    );
+    info!("[**] Complete time: {:6.2}ms", elapsed.as_micros() as f64 / 1000.);
     info!("-----------------------------------------");
 }
 
 fn run_task(
-    polymer_counter: &PolymerCounterMap,
-    insertion_rules: &InsertionRuleMap,
-    step_limit: u32,
-    first_char: char,
+    polymer_counter: &PolymerCounterMap, insertion_rules: &InsertionRuleMap, step_limit: u32, first_char: char,
     _last_char: char,
 ) -> PolymerCounterMap {
     let mut polymer_counter = polymer_counter.clone();
@@ -248,10 +224,7 @@ fn run_task(
 
         for (j, (tuple, tuple_count)) in polymer_counter.iter().enumerate() {
             let rhs = insertion_rules.get(tuple).unwrap();
-            debug!(
-                "  input [{}][{}] {:?} --> {}, {} [PREV]",
-                i, j, tuple, rhs, tuple_count
-            );
+            debug!("  input [{}][{}] {:?} --> {}, {} [PREV]", i, j, tuple, rhs, tuple_count);
 
             let new_tuple0 = (tuple.0, *rhs);
             let new_tuple1 = (*rhs, tuple.1);
@@ -350,10 +323,7 @@ fn get_counts_with_last_char(polymer_counter: &PolymerCounterMap, last_char: cha
 }
 
 fn tmp_counts_with_first_char(polymer_counter: &PolymerCounterMap, first_char: char) {
-    debug!(
-        "  [TMP] ----- Count chars (first char: '{}') -----",
-        first_char
-    );
+    debug!("  [TMP] ----- Count chars (first char: '{}') -----", first_char);
     let mut count: HashMap<char, usize> = HashMap::new();
 
     // count the first input char: +1, i.e: NNCB ==> count(N)+1
@@ -377,23 +347,14 @@ fn display_insertion_rules(insertion_rules: &InsertionRuleMap) {
 
 // -- type PolymerCounterMap = HashMap<(char,char),usize>;
 fn display_polymer_counter_map(polymer_counter: &PolymerCounterMap, step_count: u32) {
-    debug!(
-        "[STEP: {}] ========= Polymer Counter Map =========",
-        step_count
-    );
-    polymer_counter
-        .iter()
-        .enumerate()
-        .for_each(|(index, (tuple, count))| {
-            debug!("        [{:2}] {:?} => {}", index, tuple, count);
-        });
+    debug!("[STEP: {}] ========= Polymer Counter Map =========", step_count);
+    polymer_counter.iter().enumerate().for_each(|(index, (tuple, count))| {
+        debug!("        [{:2}] {:?} => {}", index, tuple, count);
+    });
 }
 
 fn display_polymer_count_status(
-    polymer_counter: &PolymerCounterMap,
-    insertion_rules: &InsertionRuleMap,
-    first_char: char,
-    last_char: char,
+    polymer_counter: &PolymerCounterMap, insertion_rules: &InsertionRuleMap, first_char: char, last_char: char,
 ) {
     info!(
         "[ ] ===== Polymer Counter Map Status (first: {}, last: {}) =====",
@@ -401,9 +362,6 @@ fn display_polymer_count_status(
     );
     for (j, (tuple, count)) in polymer_counter.iter().enumerate() {
         let rhs = insertion_rules.get(tuple).unwrap();
-        info!(
-            "  [{}] ({},{}) -> {}, {} (count)",
-            j, tuple.0, tuple.1, rhs, count
-        );
+        info!("  [{}] ({},{}) -> {}, {} (count)", j, tuple.0, tuple.1, rhs, count);
     }
 }

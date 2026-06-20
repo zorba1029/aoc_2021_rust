@@ -76,11 +76,7 @@ impl PathMatrix {
         self.maps[j][i] = 1;
     }
 
-    pub fn init_input_data(
-        &mut self,
-        input_lines: &Vec<(String, String)>,
-        name_to_index: &HashMap<String, i16>,
-    ) {
+    pub fn init_input_data(&mut self, input_lines: &Vec<(String, String)>, name_to_index: &HashMap<String, i16>) {
         //-- 1) adjacency matrix
         input_lines.iter().enumerate().for_each(|(i, (from, to))| {
             info!(
@@ -211,20 +207,12 @@ impl DFSAllPath for PathMatrix {
 }
 
 pub trait AllPathSmallTwice {
-    fn start_dfs_all_small_twice(
-        &mut self,
-        name_to_index: &HashMap<String, i16>,
-        path_count: &mut u32,
-    ) -> u32;
+    fn start_dfs_all_small_twice(&mut self, name_to_index: &HashMap<String, i16>, path_count: &mut u32) -> u32;
     fn dfs_all_small_twice(&mut self, src: usize, dest: usize, path_count: &mut u32) -> u32;
 }
 
 impl AllPathSmallTwice for PathMatrix {
-    fn start_dfs_all_small_twice(
-        &mut self,
-        name_to_index: &HashMap<String, i16>,
-        path_count: &mut u32,
-    ) -> u32 {
+    fn start_dfs_all_small_twice(&mut self, name_to_index: &HashMap<String, i16>, path_count: &mut u32) -> u32 {
         self.visited[name_to_index["start"] as usize] += 1;
         self.stack.push(name_to_index["start"] as i16);
         self.dfs_all_small_twice(

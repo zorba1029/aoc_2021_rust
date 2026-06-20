@@ -178,11 +178,7 @@ impl PathMatrix {
         self.maps[j][i] = 1;
     }
 
-    fn init_input_data(
-        &mut self,
-        input_lines: &Vec<(String, String)>,
-        name_to_index: &HashMap<String, i16>,
-    ) {
+    fn init_input_data(&mut self, input_lines: &Vec<(String, String)>, name_to_index: &HashMap<String, i16>) {
         //-- 1) adjacency matrix
         input_lines.iter().enumerate().for_each(|(i, (from, to))| {
             info!(
@@ -380,20 +376,12 @@ impl DFSAllPath for PathMatrix {
 }
 
 trait AllPathSmallTwice {
-    fn start_dfs_all_small_twice(
-        &mut self,
-        name_to_index: &HashMap<String, i16>,
-        path_count: &mut i16,
-    ) -> i16;
+    fn start_dfs_all_small_twice(&mut self, name_to_index: &HashMap<String, i16>, path_count: &mut i16) -> i16;
     fn dfs_all_small_twice(&mut self, src: usize, dest: usize, path_count: &mut i16) -> i16;
 }
 
 impl AllPathSmallTwice for PathMatrix {
-    fn start_dfs_all_small_twice(
-        &mut self,
-        name_to_index: &HashMap<String, i16>,
-        path_count: &mut i16,
-    ) -> i16 {
+    fn start_dfs_all_small_twice(&mut self, name_to_index: &HashMap<String, i16>, path_count: &mut i16) -> i16 {
         self.visited[name_to_index["start"] as usize] += 1;
         self.stack.push(name_to_index["start"] as i16);
         self.dfs_all_small_twice(
@@ -595,10 +583,7 @@ fn day_12_part_two() {
 fn handle_input_normalize(filename: &str) -> Vec<(String, String)> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     info!("[*] Input Filename: {}", filename);
@@ -664,10 +649,7 @@ fn node_name_to_index(input_lines: &Vec<(String, String)>) -> HashMap<String, i1
 
 fn display_node_name_index(name_to_index: &HashMap<String, i16>) {
     //-- chunks_table vector of vector
-    name_to_index
-        .iter()
-        .enumerate()
-        .for_each(|(_i, (key, value))| {
-            info!("    map[{}] -> {}", key, value);
-        });
+    name_to_index.iter().enumerate().for_each(|(_i, (key, value))| {
+        info!("    map[{}] -> {}", key, value);
+    });
 }

@@ -69,10 +69,8 @@ struct InitDataType {
 
 impl InitDataType {
     fn new(
-        dist: HashMap<(i32, i32), usize>,
-        prev: HashMap<(i32, i32), Option<(i32, i32)>>,
-        priority_queue: PriorityQueue<(i32, i32), Reverse<usize>>,
-        input_graph: HashMap<(i32, i32), usize>,
+        dist: HashMap<(i32, i32), usize>, prev: HashMap<(i32, i32), Option<(i32, i32)>>,
+        priority_queue: PriorityQueue<(i32, i32), Reverse<usize>>, input_graph: HashMap<(i32, i32), usize>,
     ) -> Self {
         Self {
             dist,
@@ -246,13 +244,9 @@ fn make_init_data_with_priority(input_lines: &[Vec<usize>], tile_count: i32) -> 
 const NEIGHBORS: &[(i32, i32); 4] = &[(1, 0), (0, 1), (-1, 0), (0, -1)];
 
 fn dijkstra_search_with_priority(
-    input_graph: &HashMap<(i32, i32), usize>,
-    input_lines: &[Vec<usize>],
-    dist: &mut HashMap<(i32, i32), usize>,
-    prev: &mut HashMap<(i32, i32), Option<(i32, i32)>>,
-    priority_queue: &mut PriorityQueue<(i32, i32), Reverse<usize>>,
-    visited: &mut HashMap<(i32, i32), usize>,
-    tile_count: i32,
+    input_graph: &HashMap<(i32, i32), usize>, input_lines: &[Vec<usize>], dist: &mut HashMap<(i32, i32), usize>,
+    prev: &mut HashMap<(i32, i32), Option<(i32, i32)>>, priority_queue: &mut PriorityQueue<(i32, i32), Reverse<usize>>,
+    visited: &mut HashMap<(i32, i32), usize>, tile_count: i32,
 ) -> usize {
     let width: i32 = tile_count * input_lines[0].len() as i32;
     let height: i32 = tile_count * input_lines.len() as i32;
@@ -281,11 +275,7 @@ fn dijkstra_search_with_priority(
         loop_count += 1;
     }
 
-    info!(
-        "PREV[target={:?}] = {:?}",
-        &dest_node,
-        prev.get(&dest_node).unwrap()
-    );
+    info!("PREV[target={:?}] = {:?}", &dest_node, prev.get(&dest_node).unwrap());
     info!("DIST[target={:?}] = {:?}", dest_node, dist.get(&dest_node));
     info!("Total Loop Count = [{}]", loop_count);
     info!("Shortest Path Value  = {}", *dist.get(&dest_node).unwrap());
@@ -295,10 +285,8 @@ fn dijkstra_search_with_priority(
 
 #[allow(dead_code)]
 fn display_shortest_path(
-    prev: &HashMap<(i32, i32), Option<(i32, i32)>>,
-    dist: &HashMap<(i32, i32), usize>,
-    visited: &HashMap<(i32, i32), usize>,
-    dest_node: &(i32, i32),
+    prev: &HashMap<(i32, i32), Option<(i32, i32)>>, dist: &HashMap<(i32, i32), usize>,
+    visited: &HashMap<(i32, i32), usize>, dest_node: &(i32, i32),
 ) {
     let mut s_path: Vec<(i32, i32)> = Vec::new();
     let source_node: (i32, i32) = (0, 0);

@@ -17,10 +17,7 @@ pub fn do_day_6() {
 fn handle_input(filename: &str) -> Vec<usize> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     println!("[*] Input Filename: {}", filename);
@@ -144,10 +141,7 @@ fn day_6_part_two_old() {
     let filename = "input/day_6-input.txt";
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     println!("[*] Input Filename: {}", filename);

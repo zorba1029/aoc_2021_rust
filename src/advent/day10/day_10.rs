@@ -70,10 +70,7 @@ fn day_10_part_two() {
     let middle_score = sorted_completion_scores[middle_index];
 
     println!("-----------------------------------------");
-    println!(
-        "Middle Completion Score: {}, index:[{}]",
-        middle_score, middle_index
-    );
+    println!("Middle Completion Score: {}, index:[{}]", middle_score, middle_index);
     println!("-----------------------------------------");
 }
 
@@ -157,10 +154,7 @@ fn day_10_part_two() {
 fn handle_input(filename: &str) -> Vec<Vec<char>> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     println!("[*] Input Filename: {}", filename);
@@ -527,17 +521,13 @@ fn make_completion_lines(incomplete_lines: Vec<Vec<char>>) -> Vec<Vec<char>> {
             // valid_lines.push(line.to_vec());
         } else {
             // println!("  --> incomplete line: ");
-            stack
-                .iter()
-                .rev()
-                .enumerate()
-                .for_each(|(_i, top_ch)| match *top_ch {
-                    '(' => completion_stack.push(')'),
-                    '[' => completion_stack.push(']'),
-                    '{' => completion_stack.push('}'),
-                    '<' => completion_stack.push('>'),
-                    _ => {}
-                });
+            stack.iter().rev().enumerate().for_each(|(_i, top_ch)| match *top_ch {
+                '(' => completion_stack.push(')'),
+                '[' => completion_stack.push(']'),
+                '{' => completion_stack.push('}'),
+                '<' => completion_stack.push('>'),
+                _ => {}
+            });
         }
 
         completion_lines.push(completion_stack.to_vec());

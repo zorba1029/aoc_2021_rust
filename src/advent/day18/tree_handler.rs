@@ -1,7 +1,8 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 // use log::debug;
-use crate::advent::day18::tokenizer::Token;
+// use crate::advent::day18::tokenizer::Token;
+use super::tokenizer::Token;
 
 pub(crate) type TreeNodePtr = Rc<RefCell<TreeNode>>;
 
@@ -78,11 +79,11 @@ impl TreeNode {
     }
 
     // add two trees together.
-    // -- always reference the root node and call the add() function which will 
+    // -- always reference the root node and call the add() function which will
     //call the reduce() function.
     pub(crate) fn add(left: TreeNodePtr, right: TreeNodePtr) -> TreeNodePtr {
         // debug!("add(): left = {}, right = {}", tree_to_list(&left), tree_to_list(&right));
-        let new_root = TreeNode::new(None); 
+        let new_root = TreeNode::new(None);
         new_root.borrow_mut().left_child = Some(left);
         new_root.borrow_mut().right_child = Some(right);
         // debug!("add(): new_root = {}", tree_to_list(&new_root));
@@ -90,8 +91,8 @@ impl TreeNode {
         new_root
     }
 
-    // reduce the tree by exploding and splitting. 
-    // -- always reference the root node and call the reduce() function which will 
+    // reduce the tree by exploding and splitting.
+    // -- always reference the root node and call the reduce() function which will
     // call the explode() and split() functions.
     fn reduce(&mut self) {
         loop {
@@ -126,9 +127,9 @@ impl TreeNode {
 
             // 왼쪽 자식과 오른쪽 자식의 값이 모두 있는 경우 처리
             if let (Some(l), Some(r)) = (left_value, right_value) {
-                // 현재 노드를 값이 0인 리프 노드로 변경 (explode!) 
-                //- Explode: 이 쌍을 0으로 교체, 
-                //- 핵심: 자식의 값을 바꾸는 게 아니라, 부모(self)를 완전히 다른 노드(리프 노드 0)로 바꾸는 것입니다! 
+                // 현재 노드를 값이 0인 리프 노드로 변경 (explode!)
+                //- Explode: 이 쌍을 0으로 교체,
+                //- 핵심: 자식의 값을 바꾸는 게 아니라, 부모(self)를 완전히 다른 노드(리프 노드 0)로 바꾸는 것입니다!
                 self.value = Some(0);
                 self.left_child = None;
                 self.right_child = None;
@@ -137,34 +138,34 @@ impl TreeNode {
             }
         }
         // depth < 4 인 경우 재귀적으로 탐색 - 즉, 현재 level에서 다음 level로 (depth + 1) 이동
-        else {
-            // 1. 왼쪽 자식을 먼저 재귀 호출
-            if let (true, l, r) = left_child.borrow_mut().explode(depth + 1) {
-                // 오른쪽 형제 노드의 가장 왼쪽 숫자에 r을 더함
-                if let Some(r) = r {
-                    // the right_child is a sibling of the left_child, so we can add the value (r)
-                    // to the leftmost leaf node of the right child's subtree.
-                    right_child.borrow_mut().add_leftmost(r);
-                }
-                return (true, l, None);
+        // else {
+        // 1. 왼쪽 자식을 먼저 재귀 호출
+        if let (true, l, r) = left_child.borrow_mut().explode(depth + 1) {
+            // 오른쪽 형제 노드의 가장 왼쪽 숫자에 r을 더함
+            if let Some(r) = r {
+                // the right_child is a sibling of the left_child, so we can add the value (r)
+                // to the leftmost leaf node of the right child's subtree.
+                right_child.borrow_mut().add_leftmost(r);
             }
-
-            // 2. 왼쪽에서 폭발 없으면 오른쪽 자식을 재귀 호출
-            if let (true, l, r) = right_child.borrow_mut().explode(depth + 1) {
-                // 왼쪽 형제 노드의 가장 오른쪽 숫자에 l을 더함
-                if let Some(l) = l {
-                    // the left_child is a sibling of the right_child, so we can add the value (l)
-                    // to the rightmost leaf node of the left child's subtree.
-                    left_child.borrow_mut().add_rightmost(l);
-                }
-                return (true, None, r);
-            }
+            return (true, l, None);
         }
+
+        // 2. 왼쪽에서 폭발 없으면 오른쪽 자식을 재귀 호출
+        if let (true, l, r) = right_child.borrow_mut().explode(depth + 1) {
+            // 왼쪽 형제 노드의 가장 오른쪽 숫자에 l을 더함
+            if let Some(l) = l {
+                // the left_child is a sibling of the right_child, so we can add the value (l)
+                // to the rightmost leaf node of the left child's subtree.
+                left_child.borrow_mut().add_rightmost(l);
+            }
+            return (true, None, r);
+        }
+        // }
 
         (false, None, None)
     }
 
-    // 트리 (현재 node)의 가장 왼쪽 숫자에 value를 더함 
+    // 트리 (현재 node)의 가장 왼쪽 숫자에 value를 더함
     // -- left most leaf node of the node
     fn add_leftmost(&mut self, value: i32) {
         // debug!("add_leftmost: value = {}", value);
@@ -175,7 +176,7 @@ impl TreeNode {
         }
     }
 
-    // 트리 (현재 node)의 가장 오른쪽 숫자에 value를 더함 
+    // 트리 (현재 node)의 가장 오른쪽 숫자에 value를 더함
     // -- right most leaf node of the node
     fn add_rightmost(&mut self, value: i32) {
         // debug!("add_rightmost: value = {}", value);
@@ -220,16 +221,8 @@ impl TreeNode {
         }
 
         // Otherwise, calculate: 3 * left_magnitude + 2 * right_magnitude
-        let left_mag = self
-            .left_child
-            .as_ref()
-            .map(|left| left.borrow().magnitude())
-            .unwrap_or(0);
-        let right_mag = self
-            .right_child
-            .as_ref()
-            .map(|right| right.borrow().magnitude())
-            .unwrap_or(0);
+        let left_mag = self.left_child.as_ref().map(|left| left.borrow().magnitude()).unwrap_or(0);
+        let right_mag = self.right_child.as_ref().map(|right| right.borrow().magnitude()).unwrap_or(0);
 
         3 * left_mag + 2 * right_mag
     }
@@ -263,21 +256,21 @@ pub(crate) fn tree_to_list(node: &TreeNodePtr) -> String {
 // Deep copy of a tree (필수: add()가 원본 트리를 수정하므로)
 pub(crate) fn clone_tree(node: &TreeNodePtr) -> TreeNodePtr {
     let borrowed = node.borrow();
-    
+
     if let Some(value) = borrowed.value {
         // 리프 노드: 새 노드 생성
         TreeNode::new(Some(value))
     } else {
         // 내부 노드: 자식들을 재귀적으로 복제
         let new_node = TreeNode::new(None);
-        
+
         if let Some(ref left) = borrowed.left_child {
             new_node.borrow_mut().left_child = Some(clone_tree(left));
         }
         if let Some(ref right) = borrowed.right_child {
             new_node.borrow_mut().right_child = Some(clone_tree(right));
         }
-        
+
         new_node
     }
 }

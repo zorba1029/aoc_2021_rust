@@ -9,23 +9,14 @@ use std::io::{BufRead, BufReader};
 fn handle_input(filename: &str) -> ((i32, i32), (i32, i32)) {
     let file = File::open(filename).expect("Couldn't open input file.");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
     let single_line = &lines[0];
 
     info!("[*] Input Filename: {}", filename);
     info!("[*] Input line: {}", single_line);
 
-    let items = single_line
-        .split(":")
-        .map(|item| item.trim())
-        .collect::<Vec<_>>();
-    let items = items[1]
-        .split(",")
-        .map(|item| item.trim())
-        .collect::<Vec<_>>();
+    let items = single_line.split(":").map(|item| item.trim()).collect::<Vec<_>>();
+    let items = items[1].split(",").map(|item| item.trim()).collect::<Vec<_>>();
     let x_range = items[0].split("=").collect::<Vec<_>>();
     let y_range = items[1].split("=").collect::<Vec<_>>();
 
@@ -101,9 +92,7 @@ fn find_initial_velocity(target_x: &(i32, i32), target_y: &(i32, i32)) -> (i32, 
     for x_cur_init_vel in x_vel_range {
         for y_cur_init_vel in y_vel_range.clone() {
             // info!("[x_cur_init_vel, y_cur_init_vel] = ({x_cur_init_vel},{y_cur_init_vel})");
-            if let Some(y_local_max) =
-                compute_next_values(target_x, target_y, &x_cur_init_vel, &y_cur_init_vel)
-            {
+            if let Some(y_local_max) = compute_next_values(target_x, target_y, &x_cur_init_vel, &y_cur_init_vel) {
                 found_count += 1;
                 if y_local_max > global_y_max {
                     global_y_max = y_local_max;
@@ -124,10 +113,7 @@ fn find_initial_velocity(target_x: &(i32, i32), target_y: &(i32, i32)) -> (i32, 
 }
 
 fn compute_next_values(
-    target_x: &(i32, i32),
-    target_y: &(i32, i32),
-    x_cur_init_vel: &i32,
-    y_cur_init_vel: &i32,
+    target_x: &(i32, i32), target_y: &(i32, i32), x_cur_init_vel: &i32, y_cur_init_vel: &i32,
 ) -> Option<i32> {
     let (mut x_pos, mut y_pos) = (0, 0);
     let (mut x_vel, mut y_vel) = (*x_cur_init_vel, *y_cur_init_vel);
@@ -146,13 +132,20 @@ fn compute_next_values(
         }
         // debug!("     (x_pos, y_pos) = ({x_pos},{y_pos})");
 
-        if (target_x.0 <= x_pos && x_pos <= target_x.1)
-            && (target_y.0 <= y_pos && y_pos <= target_y.1)
-        {
-            debug!("FOUND [{}] -- [x_cur_init_vel, y_cur_init_vel] = ({},{})", loop_count, x_cur_init_vel, y_cur_init_vel);
+        if (target_x.0 <= x_pos && x_pos <= target_x.1) && (target_y.0 <= y_pos && y_pos <= target_y.1) {
+            debug!(
+                "FOUND [{}] -- [x_cur_init_vel, y_cur_init_vel] = ({},{})",
+                loop_count, x_cur_init_vel, y_cur_init_vel
+            );
             debug!("                              **(x_vel, y_vel) = ({},{})", x_vel, y_vel);
-            debug!("  (x_pos, y_pos) = ({x_pos},{y_pos}) IN target_x=({:?}), target_y=({:?})", target_x, target_y );
-            debug!("  y_local_max_pos = {}, ({},{})", y_local_max, x_of_y_local_max, y_local_max );
+            debug!(
+                "  (x_pos, y_pos) = ({x_pos},{y_pos}) IN target_x=({:?}), target_y=({:?})",
+                target_x, target_y
+            );
+            debug!(
+                "  y_local_max_pos = {}, ({},{})",
+                y_local_max, x_of_y_local_max, y_local_max
+            );
             return Some(y_local_max);
         }
 

@@ -17,10 +17,7 @@ pub fn do_day_5() {
 fn handle_input(filename: &str) -> Vec<String> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     println!("[*] Input Filename: {}", filename);
@@ -43,10 +40,7 @@ fn day_5_part_one() {
         .map(|items| {
             let from = items[0].trim().split(',').collect::<Vec<_>>();
             let to = items[1].trim().split(',').collect::<Vec<_>>();
-            let (x1, y1) = (
-                from[0].parse::<i32>().unwrap(),
-                from[1].parse::<i32>().unwrap(),
-            );
+            let (x1, y1) = (from[0].parse::<i32>().unwrap(), from[1].parse::<i32>().unwrap());
             let (x2, y2) = (to[0].parse::<i32>().unwrap(), to[1].parse::<i32>().unwrap());
             [(x1, y1), (x2, y2)]
         })
@@ -73,20 +67,16 @@ fn day_5_part_one() {
     //     .collect::<Vec<_>>();
     // println!("[*] to_lines: {:?}", to_lines);
 
-    let x_size = vent_lines
-        .iter()
-        .fold(i32::MIN, |acc, tuple| {
-            let max = acc.max(tuple[0].0.max(tuple[1].0));
-            max
-        });
+    let x_size = vent_lines.iter().fold(i32::MIN, |acc, tuple| {
+        let max = acc.max(tuple[0].0.max(tuple[1].0));
+        max
+    });
     println!("[*] x_size: {:?}", x_size);
 
-    let y_size = vent_lines
-        .iter()
-        .fold(i32::MIN, |acc, tuple| {
-            let max = acc.max(tuple[0].1.max(tuple[1].1));
-            max
-        });
+    let y_size = vent_lines.iter().fold(i32::MIN, |acc, tuple| {
+        let max = acc.max(tuple[0].1.max(tuple[1].1));
+        max
+    });
     println!("[*] y_size: {:?}", y_size);
 
     let mut xy_diagram: Vec<i32> = vec![0; (x_size + 1) as usize * (y_size + 1) as usize];
@@ -129,10 +119,7 @@ fn day_5_part_one() {
         for y in 0..=y_size {
             let value = xy_diagram[(x as usize * x_size as usize) + y as usize];
             if value > 0 {
-                print!(
-                    "{:1}",
-                    xy_diagram[(x as usize * x_size as usize) + y as usize]
-                );
+                print!("{:1}", xy_diagram[(x as usize * x_size as usize) + y as usize]);
                 if value >= 2 {
                     total_overlap_points_count += 1;
                 }
@@ -142,7 +129,7 @@ fn day_5_part_one() {
         }
         println!();
     }
-    println!( "[**] Total Overlap Points Count = {}", total_overlap_points_count );
+    println!("[**] Total Overlap Points Count = {}", total_overlap_points_count);
     //-- FOR  "input/day_5-input.txt",
     // [**] Total Overlap Points Count = 6572
 }
@@ -161,10 +148,7 @@ fn day_5_part_two() {
         .map(|items| {
             let from = items[0].trim().split(',').collect::<Vec<_>>();
             let to = items[1].trim().split(',').collect::<Vec<_>>();
-            let (x1, y1) = (
-                from[0].parse::<i32>().unwrap(),
-                from[1].parse::<i32>().unwrap(),
-            );
+            let (x1, y1) = (from[0].parse::<i32>().unwrap(), from[1].parse::<i32>().unwrap());
             let (x2, y2) = (to[0].parse::<i32>().unwrap(), to[1].parse::<i32>().unwrap());
             [(x1, y1), (x2, y2)]
         })
@@ -207,14 +191,12 @@ fn day_5_part_two() {
     //         max
     //     });
     // println!("[*] y_size: {:?}", y_size);
-    
-    let (x_size, y_size) = vent_lines
-        .iter()
-        .fold((i32::MIN, i32::MIN), |acc, tuple|     {
-            let x_max = acc.0.max(tuple[0].0.max(tuple[1].0));
-            let y_max = acc.1.max(tuple[0].1.max(tuple[1].1));
-            (x_max, y_max)
-        });
+
+    let (x_size, y_size) = vent_lines.iter().fold((i32::MIN, i32::MIN), |acc, tuple| {
+        let x_max = acc.0.max(tuple[0].0.max(tuple[1].0));
+        let y_max = acc.1.max(tuple[0].1.max(tuple[1].1));
+        (x_max, y_max)
+    });
     println!("[*] x_size: {:?}, y_size: {:?}", x_size, y_size);
 
     let mut xy_diagram: Vec<i32> = vec![0; (x_size + 1) as usize * (y_size + 1) as usize];
@@ -261,10 +243,7 @@ fn day_5_part_two() {
         } else {
             false
         };
-        println!(
-            "({},{}) -> ({},{}), diagonal: {}",
-            x1, y1, x2, y2, is_diagonal
-        );
+        println!("({},{}) -> ({},{}), diagonal: {}", x1, y1, x2, y2, is_diagonal);
 
         if is_diagonal == true {
             if *x1 > *x2 {
@@ -332,10 +311,7 @@ fn day_5_part_two() {
         for y in 0..=y_size {
             let value = xy_diagram[(x as usize * x_size as usize) + y as usize];
             if value > 0 {
-                print!(
-                    "{:1}",
-                    xy_diagram[(x as usize * x_size as usize) + y as usize]
-                );
+                print!("{:1}", xy_diagram[(x as usize * x_size as usize) + y as usize]);
                 if value >= 2 {
                     total_overlap_points_count += 1;
                 }
@@ -345,10 +321,7 @@ fn day_5_part_two() {
         }
         println!();
     }
-    println!(
-        "[**] Total Overlap Points Count = {}",
-        total_overlap_points_count
-    );
+    println!("[**] Total Overlap Points Count = {}", total_overlap_points_count);
     //-- FOR  "input/day_5-sample.txt",
     // [**] Total Overlap Points Count = 13
     // 1.1....11.

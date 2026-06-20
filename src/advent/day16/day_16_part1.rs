@@ -1,57 +1,58 @@
 // advent/day_16.rs - part one
 use log::{debug, error, info};
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-// use lazy_static::lazy_static;
-// lazy_static!{
-//     static ref HEX2BIN: HashMap<char, &'static str> = [
-//         ('0', "0000"),
-//         ('1', "0001"),
-//         ('2', "0010"),
-//         ('3', "0011"),
-//         ('4', "0100"),
-//         ('5', "0101"),
-//         ('6', "0110"),
-//         ('7', "0111"),
-//         ('8', "1000"),
-//         ('9', "1001"),
-//         ('A', "1010"),
-//         ('B', "1011"),
-//         ('C', "1100"),
-//         ('D', "1101"),
-//         ('E', "1110"),
-//         ('F', "1111"),
-//         ].iter().copied().collect();
-//  }
+use lazy_static::lazy_static;
+lazy_static! {
+    static ref HEX2BIN: HashMap<char, &'static str> = [
+        ('0', "0000"),
+        ('1', "0001"),
+        ('2', "0010"),
+        ('3', "0011"),
+        ('4', "0100"),
+        ('5', "0101"),
+        ('6', "0110"),
+        ('7', "0111"),
+        ('8', "1000"),
+        ('9', "1001"),
+        ('A', "1010"),
+        ('B', "1011"),
+        ('C', "1100"),
+        ('D', "1101"),
+        ('E', "1110"),
+        ('F', "1111"),
+    ]
+    .iter()
+    .copied()
+    .collect();
+}
 
-use phf::phf_map;
-static HEX2BIN: phf::Map<char, &'static str> = phf_map! {
-        '0' => "0000",
-        '1' => "0001",
-        '2' => "0010",
-        '3' => "0011",
-        '4' => "0100",
-        '5' => "0101",
-        '6' => "0110",
-        '7' => "0111",
-        '8' => "1000",
-        '9' => "1001",
-        'A' => "1010",
-        'B' => "1011",
-        'C' => "1100",
-        'D' => "1101",
-        'E' => "1110",
-        'F' => "1111",
-};
+// use phf::phf_map;
+// static HEX2BIN: phf::Map<char, &'static str> = phf_map! {
+//         '0' => "0000",
+//         '1' => "0001",
+//         '2' => "0010",
+//         '3' => "0011",
+//         '4' => "0100",
+//         '5' => "0101",
+//         '6' => "0110",
+//         '7' => "0111",
+//         '8' => "1000",
+//         '9' => "1001",
+//         'A' => "1010",
+//         'B' => "1011",
+//         'C' => "1100",
+//         'D' => "1101",
+//         'E' => "1110",
+//         'F' => "1111",
+// };
 
 fn handle_input(filename: &str) -> String {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     info!("[*] Input Filename: {}", filename);
 
@@ -151,25 +152,43 @@ fn parse_packets(input_line: &str) -> Vec<u32> {
         // type_ID == 4, literal packet
         // otherwise, operator packet
         if type_id == 4 {
-            info!( "     |-- LITERAL PACKET |{}| ------------", &input_slice[new_pos + 3..new_pos + 6] );
+            info!(
+                "     |-- LITERAL PACKET |{}| ------------",
+                &input_slice[new_pos + 3..new_pos + 6]
+            );
             literal_packet_handler(input_slice, &mut new_pos, &mut version_vec);
         } else {
             // type ID != 4,  operator packets
-            info!( "     |== OPERATOR PACKET ({}) -----------", &input_slice[new_pos + 3..new_pos + 6] );
-            debug!( "     [I] Type LEN ID (1/0) = {}, |{}|, start_pos = ({})",
-                type_len_id, &input_slice[new_pos + 6..new_pos + 7], new_pos + 6 );
+            info!(
+                "     |== OPERATOR PACKET ({}) -----------",
+                &input_slice[new_pos + 3..new_pos + 6]
+            );
+            debug!(
+                "     [I] Type LEN ID (1/0) = {}, |{}|, start_pos = ({})",
+                type_len_id,
+                &input_slice[new_pos + 6..new_pos + 7],
+                new_pos + 6
+            );
             operator_packet_handler(input_slice, &mut new_pos, &mut version_vec);
         }
 
         if new_pos >= input_slice.len() {
-            info!( "[^--^] [All Inputs Handled], new_pos = {}, input_line.len() = {}", new_pos, input_slice.len());
+            info!(
+                "[^--^] [All Inputs Handled], new_pos = {}, input_line.len() = {}",
+                new_pos,
+                input_slice.len()
+            );
             break;
         }
 
         //-- update new input_slice
         if input_slice[new_pos..].len() <= 6 {
-            info!("[^--^] [All Inputs Handled] new_pos = {}, remained inputs = {:?}, input_line.len() = {}",
-                    new_pos, &input_slice[new_pos..], input_slice.len());
+            info!(
+                "[^--^] [All Inputs Handled] new_pos = {}, remained inputs = {:?}, input_line.len() = {}",
+                new_pos,
+                &input_slice[new_pos..],
+                input_slice.len()
+            );
             break;
         } else {
             // info!("[*] current input = {:?}", &input_slice[old_pos..new_pos]);

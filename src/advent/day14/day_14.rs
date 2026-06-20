@@ -21,10 +21,7 @@ use std::io::BufReader;
 fn handle_input(filename: &str) -> (Vec<char>, HashMap<String, char>) {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     info!("[*] Input Filename: {}", filename);
@@ -64,18 +61,14 @@ fn day_14_part_one() {
     // let filename = "input/day_14-sample-a.txt";
     let filename = "input/day_14-input.txt";
     let (polymer_template, insertion_rules) = handle_input(filename);
-    info!(
-        "[] input -  polymer_template len: {}",
-        polymer_template.len()
-    );
+    info!("[] input -  polymer_template len: {}", polymer_template.len());
     info!("[] input -  polymer_template : {:?}", polymer_template);
     info!("[] input -  insertion_rules len: {}", insertion_rules.len());
 
     display_pair_insertion_rules(&insertion_rules);
 
     let total_step_count = 10;
-    let new_template =
-        apply_insertion_rules_all(&polymer_template, &insertion_rules, total_step_count);
+    let new_template = apply_insertion_rules_all(&polymer_template, &insertion_rules, total_step_count);
     let difference = get_insertion_value_max_min_difference(&new_template, total_step_count);
 
     info!("-----------------------------------------");
@@ -94,18 +87,14 @@ fn day_14_part_two() {
     // let filename = "input/day_14-sample-a.txt";
     let filename = "input/day_14-input.txt";
     let (polymer_template, insertion_rules) = handle_input(filename);
-    info!(
-        "[] input -  polymer_template len: {}",
-        polymer_template.len()
-    );
+    info!("[] input -  polymer_template len: {}", polymer_template.len());
     info!("[] input -  polymer_template : {:?}", polymer_template);
     info!("[] input -  insertion_rules len: {}", insertion_rules.len());
 
     display_pair_insertion_rules(&insertion_rules);
 
     let total_step_count = 10;
-    let new_template =
-        apply_insertion_rules_all(&polymer_template, &insertion_rules, total_step_count);
+    let new_template = apply_insertion_rules_all(&polymer_template, &insertion_rules, total_step_count);
     let difference = get_insertion_value_max_min_difference(&new_template, total_step_count);
 
     info!("-----------------------------------------");
@@ -118,16 +107,14 @@ fn day_14_part_two() {
 }
 
 fn apply_insertion_rules_all(
-    polymer_template: &Vec<char>,
-    insertion_rules: &HashMap<String, char>,
-    total_step_count: i32,
+    polymer_template: &Vec<char>, insertion_rules: &HashMap<String, char>, total_step_count: i32,
 ) -> Vec<char> {
     let mut new_template = polymer_template.clone();
     let mut key_occur_count_map: HashMap<String, u32> = HashMap::new();
     let total_step = total_step_count;
 
     for step_count in 1..=total_step {
-        new_template = apply_insertion_rules_once( &mut new_template, insertion_rules, &mut key_occur_count_map);
+        new_template = apply_insertion_rules_once(&mut new_template, insertion_rules, &mut key_occur_count_map);
         get_insertion_value_max_min_difference(&new_template, step_count);
         // info!("Step[{}]: len=({}) {:?}", step_count, new_template.len(), new_template.iter().collect::<String>());
     }
@@ -137,8 +124,7 @@ fn apply_insertion_rules_all(
 }
 
 fn apply_insertion_rules_once(
-    polymer_template: &Vec<char>,
-    insertion_rules: &HashMap<String, char>,
+    polymer_template: &Vec<char>, insertion_rules: &HashMap<String, char>,
     key_occur_count_map: &mut HashMap<String, u32>,
 ) -> Vec<char> {
     let current_template = polymer_template.clone();
@@ -197,7 +183,11 @@ fn get_insertion_value_max_min_difference(polymer_template: &Vec<char>, step_cou
         }
     });
 
-    info!( "|{}|-> counter_map list --, polymer_template |len|-> {}", step_count, polymer_template.len());
+    info!(
+        "|{}|-> counter_map list --, polymer_template |len|-> {}",
+        step_count,
+        polymer_template.len()
+    );
     let mut format_str = format!("");
     let mut max_item = (' ', u32::MIN);
     let mut min_item = (' ', u32::MAX);

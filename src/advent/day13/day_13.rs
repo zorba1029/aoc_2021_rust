@@ -14,10 +14,7 @@ pub fn do_day_13() {
 fn handle_input(filename: &str) -> (Vec<(u16, u16)>, u16, u16, Vec<(String, u16)>) {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     info!("[*] Input Filename: {}", filename);
@@ -26,12 +23,7 @@ fn handle_input(filename: &str) -> (Vec<(u16, u16)>, u16, u16, Vec<(String, u16)
     // let first_line = &lines[0];
     // info!("[ ] First Line: len={}, {}, ", first_line.len(), first_line);
 
-    let separator_index = lines
-        .iter()
-        .enumerate()
-        .find(|(_i, line)| line.is_empty())
-        .unwrap()
-        .0;
+    let separator_index = lines.iter().enumerate().find(|(_i, line)| line.is_empty()).unwrap().0;
     info!("[ ] input data separator index: {} ", separator_index);
 
     info!("[ ] input coordinates list - (x,y) list -------");
@@ -79,9 +71,9 @@ pub fn day_13_part_one() {
     // let filename = "input/day_13-sample-a.txt";
     let filename = "input/day_13-input.txt";
     let (coordinates_list, max_x, max_y, instruction_list) = handle_input(filename);
-    info!( "input_lines: coordinates_list len: {}", coordinates_list.len() );
+    info!("input_lines: coordinates_list len: {}", coordinates_list.len());
     info!("input_lines: (max_x, max_y) = ({},{})", max_x, max_y);
-    info!( "input_lines: instruction_list len: {}", instruction_list.len() );
+    info!("input_lines: instruction_list len: {}", instruction_list.len());
 
     let mut xy_map = make_coordinates_matrix(&coordinates_list, &max_x, &max_y);
 
@@ -89,7 +81,7 @@ pub fn day_13_part_one() {
 
     let loop_count = 1;
     let result_xy = fold_page(&mut xy_map, &instruction_list, loop_count);
-    info!( "final fold_page: result (x,y) = ({},{})", result_xy.0, result_xy.1 );
+    info!("final fold_page: result (x,y) = ({},{})", result_xy.0, result_xy.1);
 
     let visible_dots_count = count_visible_dots(&xy_map, &result_xy.0, &result_xy.1);
 
@@ -166,16 +158,16 @@ pub fn day_13_part_two() {
     // let filename = "input/day_13-sample-a.txt";
     let filename = "input/day_13-input.txt";
     let (coordinates_list, max_x, max_y, instruction_list) = handle_input(filename);
-    info!( "input_lines: coordinates_list len: {}", coordinates_list.len() );
+    info!("input_lines: coordinates_list len: {}", coordinates_list.len());
     info!("input_lines: (max_x, max_y) = ({},{})", max_x, max_y);
-    info!( "input_lines: instruction_list len: {}", instruction_list.len() );
+    info!("input_lines: instruction_list len: {}", instruction_list.len());
 
     let mut xy_map = make_coordinates_matrix(&coordinates_list, &max_x, &max_y);
 
     // display_coord_matrix(&xy_map, xy_map.first().unwrap().len() as u16, xy_map.len() as u16);
 
     let result_xy = fold_page_all(&mut xy_map, &instruction_list);
-    info!( "final fold_page: result (x,y) = ({},{})", result_xy.0, result_xy.1 );
+    info!("final fold_page: result (x,y) = ({},{})", result_xy.0, result_xy.1);
     let loop_count = result_xy.2;
 
     let visible_dots_count = count_visible_dots(&xy_map, &result_xy.0, &result_xy.1);
@@ -270,11 +262,7 @@ fn display_coord_matrix(xy_map: &[Vec<u32>], x_len: u16, y_len: u16) {
     //----------------------
 }
 
-fn fold_page(
-    xy_map: &mut Vec<Vec<u32>>,
-    fold_instructions: &Vec<(String, u16)>,
-    loop_count: u16,
-) -> (u16, u16) {
+fn fold_page(xy_map: &mut Vec<Vec<u32>>, fold_instructions: &Vec<(String, u16)>, loop_count: u16) -> (u16, u16) {
     let mut y_len: u16 = xy_map.len() as u16;
     let mut x_len: u16 = xy_map.first().unwrap().len() as u16;
     let mut count: u16 = 0;
@@ -304,10 +292,7 @@ fn fold_page(
     (x_len, y_len)
 }
 
-fn fold_page_all(
-    xy_map: &mut Vec<Vec<u32>>,
-    fold_instructions: &Vec<(String, u16)>,
-) -> (u16, u16, u16) {
+fn fold_page_all(xy_map: &mut Vec<Vec<u32>>, fold_instructions: &Vec<(String, u16)>) -> (u16, u16, u16) {
     let mut y_len: u16 = xy_map.len() as u16;
     let mut x_len: u16 = xy_map.first().unwrap().len() as u16;
     let mut count: u16 = 0;
@@ -327,10 +312,7 @@ fn fold_page_all(
             }
             (_, _) => {}
         }
-        info!(
-            " fold_page_all[{}]: (x_len, y_len) = ({},{})",
-            count, x_len, y_len
-        );
+        info!(" fold_page_all[{}]: (x_len, y_len) = ({},{})", count, x_len, y_len);
     }
 
     // display_coord_matrix(xy_map.as_ref(), x_len, y_len);
@@ -367,7 +349,7 @@ fn fold_left(xy_map: &mut [Vec<u32>], x: &u16, _x_len: u16, y_len: u16) -> (u16,
 
 // fn count_visible_dots(xy_map: &Vec<Vec<u32>>, x_len: &u16, y_len: &u16) -> u32 {
 fn count_visible_dots(xy_map: &[Vec<u32>], x_len: &u16, y_len: &u16) -> u32 {
-    info!( "[ ] count_visible_dots() ---: x_len:{}, y_len:{}", x_len, y_len );
+    info!("[ ] count_visible_dots() ---: x_len:{}, y_len:{}", x_len, y_len);
     let mut total_sum: u32 = 0;
     for i in 0..(*y_len as usize) {
         let line = xy_map.get(i).unwrap();

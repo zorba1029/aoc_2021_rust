@@ -12,10 +12,7 @@ pub fn do_day_1() {
 fn handle_input(filename: &str) -> Vec<String> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     println!("[*] Input Filename: {}", filename);
@@ -81,10 +78,7 @@ fn day_1_part_two() {
 
     //-- part 2-A:
     {
-        let nums = input_lines
-            .iter()
-            .map(|line| line.parse::<i32>().unwrap())
-            .collect::<Vec<_>>();
+        let nums = input_lines.iter().map(|line| line.parse::<i32>().unwrap()).collect::<Vec<_>>();
 
         let count = nums
             .windows(4)

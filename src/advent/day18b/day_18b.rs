@@ -1,6 +1,6 @@
-use std::cell::{RefCell};
-use std::rc::{Rc, Weak};
 use log::info;
+use std::cell::RefCell;
+use std::rc::{Rc, Weak};
 
 #[derive(Debug)]
 enum Value {
@@ -108,21 +108,21 @@ fn parse_tokens(tokens: &[Token], index: &mut usize) -> NodePtr {
         Token::OpenBracket => {
             *index += 1; // consume '['
             let left = parse_tokens(tokens, index);
-            
+
             // expect ','
             if *index >= tokens.len() || !matches!(tokens[*index], Token::Comma) {
                 panic!("Expected ',' in pair");
             }
             *index += 1; // consume ','
-            
+
             let right = parse_tokens(tokens, index);
-            
+
             // expect ']'
             if *index >= tokens.len() || !matches!(tokens[*index], Token::CloseBracket) {
                 panic!("Expected ']' to close pair");
             }
             *index += 1; // consume ']'
-            
+
             Node::new_pair(left, right)
         }
         _ => panic!("Unexpected token: {:?}", tokens[*index]),
@@ -187,8 +187,7 @@ fn find_right_neighbor(node: NodePtr) -> Option<NodePtr> {
 fn explode(node: NodePtr, depth: i32) -> bool {
     let is_pair_of_regulars = match &node.borrow().value {
         Value::Pair(l, r) => {
-            matches!(l.borrow().value, Value::Regular(_))
-            && matches!(r.borrow().value, Value::Regular(_))
+            matches!(l.borrow().value, Value::Regular(_)) && matches!(r.borrow().value, Value::Regular(_))
         }
         _ => false,
     };
@@ -230,8 +229,12 @@ fn explode(node: NodePtr, depth: i32) -> bool {
     }
 
     if let Value::Pair(l, r) = &node.borrow().value {
-        if explode(l.clone(), depth + 1) { return true; }
-        if explode(r.clone(), depth + 1) { return true; }
+        if explode(l.clone(), depth + 1) {
+            return true;
+        }
+        if explode(r.clone(), depth + 1) {
+            return true;
+        }
     }
     false
 }
@@ -248,8 +251,12 @@ fn split(node: NodePtr) -> bool {
                 let l = l.clone();
                 let r = r.clone();
                 drop(borrowed);
-                if split(l) { return true; }
-                if split(r) { return true; }
+                if split(l) {
+                    return true;
+                }
+                if split(r) {
+                    return true;
+                }
                 return false;
             }
             _ => None,
@@ -273,8 +280,12 @@ fn split(node: NodePtr) -> bool {
 
 fn reduce(node: NodePtr) {
     loop {
-        if explode(node.clone(), 0) { continue; }
-        if split(node.clone()) { continue; }
+        if explode(node.clone(), 0) {
+            continue;
+        }
+        if split(node.clone()) {
+            continue;
+        }
         break;
     }
 }
@@ -305,9 +316,7 @@ fn magnitude(node: NodePtr) -> i32 {
 fn clone_tree(node: NodePtr) -> NodePtr {
     match &node.borrow().value {
         Value::Regular(v) => Node::new_regular(*v),
-        Value::Pair(l, r) => {
-            Node::new_pair(clone_tree(l.clone()), clone_tree(r.clone()))
-        }
+        Value::Pair(l, r) => Node::new_pair(clone_tree(l.clone()), clone_tree(r.clone())),
     }
 }
 
@@ -327,11 +336,10 @@ fn part2(nums: &[NodePtr]) -> i32 {
     let mut best = 0;
     for i in 0..nums.len() {
         for j in 0..nums.len() {
-            if i == j { continue; }
-            let sum = add(
-                clone_tree(nums[i].clone()),
-                clone_tree(nums[j].clone())
-            );
+            if i == j {
+                continue;
+            }
+            let sum = add(clone_tree(nums[i].clone()), clone_tree(nums[j].clone()));
             best = best.max(magnitude(sum));
         }
     }

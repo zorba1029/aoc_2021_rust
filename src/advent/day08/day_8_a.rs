@@ -35,10 +35,7 @@ pub fn do_day_8_a() {
 fn handle_input(filename: &str) -> Vec<(Vec<String>, Vec<String>)> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     println!("[*] Input Filename: {}", filename);
@@ -51,16 +48,8 @@ fn handle_input(filename: &str) -> Vec<(Vec<String>, Vec<String>)> {
         .iter()
         .map(|line| line.split('|').collect::<Vec<_>>())
         .map(|items| {
-            let left = items[0]
-                .trim()
-                .split_whitespace()
-                .map(str::to_string)
-                .collect::<Vec<_>>();
-            let right = items[1]
-                .trim()
-                .split_whitespace()
-                .map(str::to_string)
-                .collect::<Vec<_>>();
+            let left = items[0].trim().split_whitespace().map(str::to_string).collect::<Vec<_>>();
+            let right = items[1].trim().split_whitespace().map(str::to_string).collect::<Vec<_>>();
             // println!(" {:?} | {:?}", left, right);
             (left, right)
         })
@@ -81,14 +70,9 @@ fn day_8_part_one() {
     //     .for_each(|line| println!(" {:?} | {:?}", line.0, line.1));
     println!("input_lines: {:?}", input_lines.len());
 
-    let right_lines = input_lines
-        .iter()
-        .map(|line| line.1.clone())
-        .collect::<Vec<_>>();
+    let right_lines = input_lines.iter().map(|line| line.1.clone()).collect::<Vec<_>>();
 
-    right_lines
-        .iter()
-        .for_each(|line| println!(" | {:?}", line));
+    right_lines.iter().for_each(|line| println!(" | {:?}", line));
 
     let output_value = right_lines.iter().fold(0, |acc, line| {
         let mut count = 0;
@@ -101,10 +85,7 @@ fn day_8_part_one() {
         acc + count
     });
 
-    println!(
-        "output_value (count of 1, 4, 7, 8 digits): {:?}",
-        output_value
-    );
+    println!("output_value (count of 1, 4, 7, 8 digits): {:?}", output_value);
 
     println!("-----------------------------------------------");
 }
@@ -130,115 +111,102 @@ fn day_8_part_two() {
     // let mut total_sum: i32 = 0;
     let mut output_number_list = Vec::new();
     // input_lines.iter().skip(7).take(3).enumerate()
-    input_lines
-        .iter()
-        .enumerate()
-        .for_each(|(index, (left, right))| {
-            println!(
-                "[{}] -------------------------------------------------",
-                index
-            );
-            println!("  [input_line]: {:?} | ", left);
-            // println!("  [input_line]: {:?} \n  | {:?} ", left, right);
+    input_lines.iter().enumerate().for_each(|(index, (left, right))| {
+        println!("[{}] -------------------------------------------------", index);
+        println!("  [input_line]: {:?} | ", left);
+        // println!("  [input_line]: {:?} \n  | {:?} ", left, right);
 
-            let digit_template = make_digit_template(&left);
-            println!("  [digit_template] -  {:?}", digit_template);
+        let digit_template = make_digit_template(&left);
+        println!("  [digit_template] -  {:?}", digit_template);
 
-            let mut digit_map: HashMap<char, u8> = HashMap::new();
-            for (i, c) in digit_template.iter().enumerate() {
-                digit_map.insert(*c as char, i as u8);
+        let mut digit_map: HashMap<char, u8> = HashMap::new();
+        for (i, c) in digit_template.iter().enumerate() {
+            digit_map.insert(*c as char, i as u8);
+        }
+
+        // let mut right_sorted = right.clone();
+        // right_sorted.sort_by_key(|a| a.len());
+
+        let mut output_value_list: Vec<u8> = Vec::new();
+        for (_i, word) in right.iter().enumerate() {
+            // [0, *1, 2, 3, *4, 5, 6, *7, 8, 9]
+            if word.len() == 2 {
+                output_value_list.push(1);
+            }
+            if word.len() == 3 {
+                output_value_list.push(7);
+            }
+            if word.len() == 4 {
+                output_value_list.push(4);
             }
 
-            // let mut right_sorted = right.clone();
-            // right_sorted.sort_by_key(|a| a.len());
+            // word.len() == 5: ->  (2, 3, 5)
+            // [0, *1, *2, *3, *4, *5, 6, *7, 8, 9]
+            if word.len() == 5 {
+                let chars_vec = word.chars().collect::<Vec<_>>();
+                let mut bitmap = 0u8;
+                for (_i, c) in chars_vec.iter().enumerate() {
+                    let v = digit_map.get(c).unwrap();
+                    // println!("word.len() == 5, i:{}, ==> c:[{}], v:{}", i, c, v);
+                    bitmap = bitmap | (1u8 << (6 - v));
+                    // println!("word.len() == 5, i:{}, c:[{}] ==> {:#010b} ({})", i, c, bitmap, bitmap);
+                }
+                // println!("word.len() == 5, {} ==> {:#010b}, dec: {}", word, bitmap, bitmap);
 
-            let mut output_value_list: Vec<u8> = Vec::new();
-            for (_i, word) in right.iter().enumerate() {
-                // [0, *1, 2, 3, *4, 5, 6, *7, 8, 9]
-                if word.len() == 2 {
-                    output_value_list.push(1);
-                }
-                if word.len() == 3 {
-                    output_value_list.push(7);
-                }
-                if word.len() == 4 {
-                    output_value_list.push(4);
-                }
-
-                // word.len() == 5: ->  (2, 3, 5)
-                // [0, *1, *2, *3, *4, *5, 6, *7, 8, 9]
-                if word.len() == 5 {
-                    let chars_vec = word.chars().collect::<Vec<_>>();
-                    let mut bitmap = 0u8;
-                    for (_i, c) in chars_vec.iter().enumerate() {
-                        let v = digit_map.get(c).unwrap();
-                        // println!("word.len() == 5, i:{}, ==> c:[{}], v:{}", i, c, v);
-                        bitmap = bitmap | (1u8 << (6 - v));
-                        // println!("word.len() == 5, i:{}, c:[{}] ==> {:#010b} ({})", i, c, bitmap, bitmap);
+                let mut output_value = 0;
+                for (k, v) in bitmap_template.iter().enumerate() {
+                    if *v == bitmap {
+                        output_value = k as u8;
+                        break;
                     }
-                    // println!("word.len() == 5, {} ==> {:#010b}, dec: {}", word, bitmap, bitmap);
-
-                    let mut output_value = 0;
-                    for (k, v) in bitmap_template.iter().enumerate() {
-                        if *v == bitmap {
-                            output_value = k as u8;
-                            break;
-                        }
-                    }
-                    output_value_list.push(output_value);
-                    // println!("word.len() == 5, {} -> {}", word, output_value);
                 }
-
-                // word.len() == 6: ->  (0, 6, 9)
-                // [*0, *1, *2, *3, *4, *5, *6, *7, 8, *9]
-                if word.len() == 6 {
-                    let chars_vec = word.chars().collect::<Vec<_>>();
-                    let mut bitmap = 0u8;
-                    for (_i, c) in chars_vec.iter().enumerate() {
-                        let v = digit_map.get(c).unwrap();
-                        // println!("word.len() == 6, i:{}, ==> c:[{}], v:{}", i, c, v);
-                        bitmap = bitmap | (1u8 << (6 - v));
-                        // println!("word.len() == 6, i:{}, c:[{}] ==> {:#010b} ({})", i, c, bitmap, bitmap);
-                    }
-                    // println!("word.len() == 6, {} ==> {:#010b}, dec: {}", word, bitmap, bitmap);
-
-                    let mut output_value = 0;
-                    for (k, v) in bitmap_template.iter().enumerate() {
-                        if *v == bitmap {
-                            output_value = k as u8;
-                            break;
-                        }
-                    }
-                    output_value_list.push(output_value);
-                    // println!("word.len() == 6, {} -> {}", word, output_value);
-                }
-
-                // [*0, *1, *2, *3, *4, *5, *6, *7, *8, *9]
-                if word.len() == 7 {
-                    // println!("word.len() == 7, {} -> {}", word, 8);
-                    output_value_list.push(8);
-                }
+                output_value_list.push(output_value);
+                // println!("word.len() == 5, {} -> {}", word, output_value);
             }
 
-            let mut output_number: u32 = 0;
-            for (i, v) in output_value_list.iter().rev().enumerate() {
-                output_number += (*v as u32) * (10_i32.pow(i as u32) as u32);
+            // word.len() == 6: ->  (0, 6, 9)
+            // [*0, *1, *2, *3, *4, *5, *6, *7, 8, *9]
+            if word.len() == 6 {
+                let chars_vec = word.chars().collect::<Vec<_>>();
+                let mut bitmap = 0u8;
+                for (_i, c) in chars_vec.iter().enumerate() {
+                    let v = digit_map.get(c).unwrap();
+                    // println!("word.len() == 6, i:{}, ==> c:[{}], v:{}", i, c, v);
+                    bitmap = bitmap | (1u8 << (6 - v));
+                    // println!("word.len() == 6, i:{}, c:[{}] ==> {:#010b} ({})", i, c, bitmap, bitmap);
+                }
+                // println!("word.len() == 6, {} ==> {:#010b}, dec: {}", word, bitmap, bitmap);
+
+                let mut output_value = 0;
+                for (k, v) in bitmap_template.iter().enumerate() {
+                    if *v == bitmap {
+                        output_value = k as u8;
+                        break;
+                    }
+                }
+                output_value_list.push(output_value);
+                // println!("word.len() == 6, {} -> {}", word, output_value);
             }
-            // println!("[*] [output]: {:?} -> {:?} ({})", right, output_value_list, output_number);
-            println!(
-                "\n  {:?} -> [{}] {:?} ",
-                right, output_number, output_value_list
-            );
-            output_number_list.push(output_number as i32);
-            println!("-----------------------------------------------");
-        });
+
+            // [*0, *1, *2, *3, *4, *5, *6, *7, *8, *9]
+            if word.len() == 7 {
+                // println!("word.len() == 7, {} -> {}", word, 8);
+                output_value_list.push(8);
+            }
+        }
+
+        let mut output_number: u32 = 0;
+        for (i, v) in output_value_list.iter().rev().enumerate() {
+            output_number += (*v as u32) * (10_i32.pow(i as u32) as u32);
+        }
+        // println!("[*] [output]: {:?} -> {:?} ({})", right, output_value_list, output_number);
+        println!("\n  {:?} -> [{}] {:?} ", right, output_number, output_value_list);
+        output_number_list.push(output_number as i32);
+        println!("-----------------------------------------------");
+    });
 
     let total_sum = output_number_list.iter().fold(0, |acc, v| acc + v);
-    println!(
-        "[**] total_sum: {} (lines: {})",
-        total_sum,
-        input_lines.len()
-    );
+    println!("[**] total_sum: {} (lines: {})", total_sum, input_lines.len());
     println!("-----------------------------------------------");
 }
 
@@ -267,10 +235,7 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
     // println!("sorted-left input: {:?}", sorted_left);
     //-----------------------------------------------------------
     //-- len 2 -> 1 one
-    let len2 = sorted_left
-        .iter()
-        .filter(|word| word.len() == 2)
-        .collect::<Vec<_>>();
+    let len2 = sorted_left.iter().filter(|word| word.len() == 2).collect::<Vec<_>>();
     let len2 = len2.first().unwrap();
     digit_template[F] = len2.chars().nth(1).unwrap();
     digit_template[C] = len2.chars().nth(0).unwrap();
@@ -279,10 +244,7 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
 
     //-----------------------------------------------------------
     //-- len 3 -> 7 seven
-    let len3 = sorted_left
-        .iter()
-        .filter(|word| word.len() == 3)
-        .collect::<Vec<_>>();
+    let len3 = sorted_left.iter().filter(|word| word.len() == 3).collect::<Vec<_>>();
     let len3 = len3.first().unwrap();
     let word_str = len3.to_string();
     for (_i, v) in word_str.chars().enumerate() {
@@ -295,10 +257,7 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
 
     //-----------------------------------------------------------
     //-- len 4 -> 4 four
-    let len4 = sorted_left
-        .iter()
-        .filter(|word| word.len() == 4)
-        .collect::<Vec<_>>();
+    let len4 = sorted_left.iter().filter(|word| word.len() == 4).collect::<Vec<_>>();
     let len4 = len4.first().unwrap();
     let word_str = len4.to_string();
     for (_i, v) in word_str.chars().enumerate() {
@@ -316,10 +275,7 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
 
     //-----------------------------------------------------------
     //-- len 5 -> one of (2 two, 3 three, 5 five)
-    let len5_list = sorted_left
-        .iter()
-        .filter(|word| word.len() == 5)
-        .collect::<Vec<_>>();
+    let len5_list = sorted_left.iter().filter(|word| word.len() == 5).collect::<Vec<_>>();
 
     let three_common_chars = |list: &Vec<&String>| -> Vec<char> {
         let first_list = list[0].to_string();
@@ -389,10 +345,7 @@ fn make_digit_template(left: &Vec<String>) -> Vec<char> {
     println!("    -- before len = 6, {:?}", digit_template);
     //-----------------------------------------------------------
     // -- len 6 -> one of (0 zero, 6 six, 9 nine)
-    let len6_list = sorted_left
-        .iter()
-        .filter(|word| word.len() == 6)
-        .collect::<Vec<_>>();
+    let len6_list = sorted_left.iter().filter(|word| word.len() == 6).collect::<Vec<_>>();
 
     let mut found_c_pos_count = 0;
     // let mut found_f_pos_count = 0;

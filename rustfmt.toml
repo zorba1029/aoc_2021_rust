@@ -1,0 +1,20 @@
+# Rustfmt configuration file
+# See https://rust-lang.github.io/rustfmt/ for all options
+
+# Maximum line length (default: 100)
+max_width = 120
+
+# Chain formatting style
+# - "Default": 줄바꿈을 최소화
+# - "Full": 모든 체인을 새 줄에
+chain_width = 80
+
+# 함수 인자 포매팅 (fn_args_layout은 deprecated, fn_params_layout 사용)
+# - "Compressed": 가능하면 한 줄에 (기본값)
+# - "Tall": 짧은 인자는 한 줄에, 긴 인자는 세로로
+# - "Vertical": 항상 세로로
+fn_params_layout = "Compressed"
+
+# 구조체/열거형 필드 포매팅 (nightly 전용이므로 제거)
+# struct_lit_single_line = true
+

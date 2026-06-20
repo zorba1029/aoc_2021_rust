@@ -104,10 +104,7 @@ use std::io::BufReader;
 fn handle_input(filename: &str) -> (Vec<char>, HashMap<String, char>) {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     info!("[*] Input Filename: {}", filename);
@@ -150,10 +147,7 @@ fn day_14_part_one() {
     // let filename = "input/day_14-sample-a.txt";
     let filename = "input/day_14-input.txt";
     let (polymer_template, insertion_rules) = handle_input(filename);
-    info!(
-        "[] input -  polymer_template len: {}",
-        polymer_template.len()
-    );
+    info!("[] input -  polymer_template len: {}", polymer_template.len());
     info!("[] input -  polymer_template : {:?}", polymer_template);
     info!("[] input -  insertion_rules len: {}", insertion_rules.len());
 
@@ -174,11 +168,7 @@ fn day_14_part_one() {
     info!("-----------------------------------------");
 }
 
-fn do_naive_way(
-    polymer_template: &Vec<char>,
-    insertion_rules: &HashMap<String, char>,
-    step_limit: u32,
-) {
+fn do_naive_way(polymer_template: &Vec<char>, insertion_rules: &HashMap<String, char>, step_limit: u32) {
     let mut key_occur_count_map: HashMap<char, u64> = HashMap::new();
 
     count_new_char_naive(
@@ -191,11 +181,7 @@ fn do_naive_way(
     display_occurrence_count(&key_occur_count_map);
 }
 
-fn do_smart_way(
-    polymer_template: &Vec<char>,
-    insertion_rules: &HashMap<String, char>,
-    step_limit: u32,
-) {
+fn do_smart_way(polymer_template: &Vec<char>, insertion_rules: &HashMap<String, char>, step_limit: u32) {
     let mut key_occur_count_map: HashMap<char, u64> = HashMap::new();
     let mut global_loop_count: u64 = 0;
 
@@ -210,10 +196,7 @@ fn do_smart_way(
     display_occurrence_count(&key_occur_count_map);
 }
 
-fn count_init_polymer_chars(
-    polymer_template: &Vec<char>,
-    key_occur_count_map: &mut HashMap<char, u64>,
-) {
+fn count_init_polymer_chars(polymer_template: &Vec<char>, key_occur_count_map: &mut HashMap<char, u64>) {
     //-- init: count the occurrence of this input string (polymer_template itself)
     polymer_template.iter().for_each(|item| {
         info!("[] input char: {}", item);
@@ -231,10 +214,8 @@ fn count_init_polymer_chars(
 
 //-- Aug 12, 2023
 fn count_new_char_naive(
-    polymer_template: &Vec<char>,
-    insertion_rules: &HashMap<String, char>,
-    key_occur_count_map: &mut HashMap<char, u64>,
-    step_limit: u32,
+    polymer_template: &Vec<char>, insertion_rules: &HashMap<String, char>,
+    key_occur_count_map: &mut HashMap<char, u64>, step_limit: u32,
 ) {
     let step_limit = step_limit;
 
@@ -280,11 +261,8 @@ fn count_new_char_naive(
 }
 
 fn count_first_part(
-    input_pair: Vec<char>,
-    insertion_rules: &HashMap<String, char>,
-    key_occur_count_map: &mut HashMap<char, u64>,
-    step_count: u32,
-    step_limit: u32,
+    input_pair: Vec<char>, insertion_rules: &HashMap<String, char>, key_occur_count_map: &mut HashMap<char, u64>,
+    step_count: u32, step_limit: u32,
 ) {
     let first_ch = input_pair[0];
     let second_ch = input_pair[1];
@@ -339,11 +317,8 @@ fn count_first_part(
 }
 
 fn count_second_part(
-    input_pair: Vec<char>,
-    insertion_rules: &HashMap<String, char>,
-    key_occur_count_map: &mut HashMap<char, u64>,
-    step_count: u32,
-    step_limit: u32,
+    input_pair: Vec<char>, insertion_rules: &HashMap<String, char>, key_occur_count_map: &mut HashMap<char, u64>,
+    step_count: u32, step_limit: u32,
 ) {
     let first_ch = input_pair[0];
     let second_ch = input_pair[1];
@@ -399,10 +374,7 @@ fn count_second_part(
 
 //--------------------------------------------------------------------
 
-fn count_smart_init_polymer_chars(
-    polymer_template: &Vec<char>,
-    key_occur_count_map: &mut HashMap<char, u64>,
-) {
+fn count_smart_init_polymer_chars(polymer_template: &Vec<char>, key_occur_count_map: &mut HashMap<char, u64>) {
     //-- init: count the occurrence of this input string (polymer_template itself)
     polymer_template.iter().for_each(|item| {
         info!("[] input char: {}", item);
@@ -419,11 +391,8 @@ fn count_smart_init_polymer_chars(
 }
 
 fn count_new_char_smart(
-    polymer_template: &Vec<char>,
-    insertion_rules: &HashMap<String, char>,
-    key_occur_count_map: &mut HashMap<char, u64>,
-    step_limit: u32,
-    global_loop_count: &mut u64,
+    polymer_template: &Vec<char>, insertion_rules: &HashMap<String, char>,
+    key_occur_count_map: &mut HashMap<char, u64>, step_limit: u32, global_loop_count: &mut u64,
 ) {
     let step_limit = step_limit;
 
@@ -474,12 +443,8 @@ fn count_new_char_smart(
 }
 
 fn count_first_part_smart(
-    input_pair: Vec<char>,
-    insertion_rules: &HashMap<String, char>,
-    key_occur_count_map: &mut HashMap<char, u64>,
-    step_count: u32,
-    step_limit: u32,
-    global_loop_count: &mut u64,
+    input_pair: Vec<char>, insertion_rules: &HashMap<String, char>, key_occur_count_map: &mut HashMap<char, u64>,
+    step_count: u32, step_limit: u32, global_loop_count: &mut u64,
 ) {
     let first_ch = input_pair[0];
     let second_ch = input_pair[1];
@@ -522,10 +487,7 @@ fn count_first_part_smart(
 
         if first_ch == *element || second_ch == *element {
             // left-recursion
-            debug!(
-                "     [*****] SECOND ===> left : {:?} -> {} ",
-                input_pair, *element
-            );
+            debug!("     [*****] SECOND ===> left : {:?} -> {} ", input_pair, *element);
             let tmp_step_count = step_limit as u64 - step_count as u64;
             *key_occur_count_map.get_mut(element).unwrap() += tmp_step_count;
 
@@ -579,12 +541,8 @@ fn count_first_part_smart(
 }
 
 fn count_second_part_smart(
-    input_pair: Vec<char>,
-    insertion_rules: &HashMap<String, char>,
-    key_occur_count_map: &mut HashMap<char, u64>,
-    step_count: u32,
-    step_limit: u32,
-    global_loop_count: &mut u64,
+    input_pair: Vec<char>, insertion_rules: &HashMap<String, char>, key_occur_count_map: &mut HashMap<char, u64>,
+    step_count: u32, step_limit: u32, global_loop_count: &mut u64,
 ) {
     let first_ch = input_pair[0];
     let second_ch = input_pair[1];
@@ -627,10 +585,7 @@ fn count_second_part_smart(
 
         if first_ch == *element || second_ch == *element {
             // left-recursion
-            debug!(
-                "     [*****] SECOND ===> left : {:?} -> {} ",
-                input_pair, *element
-            );
+            debug!("     [*****] SECOND ===> left : {:?} -> {} ", input_pair, *element);
             let tmp_step_count = step_limit as u64 - step_count as u64;
             *key_occur_count_map.get_mut(element).unwrap() += tmp_step_count;
             // let occur_count = key_occur_count_map.get(element).unwrap();
@@ -690,14 +645,8 @@ fn display_occurrence_count(key_occur_count_map: &HashMap<char, u64>) {
         .iter()
         .for_each(|(key, value)| info!("     {} ({})", key, value));
 
-    let (key_max, value_max) = key_occur_count_map
-        .iter()
-        .max_by_key(|entry| entry.1)
-        .unwrap();
-    let (key_min, value_min) = key_occur_count_map
-        .iter()
-        .min_by_key(|entry| entry.1)
-        .unwrap();
+    let (key_max, value_max) = key_occur_count_map.iter().max_by_key(|entry| entry.1).unwrap();
+    let (key_min, value_min) = key_occur_count_map.iter().min_by_key(|entry| entry.1).unwrap();
     info!("[ ] [MAX value] : {} ({}) ", key_max, value_max);
     info!("[ ] [min value] : {} ({}) ", key_min, value_min);
     info!("[ ] [MAX_value - min_value] : {} ", value_max - value_min);
@@ -742,20 +691,14 @@ fn display_occurrence_count(key_occur_count_map: &HashMap<char, u64>) {
 //==============================================================================
 #[allow(dead_code)]
 fn apply_insertion_rules_all(
-    polymer_template: &Vec<char>,
-    insertion_rules: &HashMap<String, char>,
-    total_step_count: i32,
+    polymer_template: &Vec<char>, insertion_rules: &HashMap<String, char>, total_step_count: i32,
 ) -> Vec<char> {
     let mut new_template = polymer_template.clone();
     let mut key_occur_count_map: HashMap<String, u32> = HashMap::new();
     let total_step = total_step_count;
 
     for step_count in 1..=total_step {
-        new_template = apply_insertion_rules_once(
-            &mut new_template,
-            insertion_rules,
-            &mut key_occur_count_map,
-        );
+        new_template = apply_insertion_rules_once(&mut new_template, insertion_rules, &mut key_occur_count_map);
         get_insertion_value_max_min_difference(&new_template, step_count);
         // info!("Step[{}]: len=({}) {:?}", step_count, new_template.len(), new_template.iter().collect::<String>());
     }
@@ -765,8 +708,7 @@ fn apply_insertion_rules_all(
 }
 
 fn apply_insertion_rules_once(
-    polymer_template: &Vec<char>,
-    insertion_rules: &HashMap<String, char>,
+    polymer_template: &Vec<char>, insertion_rules: &HashMap<String, char>,
     key_occur_count_map: &mut HashMap<String, u32>,
 ) -> Vec<char> {
     let current_template = polymer_template.clone();

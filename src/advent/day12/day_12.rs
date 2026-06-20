@@ -296,10 +296,7 @@ fn day_12_part_two() {
 fn handle_input_normalize(filename: &str) -> Vec<(String, String)> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     info!("[*] Input Filename: {}", filename);
@@ -363,10 +360,7 @@ fn node_name_to_index(input_lines: &Vec<(String, String)>) -> HashMap<String, i1
 
 fn display_node_name_index(name_to_index: &HashMap<String, i16>) {
     //-- chunks_table vector of vector
-    name_to_index
-        .iter()
-        .enumerate()
-        .for_each(|(_i, (key, value))| {
-            info!("    map[{}] -> {}", key, value);
-        });
+    name_to_index.iter().enumerate().for_each(|(_i, (key, value))| {
+        info!("    map[{}] -> {}", key, value);
+    });
 }

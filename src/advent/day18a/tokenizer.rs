@@ -1,4 +1,6 @@
+#[derive(Debug)]
 pub(crate) enum Token {
+    #[allow(dead_code)] // tree_handler 모듈에서 사용됨 (현재 주석 처리됨)
     Number(i32),
     OpenBracket,
     Comma,
@@ -19,13 +21,13 @@ pub(crate) fn tokenize(input: &str) -> Vec<Token> {
                 let mut number = 0;
                 while let Some(&next_c) = chars.peek() {
                     if next_c.is_digit(10) {
-                        number = number * 10 + next_c.to_digit(10).unwrap() as i32;
                         chars.next();
+                        number = number * 10 + next_c.to_digit(10).unwrap() as i32;
                     } else {
                         break;
                     }
                 }
-                tokens.push(Token::Number(number));
+                tokens.push(Token::Number(number as i32));
             }
             ',' => {
                 tokens.push(Token::Comma);
@@ -35,10 +37,8 @@ pub(crate) fn tokenize(input: &str) -> Vec<Token> {
                 tokens.push(Token::CloseBracket);
                 chars.next();
             }
-            ' ' => {
-                chars.next();
-            }
             _ => {
+                // Skip unrecognized characters (like commas or whitespace)
                 chars.next();
             }
         }

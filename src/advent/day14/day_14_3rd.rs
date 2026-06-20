@@ -29,21 +29,16 @@ fn day_14_part_two() {
     let filename = "input/day_14-sample-a.txt";
     // let filename = "input/day_14-input.txt";
     let (polymer_template, insertion_rules) = handle_input(filename);
-    info!(
-        "[] input -  polymer_template len: {}",
-        polymer_template.len()
-    );
+    info!("[] input -  polymer_template len: {}", polymer_template.len());
     info!("[] input -  polymer_template : {:?}", polymer_template);
     info!("[] input -  insertion_rules len: {}", insertion_rules.len());
 
     display_pair_insertion_rules(&insertion_rules);
 
     let total_step_count = 10;
-    let new_template =
-        apply_insertion_rules_all(&polymer_template, &insertion_rules, total_step_count);
+    let new_template = apply_insertion_rules_all(&polymer_template, &insertion_rules, total_step_count);
     let mut counter_map: HashMap<char, u32> = HashMap::new();
-    let difference =
-        get_insertion_value_max_min_difference(&new_template, &mut counter_map, total_step_count);
+    let difference = get_insertion_value_max_min_difference(&new_template, &mut counter_map, total_step_count);
 
     info!("-----------------------------------------");
     info!("--- Day 14: Extended Polymerization, Part Two --- ");
@@ -57,10 +52,7 @@ fn day_14_part_two() {
 fn handle_input(filename: &str) -> (Vec<char>, HashMap<String, char>) {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     info!("[*] Input Filename: {}", filename);
@@ -91,9 +83,7 @@ fn handle_input(filename: &str) -> (Vec<char>, HashMap<String, char>) {
 }
 
 fn apply_insertion_rules_all(
-    polymer_template: &Vec<char>,
-    insertion_rules: &HashMap<String, char>,
-    total_step_count: i32,
+    polymer_template: &Vec<char>, insertion_rules: &HashMap<String, char>, total_step_count: i32,
 ) -> Vec<char> {
     let mut new_template = polymer_template.clone();
     let mut key_occur_count_map: HashMap<String, u32> = HashMap::new();
@@ -123,13 +113,8 @@ fn apply_insertion_rules_all(
 }
 
 fn apply_insertion_rules_once(
-    polymer_template: &Vec<char>,
-    _new_template: &mut Vec<char>,
-    insertion_rules: &HashMap<String, char>,
-    key_occur_count_map: &mut HashMap<String, u32>,
-    diff_vec: &mut Vec<u64>,
-    current_step: i32,
-    total_step: i32,
+    polymer_template: &Vec<char>, _new_template: &mut Vec<char>, insertion_rules: &HashMap<String, char>,
+    key_occur_count_map: &mut HashMap<String, u32>, diff_vec: &mut Vec<u64>, current_step: i32, total_step: i32,
 ) {
     let current_template = polymer_template.clone();
     let partition_size = 1000;
@@ -192,8 +177,7 @@ fn apply_insertion_rules_once(
 
         // info!("    <{}> - current status- len=[{}]", p_index, new_template.len());
 
-        let max_min =
-            get_insertion_value_max_min_difference(&new_template, &mut counter_map, total_step);
+        let max_min = get_insertion_value_max_min_difference(&new_template, &mut counter_map, total_step);
         diff_vec[current_step as usize] += max_min.0 - max_min.1;
 
         let mut new_temp = Vec::new();
@@ -250,14 +234,9 @@ fn apply_insertion_rules_once(
         // info!("    <{}> - current status- len=[{}]", partition_count, new_template.len());
 
         // let diff: u64 = get_insertion_value_max_min_difference(&new_template, &mut counter_map, total_step);
-        let max_min =
-            get_insertion_value_max_min_difference(&new_template, &mut counter_map, current_step);
+        let max_min = get_insertion_value_max_min_difference(&new_template, &mut counter_map, current_step);
         diff_vec[current_step as usize] += max_min.0 - max_min.1;
-        info!(
-            " FINAL  RETURN [{}] |- DIFF_VEC: {:?}",
-            current_step + 1,
-            diff_vec
-        );
+        info!(" FINAL  RETURN [{}] |- DIFF_VEC: {:?}", current_step + 1, diff_vec);
 
         let mut new_temp = Vec::new();
         return apply_insertion_rules_once(
@@ -282,9 +261,7 @@ fn display_pair_insertion_rules(insertion_rules: &HashMap<String, char>) {
 }
 
 fn get_insertion_value_max_min_difference(
-    polymer_template: &Vec<char>,
-    counter_map: &mut HashMap<char, u32>,
-    step_count: i32,
+    polymer_template: &Vec<char>, counter_map: &mut HashMap<char, u32>, step_count: i32,
 ) -> (u64, u64, u64) {
     // let mut counter_map = counter_map;
     polymer_template.iter().for_each(|ch| {

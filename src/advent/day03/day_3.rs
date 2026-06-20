@@ -12,10 +12,7 @@ pub fn do_day_3() {
 fn handle_input(filename: &str) -> Vec<String> {
     let file = File::open(filename).expect("Couldn't open input");
     let buf = BufReader::new(file);
-    let lines = buf
-        .lines()
-        .map(|line| line.unwrap())
-        .collect::<Vec<String>>();
+    let lines = buf.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
     let lines_count = lines.len();
     println!("input lines count = {}", lines_count);
@@ -67,11 +64,7 @@ fn day_3_part_one() {
         //     most_common_bit = 0;
         //     least_common_bit = 1;
         // }
-        (most_common_bit, least_common_bit) = if one_count >= zero_count {
-            (1, 0)
-        } else {
-            (0, 1)
-        };
+        (most_common_bit, least_common_bit) = if one_count >= zero_count { (1, 0) } else { (0, 1) };
 
         gamma_rate_vec.push(most_common_bit);
         epsilon_rate_vec.push(least_common_bit);
@@ -178,8 +171,8 @@ fn day_3_part_two() {
 
         lines_cloned = filtered_values.iter().map(|item| **item).collect();
     }
-    println!( "  oxygen_generator_rating_line: {}", oxygen_generator_rating_line );
-    
+    println!("  oxygen_generator_rating_line: {}", oxygen_generator_rating_line);
+
     let mut oxygen_generating_rate_value = 0;
 
     for (i, bit) in oxygen_generator_rating_line.chars().rev().enumerate() {
@@ -190,7 +183,7 @@ fn day_3_part_two() {
         };
         oxygen_generating_rate_value = oxygen_generating_rate_value + value * 2i32.pow(i as u32);
     }
-    println!( "  oxygen_generating_rate_value: {}", oxygen_generating_rate_value );
+    println!("  oxygen_generating_rate_value: {}", oxygen_generating_rate_value);
 
     //------------------------------------------
     // 2> CO2 scrubber rating value

@@ -50,24 +50,15 @@ pub fn day14() {
     pair_list = run_loop(&pair_list, &insertion_rules, 10);
     let counts_first = get_counts_first_chars(&pair_list, *first_char, *last_char);
     let counts_last = get_counts_last_chars(&pair_list, *first_char, *last_char);
-    println!(
-        "[Day 14] Part 1 (step=10): {} (={})",
-        counts_first, counts_last
-    );
+    println!("[Day 14] Part 1 (step=10): {} (={})", counts_first, counts_last);
 
     pair_list = run_loop(&pair_list, &insertion_rules, 30);
     let counts_first = get_counts_first_chars(&pair_list, *first_char, *last_char);
     let counts_last = get_counts_last_chars(&pair_list, *first_char, *last_char);
-    println!(
-        "[Day 14] Part 2 (step=40): {} (={})",
-        counts_first, counts_last
-    );
+    println!("[Day 14] Part 2 (step=40): {} (={})", counts_first, counts_last);
 
     let elapsed = now.elapsed();
-    println!(
-        "-- Complete time: {:6.2}ms\n",
-        elapsed.as_micros() as f64 / 1000.
-    );
+    println!("-- Complete time: {:6.2}ms\n", elapsed.as_micros() as f64 / 1000.);
 }
 
 fn run_loop(pair_list: &PairList, insertion_rules: &InsertionRules, loops: usize) -> PairList {
