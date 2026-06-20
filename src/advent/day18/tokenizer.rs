@@ -6,7 +6,8 @@ pub enum Token {
     Comma,
 }
 
-pub(crate) fn tokenize(input: &str) -> Vec<Token> {
+// pub(crate) fn tokenize(input: &str) -> Vec<Token> {
+pub(in crate::advent::day18) fn tokenize(input: &str) -> Vec<Token> {
     let mut tokens = Vec::new();
     let mut chars = input.chars().peekable();
 
