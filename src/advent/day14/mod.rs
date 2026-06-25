@@ -1,3 +1,4 @@
+pub mod animate;
 pub mod day_14;
 pub mod day_14_2nd;
 pub mod day_14_3rd;
