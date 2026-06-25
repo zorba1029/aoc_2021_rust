@@ -34,7 +34,7 @@ type Colors = HashMap<char, (u8, u8, u8)>;
 // Frame timings (milliseconds) and layout. Tweak to taste.
 const LOAD_MS: u64 = 45; // per insertion rule while reading input
 const INTRO_PAUSE_MS: u64 = 700; // after the input is fully read
-const STEP_MS: u64 = 420; // per polymerization step
+const STEP_MS: u64 = 1000; //--420; // per polymerization step
 const PAIR_TOP: usize = 14; // how many pair bars to show (rest summarized)
 const BAR_W: usize = 40; // max bar length in columns
 
@@ -138,22 +138,24 @@ fn element_counts(counter: &PairCounts, first: char) -> HashMap<char, u64> {
 fn render_loading(template: &[char], idx: usize, total: usize, rule: Option<((char, char), char)>, colors: &Colors) {
     let mut out = String::with_capacity(256);
     out.push_str("\x1b[H\x1b[J");
-    out.push_str("  Day 14 — reading input\n\n");
-    out.push_str("  template :  ");
-    out.push_str(&colored_chars(template, colors));
-    out.push_str("\n\n");
 
+    // Top line: the current input being read.
     match rule {
         Some(((a, b), r)) => {
             let pair = [a, b];
-            out.push_str(&format!("  rule {idx:>3}/{total} :  "));
+            out.push_str(&format!("  input {idx:>3}/{total} :  "));
             out.push_str(&colored_chars(&pair, colors));
             out.push_str("\x1b[38;2;150;150;170m -> \x1b[0m");
             out.push_str(&colored_chars(&[r], colors));
             out.push('\n');
         }
-        None => out.push_str(&format!("  rule {:>3}/{total} :  ...\n", 0)),
+        None => out.push_str(&format!("  input {:>3}/{total} :  ...\n", 0)),
     }
+
+    out.push_str("\n  Day 14 — reading input\n\n");
+    out.push_str("  template :  ");
+    out.push_str(&colored_chars(template, colors));
+    out.push('\n');
 
     print!("{out}");
     io::stdout().flush().ok();
