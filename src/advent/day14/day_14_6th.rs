@@ -21,19 +21,6 @@ use std::time::Instant;
 // You just need to work out what polymer would result after repeating
 // the pair insertion process a few times.
 
-// --- Day 14: Extended Polymerization ---
-//
-// The incredible pressures at this depth are starting to put a strain on your submarine.
-// The submarine has polymerization equipment that would produce suitable materials
-// to reinforce the submarine, and the nearby volcanically-active caves should even
-// have the necessary input elements in sufficient quantities.
-//
-// The submarine manual contains instructions for finding the optimal polymer formula;
-// specifically, it offers a polymer template and a list of pair insertion rules
-// (your puzzle input).
-// You just need to work out what polymer would result after repeating
-// the pair insertion process a few times.
-
 //  [ ] input instructions list - (x or y,value) list -------
 //   [] input -  polymer_template len: 4
 //   [] input -  polymer_template : ['N', 'N', 'C', 'B']
@@ -150,10 +137,10 @@ fn handle_input(filename: &str) -> (PolymerCounterMap, InsertionRuleMap, char, c
 }
 
 pub fn do_day_14() {
-    day_14_part_one();
+    day_14_part_two();
 }
 
-fn day_14_part_one() {
+fn day_14_part_two() {
     let now = Instant::now();
     info!("===============================================");
     info!("--- Day 14: Extended Polymerization,  Part TWO ---, START: 2/5/2022 (Feb,5) ");
@@ -182,12 +169,12 @@ fn day_14_part_one() {
     display_polymer_counter_map(&polymer_counter, step_limit);
 
     info!("-----------------------------------------");
-    info!("Day 14: Extended Polymerization, Part One: DONE (SUCCESS)");
+    info!("Day 14: Extended Polymerization, Part Two: DONE (SUCCESS)");
     info!("---- Aug/13/2023 (Aug 13) ----");
     info!("[ ] Input File: {}", filename);
     info!("------------------------------------------");
     info!(
-        "[Day 14] Part 1 (step={}): {} (={})",
+        "[Day 14] Part 2 (step={}): {} (={})",
         step_limit, counts_with_first_char, counts_with_last_chart
     );
     info!("-----------------------------------------");
@@ -200,7 +187,7 @@ fn day_14_part_one() {
 
     info!("------------------------------------------");
     info!(
-        "[Day 14] Part 1 (step={}): {} (={})",
+        "[Day 14] Part 2 (step={}): {} (={})",
         step_limit, counts_with_first_char, counts_with_last_chart
     );
     info!("-----------------------------------------");
