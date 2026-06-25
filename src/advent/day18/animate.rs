@@ -322,12 +322,23 @@ fn end_frame(out: &str) {
 }
 
 /// Append the flat colored-string view (depth-painted, soft-wrapped) to `out`.
+/// Each rendered row is followed by an annotation row pointing at the active
+/// operation: `▲` under an exploding pair, `◆` under a splitting number, and
+/// `◀`/`▶` under the left/right neighbors that receive the exploded values.
 fn flat_body(toks: &[Tok], highlights: &[(usize, Hi)], out: &mut String) {
-    out.push_str("    ");
+    // A single Target token means a split; a multi-token Target span is the
+    // exploding pair. Neighbors left of the pair get `◀`, those to the right `▶`.
+    let target_idxs: Vec<usize> = highlights.iter().filter(|(_, k)| *k == Hi::Target).map(|(i, _)| *i).collect();
+    let is_split = target_idxs.len() == 1;
+    let min_target = target_idxs.iter().min().copied();
+
+    // Build content rows and the per-row arrow markers together.
+    let mut rows: Vec<String> = vec![String::from("    ")];
+    let mut marks: Vec<Vec<(usize, char, (u8, u8, u8))>> = vec![Vec::new()];
     let mut depth = 0usize;
     let mut col = 4usize;
+
     for (i, t) in toks.iter().enumerate() {
-        // Text of the token, plus the depth used to color it.
         let (txt, d) = match t {
             Tok::Open => {
                 let d = depth;
@@ -343,17 +354,55 @@ fn flat_body(toks: &[Tok], highlights: &[(usize, Hi)], out: &mut String) {
         };
 
         if col + txt.len() > WIDTH {
-            out.push_str("\n    ");
+            rows.push(String::from("    "));
+            marks.push(Vec::new());
             col = 4;
         }
+        let ri = rows.len() - 1;
 
         let kind = highlights.iter().find(|(k, _)| *k == i).map(|(_, k)| *k);
         let (r, g, b) = color(kind, d);
         let bold = if kind.is_some() { "\x1b[1m" } else { "" };
-        out.push_str(&format!("{bold}\x1b[38;2;{r};{g};{b}m{txt}\x1b[0m"));
+        rows[ri].push_str(&format!("{bold}\x1b[38;2;{r};{g};{b}m{txt}\x1b[0m"));
+
+        // Record an arrow under this token's first column.
+        match kind {
+            Some(Hi::Target) => {
+                let glyph = if is_split { '◆' } else { '▲' };
+                marks[ri].push((col, glyph, (255, 255, 150)));
+            }
+            Some(Hi::Neighbor) => {
+                let glyph = match min_target {
+                    Some(mt) if i < mt => '◀',
+                    _ => '▶',
+                };
+                marks[ri].push((col, glyph, (120, 255, 140)));
+            }
+            _ => {}
+        }
         col += txt.len();
     }
-    out.push('\n');
+
+    // Emit each content row, followed by its arrow row when there is one.
+    for (ri, row) in rows.iter().enumerate() {
+        out.push_str(row);
+        out.push('\n');
+        if marks[ri].is_empty() {
+            continue;
+        }
+        let mut line = String::new();
+        let mut c = 0usize;
+        for &(mc, glyph, (r, g, b)) in &marks[ri] {
+            while c < mc {
+                line.push(' ');
+                c += 1;
+            }
+            line.push_str(&format!("\x1b[1m\x1b[38;2;{r};{g};{b}m{glyph}\x1b[0m"));
+            c += 1;
+        }
+        out.push_str(&line);
+        out.push('\n');
+    }
 }
 
 /// Draw one frame: the flat snailfish number, painted by nesting depth.
