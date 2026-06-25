@@ -383,11 +383,14 @@ fn flat_body(toks: &[Tok], highlights: &[(usize, Hi)], out: &mut String) {
         col += txt.len();
     }
 
-    // Emit each content row, followed by its arrow row when there is one.
+    // Emit each content row, followed by its arrow row. The arrow row is always
+    // emitted (blank when there are no markers) so the tree below stays fixed
+    // instead of jumping up/down a line as arrows appear and disappear.
     for (ri, row) in rows.iter().enumerate() {
         out.push_str(row);
         out.push('\n');
         if marks[ri].is_empty() {
+            out.push('\n');
             continue;
         }
         let mut line = String::new();
