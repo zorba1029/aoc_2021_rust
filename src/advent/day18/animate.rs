@@ -67,9 +67,14 @@ pub fn run_tree(filename: &str, max_lines: usize) {
     animate_with(filename, max_lines, render_tree);
 }
 
-/// Combined view: the flat string and the tree, animating together.
+/// Combined view: the flat string and the indented tree, animating together.
 pub fn run_both(filename: &str, max_lines: usize) {
     animate_with(filename, max_lines, render_both);
+}
+
+/// Combined view with the top-down (textbook) tree instead of the indented one.
+pub fn run_both_vtree(filename: &str, max_lines: usize) {
+    animate_with(filename, max_lines, render_both_vertical);
 }
 
 /// Shared driver: run the reduction, calling `render` for every frame so the
@@ -558,13 +563,137 @@ fn render_tree(toks: &[Tok], header: &str, phase: &str, info: &str, highlights: 
     end_frame(&out);
 }
 
-/// Draw one frame with BOTH views: the flat string, then the tree below it.
+/// Draw one frame with BOTH views: the flat string, then the indented tree.
 fn render_both(toks: &[Tok], header: &str, phase: &str, info: &str, highlights: &[(usize, Hi)]) {
     let mut out = start_frame("Snailfish", header, phase, info, toks);
     flat_body(toks, highlights, &mut out);
     out.push_str("\n  \x1b[38;2;90;90;110m── tree ──\x1b[0m\n\n");
     tree_body(toks, highlights, &mut out);
     end_frame(&out);
+}
+
+/// Draw one frame: the flat string, then the top-down (textbook) tree.
+fn render_both_vertical(toks: &[Tok], header: &str, phase: &str, info: &str, highlights: &[(usize, Hi)]) {
+    let mut out = start_frame("Snailfish", header, phase, info, toks);
+    flat_body(toks, highlights, &mut out);
+    out.push_str(
+        "\n  \x1b[38;2;90;90;110m── tree (top-down) ──   color: explode=yellow · add=green · result=magenta\x1b[0m\n\n",
+    );
+    vtree_body(toks, highlights, &mut out);
+    end_frame(&out);
+}
+
+// ------------------------ Vertical (textbook) tree -------------------
+
+type Rgb = (u8, u8, u8);
+const CONNECT_RGB: Rgb = (90, 90, 110); // dim gray for branches
+
+/// A small 2D canvas of colored cells for laying out the top-down tree.
+/// Every row has length `width`; `root` is the column of this subtree's root.
+struct Canvas {
+    rows: Vec<Vec<(char, Option<Rgb>)>>,
+    width: usize,
+    root: usize,
+}
+
+/// Lay out `node` as a centered top-down tree. Leaves render their number;
+/// internal nodes render `●`; children sit side by side under a `┌─┴─┐` brace.
+fn vlayout(node: &Node, depth: usize, hi: &[(usize, Hi)]) -> Canvas {
+    let kind = hi.iter().find(|(k, _)| *k == node.tok).map(|(_, k)| *k);
+    let rgb = color(kind, depth);
+
+    let Some((left, right)) = &node.children else {
+        let s = node.value.unwrap_or(0).to_string();
+        let row: Vec<(char, Option<Rgb>)> = s.chars().map(|c| (c, Some(rgb))).collect();
+        let width = row.len();
+        return Canvas {
+            rows: vec![row],
+            width,
+            root: width / 2,
+        };
+    };
+
+    let lc = vlayout(left, depth + 1, hi);
+    let rc = vlayout(right, depth + 1, hi);
+    const GAP: usize = 2;
+    let width = lc.width + GAP + rc.width;
+    let left_root = lc.root;
+    let right_root = lc.width + GAP + rc.root;
+    let parent = (left_root + right_root) / 2;
+
+    let blank = |w: usize| vec![(' ', None); w];
+    let mut rows: Vec<Vec<(char, Option<Rgb>)>> = Vec::new();
+
+    // Row 0: the parent node.
+    let mut prow = blank(width);
+    prow[parent] = ('●', Some(rgb));
+    rows.push(prow);
+
+    // Row 1: the brace connecting parent to the two child roots.
+    let mut crow = blank(width);
+    crow[left_root] = ('┌', Some(CONNECT_RGB));
+    crow[right_root] = ('┐', Some(CONNECT_RGB));
+    for c in (left_root + 1)..right_root {
+        crow[c] = ('─', Some(CONNECT_RGB));
+    }
+    crow[parent] = ('┴', Some(CONNECT_RGB));
+    rows.push(crow);
+
+    // Remaining rows: left and right subtrees side by side.
+    let h = lc.rows.len().max(rc.rows.len());
+    for i in 0..h {
+        let mut row = Vec::with_capacity(width);
+        match lc.rows.get(i) {
+            Some(r) => row.extend_from_slice(r),
+            None => row.extend(blank(lc.width)),
+        }
+        row.extend(blank(GAP));
+        match rc.rows.get(i) {
+            Some(r) => row.extend_from_slice(r),
+            None => row.extend(blank(rc.width)),
+        }
+        rows.push(row);
+    }
+
+    Canvas {
+        rows,
+        width,
+        root: parent,
+    }
+}
+
+/// Render a canvas to `out`, each row prefixed by `indent`, color-run encoded.
+fn render_canvas(canvas: &Canvas, indent: &str, out: &mut String) {
+    for row in &canvas.rows {
+        out.push_str(indent);
+        let mut i = 0;
+        while i < row.len() {
+            match row[i].1 {
+                None => {
+                    out.push(row[i].0);
+                    i += 1;
+                }
+                Some(rgb) => {
+                    let mut run = String::new();
+                    while i < row.len() && row[i].1 == Some(rgb) {
+                        run.push(row[i].0);
+                        i += 1;
+                    }
+                    let (r, g, b) = rgb;
+                    out.push_str(&format!("\x1b[1m\x1b[38;2;{r};{g};{b}m{run}\x1b[0m"));
+                }
+            }
+        }
+        out.push('\n');
+    }
+}
+
+/// Append the top-down tree view to `out`.
+fn vtree_body(toks: &[Tok], highlights: &[(usize, Hi)], out: &mut String) {
+    let root = build(toks, &mut 0);
+    let canvas = vlayout(&root, 0, highlights);
+    render_canvas(&canvas, "    ", out);
+    out.push('\n');
 }
 
 // --------------------------- Parsing / IO ----------------------------

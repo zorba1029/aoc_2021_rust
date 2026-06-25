@@ -70,14 +70,34 @@ cargo run --release --bin day18_anim -- sample-2
 # 진짜 퍼즐 입력, 앞 5줄만 더하기 (입력이 100줄이라 길어서 제한용)
 cargo run --release --bin day18_anim -- input 5
 
-# flat + 트리 합본 뷰 (인자는 위와 동일)
+# flat + 트리 합본 뷰 (트리 스타일은 실행 시 [a/b] 프롬프트)
 cargo run --release --bin day18_tree_anim
-cargo run --release --bin day18_tree_anim -- input 3
+cargo run --release --bin day18_tree_anim -- sample-1 2 a   # 들여쓰기 트리
+cargo run --release --bin day18_tree_anim -- sample-1 2 b   # 교과서(top-down) 트리
+cargo run --release --bin day18_tree_anim -- input 3 a
 ```
 
-> 합본 뷰는 한 화면에 flat 문자열과 트리를 함께 그린다. 트리는 들여쓰기형이라
-> 깊이/너비에 강하지만, 누적 합이 커지면 잎이 수십 개로 늘어 화면 높이를 넘을 수
-> 있다. 그럴 땐 `arg2`로 더할 줄 수를 줄이면 된다.
+`day18_tree_anim`은 트리 스타일을 고른다 (arg3 또는 프롬프트):
+
+- **a (들여쓰기)**: `├─`/`└─` 형. 깊이/너비에 강해 어떤 크기든 안정적. (기본)
+- **b (top-down 교과서)**: `┌─┴─┐` 브레이스로 좌/우 자식이 **같은 높이로 나란히**.
+  진짜 트리 모양이지만 가로 폭을 많이 쓴다(샘플~중간 크기 권장, 넓은 터미널에서).
+
+```
+                  ●
+      ┌───────────┴────────────┐
+      ●                        ●
+  ┌───┴────┐              ┌─────┴──────┐
+  ●        ●              7            ●
+ ┌┴─┐    ┌─┴─┐                   ┌─────┴─────┐
+ 0  ●    0   0                   ●           ●
+   ┌┴─┐                        ┌─┴─┐       ┌─┴─┐
+   4  5                        ...         ...
+```
+
+> 들여쓰기(a)는 깊이/너비에 강하지만 잎이 많아지면 세로로 길어진다. top-down(b)은
+> 모양이 직관적이지만 가로로 넓어진다. 둘 다 `arg2`로 더할 줄 수를 줄여 크기를 맞출 수
+> 있다.
 
 인자:
 
