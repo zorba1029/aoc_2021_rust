@@ -491,10 +491,12 @@ fn draw(
     let (r, g, b) = color(kind, depth);
     let bold = if kind.is_some() { "\x1b[1m" } else { "" };
 
-    // Role tag appended to the node's line.
+    // Role tag appended to the node's line. For an explode, tag each of the two
+    // number leaves (not the parent pair node) with "▲ explode".
     let tag = match kind {
-        Some(Hi::Target) if node.children.is_some() => "  \x1b[1m\x1b[38;2;255;255;150m▲ explode\x1b[0m",
         Some(Hi::Target) if is_split => "  \x1b[1m\x1b[38;2;255;255;150m◆ split\x1b[0m",
+        Some(Hi::Target) if node.value.is_some() => "  \x1b[1m\x1b[38;2;255;255;150m▲ explode\x1b[0m",
+        Some(Hi::Target) => "",
         Some(Hi::Neighbor) if min_target.is_some_and(|mt| node.tok < mt) => {
             "  \x1b[1m\x1b[38;2;120;255;140m◀ left add\x1b[0m"
         }
