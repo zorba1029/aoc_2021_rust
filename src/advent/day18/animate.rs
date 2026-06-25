@@ -471,8 +471,12 @@ fn build(toks: &[Tok], i: &mut usize) -> Node {
     }
 }
 
-/// Draw one node and its subtree in indented (`├─`/`└─`) form.
-fn draw(node: &Node, prefix: &str, is_last: bool, is_root: bool, depth: usize, hi: &[(usize, Hi)], out: &mut String) {
+/// Draw one node and its subtree in indented (`├─`/`└─`) form, tagging the
+/// active nodes with `▲ explode` / `◆ split` / `◀ left add` / `▶ right add`.
+fn draw(
+    node: &Node, prefix: &str, is_last: bool, is_root: bool, depth: usize, hi: &[(usize, Hi)], is_split: bool,
+    min_target: Option<usize>, out: &mut String,
+) {
     let branch = if is_root {
         String::new()
     } else {
@@ -487,9 +491,20 @@ fn draw(node: &Node, prefix: &str, is_last: bool, is_root: bool, depth: usize, h
     let (r, g, b) = color(kind, depth);
     let bold = if kind.is_some() { "\x1b[1m" } else { "" };
 
-    // Dim gray connectors, then the colored node label.
+    // Role tag appended to the node's line.
+    let tag = match kind {
+        Some(Hi::Target) if node.children.is_some() => "  \x1b[1m\x1b[38;2;255;255;150m▲ explode\x1b[0m",
+        Some(Hi::Target) if is_split => "  \x1b[1m\x1b[38;2;255;255;150m◆ split\x1b[0m",
+        Some(Hi::Neighbor) if min_target.is_some_and(|mt| node.tok < mt) => {
+            "  \x1b[1m\x1b[38;2;120;255;140m◀ left add\x1b[0m"
+        }
+        Some(Hi::Neighbor) => "  \x1b[1m\x1b[38;2;120;255;140m▶ right add\x1b[0m",
+        _ => "",
+    };
+
+    // Dim gray connectors, then the colored node label, then the role tag.
     out.push_str(&format!(
-        "    \x1b[38;2;90;90;110m{branch}\x1b[0m{bold}\x1b[38;2;{r};{g};{b}m{label}\x1b[0m\n"
+        "    \x1b[38;2;90;90;110m{branch}\x1b[0m{bold}\x1b[38;2;{r};{g};{b}m{label}\x1b[0m{tag}\n"
     ));
 
     if let Some((left, right)) = &node.children {
@@ -498,15 +513,39 @@ fn draw(node: &Node, prefix: &str, is_last: bool, is_root: bool, depth: usize, h
         } else {
             format!("{prefix}{}", if is_last { "   " } else { "│  " })
         };
-        draw(left, &child_prefix, false, false, depth + 1, hi, out);
-        draw(right, &child_prefix, true, false, depth + 1, hi, out);
+        draw(
+            left,
+            &child_prefix,
+            false,
+            false,
+            depth + 1,
+            hi,
+            is_split,
+            min_target,
+            out,
+        );
+        draw(
+            right,
+            &child_prefix,
+            true,
+            false,
+            depth + 1,
+            hi,
+            is_split,
+            min_target,
+            out,
+        );
     }
 }
 
 /// Append the hierarchical (indented) tree view to `out`.
 fn tree_body(toks: &[Tok], highlights: &[(usize, Hi)], out: &mut String) {
+    let target_idxs: Vec<usize> = highlights.iter().filter(|(_, k)| *k == Hi::Target).map(|(i, _)| *i).collect();
+    let is_split = target_idxs.len() == 1;
+    let min_target = target_idxs.iter().min().copied();
+
     let root = build(toks, &mut 0);
-    draw(&root, "", true, true, 0, highlights, out);
+    draw(&root, "", true, true, 0, highlights, is_split, min_target, out);
     out.push('\n');
 }
 
