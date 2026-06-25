@@ -23,7 +23,8 @@
 
 use std::collections::HashMap;
 use std::fs::File;
-use std::io::{self, BufRead, BufReader, Write};
+use std::io::{self, BufRead, BufReader, Read, Write};
+use std::process::{Command, Stdio};
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -48,6 +49,15 @@ pub enum PairView {
     Matrix,
 }
 
+/// How the polymerization steps are paced.
+#[derive(Clone, Copy, PartialEq)]
+pub enum StepMode {
+    /// Advance automatically every `STEP_MS`.
+    Auto,
+    /// Pause after every step; advance on a keypress.
+    Interactive,
+}
+
 // Stable, distinct colors handed out to the elements in alphabetical order.
 const PALETTE: [(u8, u8, u8); 8] = [
     (90, 170, 255),  // blue
@@ -61,8 +71,8 @@ const PALETTE: [(u8, u8, u8); 8] = [
 ];
 
 /// Entry point. `filename` is a full path; `max_steps` caps the polymerization;
-/// `view` chooses how the pair counts are drawn.
-pub fn run(filename: &str, max_steps: u32, view: PairView) {
+/// `view` chooses how the pair counts are drawn; `mode` paces the steps.
+pub fn run(filename: &str, max_steps: u32, view: PairView, mode: StepMode) {
     let (template, rules_ordered) = read_input(filename);
     if template.is_empty() {
         println!("No polymer template in {filename}");
@@ -92,19 +102,37 @@ pub fn run(filename: &str, max_steps: u32, view: PairView) {
         *counter.entry((w[0], w[1])).or_default() += 1;
     }
 
+    let interactive = mode == StepMode::Interactive;
+    let mut quit = false;
+
     render_step(&template, 0, max_steps, &counter, &colors, first, view);
-    sleep(Duration::from_millis(STEP_MS));
-    for s in 1..=max_steps {
-        counter = step(&counter, &rules);
-        render_step(&template, s, max_steps, &counter, &colors, first, view);
+    if interactive {
+        quit = prompt_next() == b'q';
+    } else {
         sleep(Duration::from_millis(STEP_MS));
     }
 
+    for s in 1..=max_steps {
+        if quit {
+            break;
+        }
+        counter = step(&counter, &rules);
+        render_step(&template, s, max_steps, &counter, &colors, first, view);
+        if interactive {
+            quit = prompt_next() == b'q';
+        } else {
+            sleep(Duration::from_millis(STEP_MS));
+        }
+    }
+
     // Hold the final frame until the user confirms, so it isn't wiped on exit.
-    print!("\n  \x1b[1mPress Enter to exit...\x1b[0m");
-    io::stdout().flush().ok();
-    let mut answer = String::new();
-    io::stdin().read_line(&mut answer).ok();
+    // (Skip if the user already quit with a keypress in interactive mode.)
+    if !quit {
+        print!("\n  \x1b[1mPress Enter to exit...\x1b[0m");
+        io::stdout().flush().ok();
+        let mut answer = String::new();
+        io::stdin().read_line(&mut answer).ok();
+    }
 
     // Leave alternate screen, restore cursor.
     print!("\x1b[?25h\x1b[?1049l");
@@ -119,6 +147,52 @@ pub fn run(filename: &str, max_steps: u32, view: PairView) {
         commas(min),
         commas(max - min)
     );
+}
+
+// --------------------------- Interaction -----------------------------
+
+/// Show the interactive footer and block until the user presses a key.
+/// Returns the byte read ('q' means quit).
+fn prompt_next() -> u8 {
+    print!("\n  \x1b[2m[any key] next step   ·   [q] quit\x1b[0m");
+    io::stdout().flush().ok();
+    wait_key()
+}
+
+/// Read a single keypress without requiring Enter, using `stty` to put the
+/// terminal in non-canonical mode briefly (no extra crates). Returns the byte
+/// (0 if input is not a terminal / on EOF).
+fn wait_key() -> u8 {
+    let original = Command::new("stty")
+        .arg("-g")
+        .stdin(Stdio::inherit())
+        .output()
+        .ok()
+        .and_then(|o| String::from_utf8(o.stdout).ok());
+
+    let _ = Command::new("stty")
+        .args(["-icanon", "-echo", "min", "1", "time", "0"])
+        .stdin(Stdio::inherit())
+        .status();
+
+    let mut buf = [0u8; 1];
+    let n = io::stdin().read(&mut buf).unwrap_or(0);
+
+    // Restore the previous terminal settings.
+    match original {
+        Some(saved) => {
+            let _ = Command::new("stty").arg(saved.trim()).stdin(Stdio::inherit()).status();
+        }
+        None => {
+            let _ = Command::new("stty").args(["icanon", "echo"]).stdin(Stdio::inherit()).status();
+        }
+    }
+
+    if n == 0 {
+        0
+    } else {
+        buf[0]
+    }
 }
 
 // --------------------------- Algorithm -------------------------------
@@ -232,13 +306,14 @@ fn render_step(
 // --------------------------- Pair views (A / B) ----------------------
 
 /// View A: every pair as a mini-bar with an abbreviated number, laid out in
-/// `PAIR_COLS` columns (column-major, so the biggest fill the first column).
+/// `PAIR_COLS` columns (column-major). Sorted alphabetically so each pair keeps
+/// a fixed position across steps -- easy to watch a single pair grow.
 fn pairs_columns(counter: &PairCounts, colors: &Colors, out: &mut String) {
     let mut pairs: Vec<((char, char), u64)> = counter.iter().filter(|(_, &c)| c > 0).map(|(&k, &v)| (k, v)).collect();
-    pairs.sort_by(|a, b| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));
-    let max = pairs.first().map(|(_, c)| *c).unwrap_or(1);
+    pairs.sort_by(|a, b| a.0.cmp(&b.0));
+    let max = pairs.iter().map(|(_, c)| *c).max().unwrap_or(1);
 
-    out.push_str(&format!("  ── pairs ── (all {}, by count)\n", pairs.len()));
+    out.push_str(&format!("  ── pairs ── (all {}, A→Z)\n", pairs.len()));
     let rows = pairs.len().div_ceil(PAIR_COLS);
     for row in 0..rows {
         out.push_str("  ");
@@ -262,19 +337,19 @@ fn pairs_columns(counter: &PairCounts, colors: &Colors, out: &mut String) {
     }
 }
 
-/// View B: every pair as a colored cell in a row(1st char) × col(2nd char)
-/// matrix. Brighter = larger count (log-scaled); absent pairs are dim dots.
+/// View B: a row(1st char) × col(2nd char) matrix. Each cell shows the pair's
+/// count (abbreviated), colored by size (log-scaled); absent pairs are dim dots.
 fn pairs_matrix(counter: &PairCounts, colors: &Colors, out: &mut String) {
     let mut els: Vec<char> = colors.keys().copied().collect();
     els.sort_unstable();
     let max = counter.values().copied().max().unwrap_or(1);
 
-    out.push_str("  ── pairs ── (matrix: row=1st · col=2nd · brighter=more)\n");
-    // Header row of 2nd-char labels.
+    out.push_str("  ── pairs ── (matrix: row=1st · col=2nd · number=count, color=size)\n");
+    // Header row of 2nd-char labels (each cell is 5-wide + a space).
     out.push_str("      ");
     for &b in &els {
         let (r, g, bl) = colors[&b];
-        out.push_str(&format!("\x1b[38;2;{r};{g};{bl}m{b} \x1b[0m"));
+        out.push_str(&format!("\x1b[38;2;{r};{g};{bl}m{b:>5}\x1b[0m "));
     }
     out.push('\n');
     // One row per 1st char.
@@ -284,11 +359,11 @@ fn pairs_matrix(counter: &PairCounts, colors: &Colors, out: &mut String) {
         for &b in &els {
             let c = counter.get(&(a, b)).copied().unwrap_or(0);
             if c == 0 {
-                out.push_str("\x1b[38;2;70;70;80m· \x1b[0m");
+                out.push_str("\x1b[38;2;70;70;80m    ·\x1b[0m ");
             } else {
                 let t = (c as f64 + 1.0).ln() / (max as f64 + 1.0).ln();
                 let (hr, hg, hb) = heat(t);
-                out.push_str(&format!("\x1b[38;2;{hr};{hg};{hb}m█ \x1b[0m"));
+                out.push_str(&format!("\x1b[38;2;{hr};{hg};{hb}m{:>5}\x1b[0m ", abbrev(c)));
             }
         }
         out.push('\n');
