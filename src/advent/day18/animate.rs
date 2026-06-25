@@ -50,7 +50,7 @@ enum Hi {
 // Frame timings (milliseconds). Tweak to taste.
 const START_MS: u64 = 900; // initial line, before we start adding
 const CONCAT_MS: u64 = 650; // after concatenating the next line
-const OP_MS: u64 = 320; // each explode / split half-frame (before, then after)
+const OP_MS: u64 = 700; //--320; // each explode / split half-frame (before, then after)
 const SETTLE_MS: u64 = 700; // after a line is fully reduced
 
 // Soft-wrap the rendered number at this column so long accumulators stay readable.
