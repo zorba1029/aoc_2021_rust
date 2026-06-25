@@ -35,7 +35,7 @@ type Colors = HashMap<char, (u8, u8, u8)>;
 // Frame timings (milliseconds) and layout. Tweak to taste.
 const LOAD_MS: u64 = 45; // per insertion rule while reading input
 const INTRO_PAUSE_MS: u64 = 700; // after the input is fully read
-const STEP_MS: u64 = 1000; //--420; // per polymerization step
+const STEP_MS: u64 = 2000; //--1000; --420; // per polymerization step
 const BAR_W: usize = 40; // max bar length in columns (element bars)
 const PAIR_COLS: usize = 4; // columns in the multi-column pair view (fits ~100 cols)
 const PAIR_BAR_W: usize = 6; // mini-bar length per pair cell
