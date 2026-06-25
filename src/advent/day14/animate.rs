@@ -100,6 +100,12 @@ pub fn run(filename: &str, max_steps: u32, view: PairView) {
         sleep(Duration::from_millis(STEP_MS));
     }
 
+    // Hold the final frame until the user confirms, so it isn't wiped on exit.
+    print!("\n  \x1b[1mPress Enter to exit...\x1b[0m");
+    io::stdout().flush().ok();
+    let mut answer = String::new();
+    io::stdin().read_line(&mut answer).ok();
+
     // Leave alternate screen, restore cursor.
     print!("\x1b[?25h\x1b[?1049l");
     io::stdout().flush().ok();
